@@ -809,6 +809,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <button class="filter-btn" onclick="filterProducts('baby-shower')">👶 Baby Shower</button>
     <button class="filter-btn" onclick="filterProducts('bautizo')">🙏 Bautizos</button>
     <button class="filter-btn" onclick="filterProducts('cumpleanos')">🎂 Cumpleaños</button>
+    <button class="filter-btn" onclick="filterProducts('personajes')">🎬 Personajes Animados</button>
     <button class="filter-btn" onclick="filterProducts('revelacion')">🎀 Revelación de Sexo</button>
     <button class="filter-btn" onclick="filterProducts('matrimonio')">💍 Matrimonio</button>
     <button class="filter-btn" onclick="filterProducts('dia-madre')">💐 Día de la Madre</button>
@@ -1358,6 +1359,12 @@ const IMG_MAP = {
   "cumple4": "images/cumple4.jpeg",
   "cumple5": "images/cumple5.jpeg",
   "cumple6": "images/cumple6.jpeg",
+
+  "anim1": "images/anim1.jpeg",
+  "anim2": "images/anim2.jpeg",
+  "anim3": "images/anim3.jpeg",
+  "anim4": "images/anim4.jpeg",
+  "anim5": "images/anim5.jpeg",
 };
 
 const ADMIN_PIN = '1234';
@@ -1410,6 +1417,12 @@ const PRODUCTS = [
   {id:42, name:"Gatito en Vaso Cumpleanos", desc:"Vela gatito en vaso de vidrio con numero para cumpleanos", price:40, tag:"Cumpleanos", img:"cumple4", cat:"cumpleanos", unit:"docena"},  
   {id:43, name:"Sirena en Vaso Cumpleanos", desc:"Vela sirenita en vaso de vidrio con numero para cumpleanos", price:40, tag:"Cumpleanos", img:"cumple5", cat:"cumpleanos", unit:"docena"},  
   {id:44, name:"Leon en Vaso Cumpleanos", desc:"Vela leon en vaso de vidrio con numero para cumpleanos", price:40, tag:"Cumpleanos", img:"cumple6", cat:"cumpleanos", unit:"docena"},  
+
+  {id:45, name:"Conejita en Frasco", desc:"Vela conejita con lazo en frasco de vidrio con tapa de corcho, personalizada con nombre", price:48, tag:"Personajes", img:"anim1", cat:"personajes", unit:"docena"},  
+  {id:46, name:"Demonio de Tasmania en Frasco", desc:"Vela demonio de Tasmania en frasco de vidrio con tapa de corcho, personalizada con nombre", price:48, tag:"Personajes", img:"anim2", cat:"personajes", unit:"docena"},  
+  {id:47, name:"Conejo con Zanahoria en Frasco", desc:"Vela conejo con zanahoria en frasco de vidrio con tapa de corcho, personalizada con nombre", price:50, tag:"Personajes", img:"anim3", cat:"personajes", unit:"docena"},  
+  {id:48, name:"Pato en Frasco", desc:"Vela pato en frasco de vidrio con tapa de corcho, personalizada con nombre", price:50, tag:"Personajes", img:"anim4", cat:"personajes", unit:"docena"},  
+  {id:49, name:"Coyote en Frasco", desc:"Vela coyote en frasco de vidrio con tapa de corcho, personalizada con nombre", price:50, tag:"Personajes", img:"anim5", cat:"personajes", unit:"docena"},  
 ];
 
 // ── CART ──
@@ -2375,7 +2388,7 @@ window.addEventListener('popstate', function(e) {
     var search = window.location.search;
     var cat = null;
     // Check hash like #categoria-baby-shower or #baby-shower
-    var hashMatch = hash.match(/^#(?:categoria-)?(baby-shower|bautizo|matrimonio|dia-madre|revelacion|mas-vendidos|all)$/);
+    var hashMatch = hash.match(/^#(?:categoria-)?(baby-shower|bautizo|matrimonio|dia-madre|revelacion|cumpleanos|personajes|mas-vendidos|all)$/);
     if (hashMatch) cat = hashMatch[1];
     // Check ?categoria=baby-shower
     var urlParams = new URLSearchParams(search);
