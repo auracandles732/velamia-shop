@@ -140,7 +140,7 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .section-label{font-size:0.63rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:0.8rem;font-weight:600;display:block;}
   .section-title{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;line-height:1.2;}
   .section-title span{color:var(--brown);font-weight:300;}
-  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;}
+  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;align-items:stretch;}
   .product-card{background:#fff;border:0.5px solid var(--sand);transition:transform 0.3s,box-shadow 0.3s;display:flex;flex-direction:column;}
   .product-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(42,35,24,0.1);}
   .product-img{position:relative;height:260px;overflow:hidden;background:var(--cream);}
@@ -168,7 +168,7 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .card-qty-btn:last-child{border-radius:0 6px 6px 0;}
   .card-qty-btn:hover{background:var(--brown);}
   .card-qty-val{min-width:40px;height:34px;display:flex;align-items:center;justify-content:center;font-size:0.92rem;font-weight:700;background:#fff;border-top:1.5px solid var(--sand);border-bottom:1.5px solid var(--sand);color:var(--dark);}
-  .card-qty-label{font-size:0.6rem;color:var(--taupe);text-align:center;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.1rem;margin-top:auto;}
+  .card-qty-label{font-size:0.6rem;color:var(--taupe);text-align:center;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.1rem;}
   .card-cta{display:block;text-align:center;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.75rem;background:var(--dark);color:#fff;font-weight:600;transition:all 0.3s;border:none;cursor:pointer;width:100%;}
   .card-cta:hover{background:var(--brown);}
   .card-cta.added{background:var(--gold);color:var(--dark);}
@@ -2619,6 +2619,7 @@ document.addEventListener('DOMContentLoaded', function() {
           '<p class="product-price">$'+p.price.toFixed(2)+'</p>'
         ) +
         '<p class="product-unit">'+unitLabel+'</p>' +
+        '<div style="flex:1;"></div>' +
         '<div class="card-qty-label">Cantidad ('+(p.unit==="unidad"?"unidades":"docenas")+')</div>' +
         '<div class="card-qty-selector">' +
           '<button class="card-qty-btn" onclick="event.stopPropagation();changeCardQty('+p.id+',-1)">&#8722;</button>' +
