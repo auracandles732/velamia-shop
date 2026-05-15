@@ -732,6 +732,27 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .card-wa-btn:hover{background:#25D366;color:#fff;}
   .card-wa-btn svg{flex-shrink:0;}
 
+
+  /* Políticas v2 - Métodos de pago */
+  .politicas-payment-methods{max-width:920px;margin:0 auto 2.5rem;}
+  .politicas-section-title{font-size:1rem;font-weight:700;color:var(--dark);letter-spacing:0.05em;text-align:center;margin:0 auto 1.2rem;max-width:820px;}
+  .payment-method-cards{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+  .payment-method-card{background:#fff;border:1.5px solid var(--sand);border-radius:12px;padding:1.5rem;transition:box-shadow 0.2s;}
+  .payment-method-card:hover{box-shadow:0 8px 24px rgba(42,35,24,0.08);}
+  .pm-header{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.9rem;padding-bottom:0.8rem;border-bottom:1px solid var(--sand);flex-wrap:wrap;}
+  .pm-icon{font-size:1.5rem;}
+  .pm-name{font-size:0.95rem;font-weight:700;color:var(--dark);flex:1;}
+  .pm-tag{font-size:0.6rem;font-weight:700;color:var(--gold);background:rgba(201,168,76,0.12);padding:0.25rem 0.55rem;border-radius:50px;letter-spacing:0.06em;text-transform:uppercase;}
+  .pm-body p{font-size:0.82rem;color:var(--dark);line-height:1.55;margin-bottom:0.6rem;}
+  .pm-list{list-style:none;padding:0;margin:0.4rem 0 0.8rem;}
+  .pm-list li{font-size:0.78rem;color:var(--brown);line-height:1.7;}
+  .pm-note{background:var(--cream);padding:0.7rem 0.9rem;border-radius:6px;font-size:0.75rem;color:var(--dark);border-left:3px solid #E63946;margin-top:0.5rem;}
+  .politica-card.highlight-card{border:1.5px solid #E63946;background:rgba(230,57,70,0.04);}
+  .politica-card.highlight-card .politica-num{background:#E63946;color:#fff;}
+  @media(max-width:700px){
+    .payment-method-cards{grid-template-columns:1fr;}
+  }
+
 </style>
 
 <script type="application/ld+json">
@@ -1164,29 +1185,73 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section class="politica-section" id="politicas">
   <div class="politicas-header">
     <span class="section-label">Importante</span>
-    <h2 class="section-title">Políticas de <span>Pedido</span></h2>
-    <p class="politicas-intro">Para garantizar un servicio de calidad y cumplir con todos nuestros clientes, te pedimos leer y aceptar nuestras políticas antes de realizar tu pedido.</p>
+    <h2 class="section-title">Políticas y <span>Condiciones</span></h2>
+    <p class="politicas-intro">Para garantizar un servicio de calidad y cumplir con todos nuestros clientes, te pedimos leer y aceptar nuestras políticas antes de realizar tu pedido. Al confirmar tu compra aceptas estos términos.</p>
   </div>
+
+  <!-- Métodos de pago -->
+  <div class="politicas-payment-methods">
+    <div class="politicas-section-title">💳 Métodos de pago disponibles</div>
+    <div class="payment-method-cards">
+      <div class="payment-method-card">
+        <div class="pm-header">
+          <span class="pm-icon">💳</span>
+          <span class="pm-name">Pago con Tarjeta</span>
+          <span class="pm-tag">Via Nuvei</span>
+        </div>
+        <div class="pm-body">
+          <p><strong>Pago del 100%</strong> al momento del pedido.</p>
+          <ul class="pm-list">
+            <li>✓ Confirmación instantánea del pedido</li>
+            <li>✓ Acepta tarjetas de crédito y débito</li>
+            <li>✓ Posibilidad de diferir el pago (según tu banco)</li>
+            <li>✓ Pago seguro 100% encriptado</li>
+          </ul>
+          <p class="pm-note"><strong>Importante:</strong> Una vez procesado el pago con tarjeta NO se acepta devolución de dinero bajo ninguna circunstancia.</p>
+        </div>
+      </div>
+      <div class="payment-method-card">
+        <div class="pm-header">
+          <span class="pm-icon">🏦</span>
+          <span class="pm-name">Transferencia Bancaria</span>
+          <span class="pm-tag">Banco Pichincha</span>
+        </div>
+        <div class="pm-body">
+          <p><strong>Anticipo del 50%</strong> para confirmar el pedido + 50% antes del envío.</p>
+          <ul class="pm-list">
+            <li>✓ Sin comisiones adicionales</li>
+            <li>✓ Permite pago por abonos (hasta completar 50%)</li>
+            <li>✓ Comprobante por WhatsApp</li>
+            <li>✓ Requiere validación manual del pago</li>
+          </ul>
+          <p class="pm-note"><strong>Importante:</strong> El anticipo del 50% NO es reembolsable una vez iniciada la producción.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Políticas Generales -->
+  <div class="politicas-section-title">📋 Políticas Generales (aplican a ambos métodos de pago)</div>
   <div class="politicas-list">
     <div class="politica-card">
       <div class="politica-num">1</div>
       <div class="politica-content">
-        <h3>Anticipo del 50% obligatorio</h3>
-        <p>Todo pedido se confirma y agenda únicamente con el 50% de anticipo. Sin el anticipo completo, el pedido NO entra en producción ni se reserva fecha.</p>
+        <h3>Confirmación del pedido</h3>
+        <p>El pedido se considera confirmado únicamente cuando se recibe el pago (100% con tarjeta o 50% por transferencia). Sin pago, el pedido no entra en producción ni se reserva fecha.</p>
       </div>
     </div>
-    <div class="politica-card">
+    <div class="politica-card highlight-card">
       <div class="politica-num">2</div>
       <div class="politica-content">
-        <h3>Saldo restante antes de la entrega</h3>
-        <p>El 50% restante debe cancelarse antes del envío o entrega. No se despacha ningún pedido con saldo pendiente.</p>
+        <h3>🚫 No se acepta devolución de dinero</h3>
+        <p><strong>Una vez confirmado el pedido y recibido el pago (parcial o total), NO se acepta devolución de dinero bajo ninguna circunstancia</strong>, debido a la naturaleza personalizada y artesanal de nuestros productos.</p>
       </div>
     </div>
     <div class="politica-card">
       <div class="politica-num">3</div>
       <div class="politica-content">
-        <h3>Reserva de fecha — compromiso del cliente</h3>
-        <p>Velamia agenda los pedidos por fecha. Una vez pactada la fecha de entrega, esta no puede modificarse y queda reservada exclusivamente para ese pedido. El cliente se compromete a cancelar el saldo total en la fecha pactada, una vez que el pedido esté terminado y listo para envío.</p>
+        <h3>Reserva de fecha — Compromiso del cliente</h3>
+        <p>Velamia agenda los pedidos por fecha. Una vez pactada la fecha de entrega, esta no puede modificarse y queda reservada exclusivamente para ese pedido. El cliente se compromete a cumplir con el saldo total (en caso de transferencia) en la fecha pactada, una vez terminado el pedido.</p>
       </div>
     </div>
     <div class="politica-card">
@@ -1199,25 +1264,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="politica-card">
       <div class="politica-num">5</div>
       <div class="politica-content">
-        <h3>Cancelaciones</h3>
-        <p>El anticipo del 50% no es reembolsable una vez iniciada la producción, ya que los materiales personalizados no se pueden reutilizar.</p>
+        <h3>Productos personalizados — Sin devolución de productos</h3>
+        <p>Por ser productos personalizados y hechos a mano, no admiten devolución ni cambio, salvo defecto de fábrica comprobable. Cualquier defecto debe reportarse dentro de las 24 horas de recibido el pedido, acompañado de fotografías.</p>
       </div>
     </div>
     <div class="politica-card">
       <div class="politica-num">6</div>
       <div class="politica-content">
-        <h3>Productos personalizados — sin devolución</h3>
-        <p>Por ser productos personalizados y hechos a mano, no admiten devolución ni cambio, salvo defecto de fábrica comprobable (reportar dentro de 24 horas de recibido).</p>
+        <h3>Pago por abonos (solo aplica a transferencia)</h3>
+        <p>Si se acuerda pago por abonos, el pedido solo inicia producción cuando se completa el 50% del valor total. Mientras no se alcance ese monto, el pedido permanece en espera sin fecha asignada.</p>
       </div>
     </div>
     <div class="politica-card">
       <div class="politica-num">7</div>
       <div class="politica-content">
-        <h3>Pago por abonos</h3>
-        <p>Si se acuerda pago por abonos, el pedido solo inicia producción cuando se completa el 50%. Mientras no se alcance ese monto, el pedido permanece en espera sin fecha asignada.</p>
+        <h3>Saldo restante (solo aplica a transferencia)</h3>
+        <p>El 50% restante debe cancelarse antes del envío o entrega del pedido. No se despacha ningún pedido con saldo pendiente.</p>
       </div>
     </div>
   </div>
+
   <div class="politicas-garantia">
     <div class="politica-item">
       <span class="politica-icon">🤝</span>
