@@ -944,6 +944,25 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
     .footer-top{grid-template-columns:1fr 1fr;gap:2rem;}
   }
 
+
+  /* Card multi-imagen slideshow */
+  .card-img-wrap{position:relative;overflow:hidden;}
+  .card-img-wrap .card-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.7s ease;}
+  .card-img-wrap .card-img.active{opacity:1;}
+  .card-img-wrap .card-img-single{position:relative;opacity:1;}
+  .card-slide-dots{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:3;}
+  .card-slide-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.5);border:none;padding:0;cursor:pointer;transition:background 0.2s;}
+  .card-slide-dot.active{background:#fff;}
+
+  /* Galería en detalle del producto */
+  .pp-gallery{display:flex;flex-direction:column;gap:0.7rem;}
+  .pp-main-img-wrap{position:relative;overflow:hidden;border-radius:8px 8px 0 0;}
+  .pp-main-img{width:100%;height:340px;object-fit:cover;display:block;transition:opacity 0.4s;}
+  .pp-thumbs{display:flex;gap:0.5rem;padding:0.5rem;background:#f9f7f4;}
+  .pp-thumb{width:72px;height:72px;object-fit:cover;border-radius:4px;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s;opacity:0.7;}
+  .pp-thumb.active{border-color:var(--gold);opacity:1;}
+  .pp-thumb:hover{opacity:1;}
+
 </style>
 
 <script type="application/ld+json">
@@ -1056,6 +1075,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <button class="filter-btn active" onclick="filterProducts('all')">🕯️ Todos</button>
     <button class="filter-btn mas-vendidos-btn" onclick="filterProducts('mas-vendidos')">⭐ Más Vendidos</button>
     <button class="filter-btn oferta-btn" onclick="filterProducts('oferta')">🔥 Ofertas</button>
+    <button class="filter-btn" onclick="filterProducts('xv-anos')">👑 XV Años</button>
     <button class="filter-btn" onclick="filterProducts('baby-shower')">👶 Baby Shower</button>
     <button class="filter-btn" onclick="filterProducts('bautizo')">🙏 Bautizos</button>
     <button class="filter-btn" onclick="filterProducts('cumpleanos')">🎂 Cumpleaños</button>
@@ -1450,7 +1470,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   <div class="pp-container">
     <div class="pp-image-side">
-      <img class="pp-image" id="ppImg" src="" alt=""/>
+      <img class="pp-image pp-main-img" id="ppImg" src="" alt=""/>
+      <div id="ppThumbs" class="pp-thumbs" style="display:none;"></div>
     </div>
     <div class="pp-info-side">
       <h1 class="pp-name" id="ppName"></h1>
@@ -1696,6 +1717,10 @@ const IMG_MAP = {
   "anim3": "images/anim3.jpeg",
   "anim4": "images/anim4.jpeg",
   "anim5": "images/anim5.jpeg",
+  "xv1":   "images/xv1.png",
+  "xv1_2": "images/xv1_2.png",
+  "xv1_3": "images/xv1_3.png",
+  "xv1_4": "images/xv1_4.png"
 };
 
 const ADMIN_PIN = '1234';
@@ -1753,7 +1778,8 @@ const PRODUCTS = [
   {id:46, name:"Demonio de Tasmania en Frasco", desc:"Vela demonio de Tasmania en frasco de vidrio con tapa de corcho, personalizada con nombre", price:48, tag:"Personajes", img:"anim2", cat:"personajes", unit:"docena"},  
   {id:47, name:"Conejo con Zanahoria en Frasco", desc:"Vela conejo con zanahoria en frasco de vidrio con tapa de corcho, personalizada con nombre", price:50, tag:"Personajes", img:"anim3", cat:"personajes", unit:"docena"},  
   {id:48, name:"Pato en Frasco", desc:"Vela pato en frasco de vidrio con tapa de corcho, personalizada con nombre", price:50, tag:"Personajes", img:"anim4", cat:"personajes", unit:"docena"},  
-  {id:49, name:"Coyote en Frasco", desc:"Vela coyote en frasco de vidrio con tapa de corcho, personalizada con nombre", price:50, tag:"Personajes", img:"anim5", cat:"personajes", unit:"docena"},  
+  {id:49, name:"Coyote en Frasco", desc:"Vela coyote en frasco de vidrio con tapa de corcho, personalizada con nombre", price:50, tag:"Personajes", img:"anim5", cat:"personajes", unit:"docena"},
+  {id:50, name:"Vela Flor Quinceañera en Copa", desc:"Vela con flor artesanal en copa de vidrio, personalizada con nombre y fecha. Diseño premium, aroma delicado", price:50, tag:"Quinceañera", img:"xv1", cat:"xv-anos", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["xv1","xv1_2","xv1_3","xv1_4"]}
 ];
 
 // ── CART ──
@@ -2363,8 +2389,23 @@ function openProductPage(id, fromHistory) {
     });
   }
   var unitLabel = p.unit==='unidad' ? 'UNIDADES' : 'DOCENAS';
-  document.getElementById('ppImg').src = IMG_MAP[p.img];
-  document.getElementById('ppImg').alt = p.name;
+  var ppImgs = p.imgs ? p.imgs : [p.img];
+  var ppMainImg = document.getElementById('ppImg');
+  ppMainImg.src = IMG_MAP[ppImgs[0]];
+  ppMainImg.alt = p.name;
+  // Galería de miniaturas
+  var thumbsContainer = document.getElementById('ppThumbs');
+  if(thumbsContainer){
+    if(ppImgs.length > 1){
+      thumbsContainer.innerHTML = ppImgs.map(function(im,i){
+        return '<img src="'+IMG_MAP[im]+'" class="pp-thumb'+(i===0?' active':'')+'" onclick="ppSwitchImg(this,\''+im+'\','+i+')" alt="Vista '+( i+1)+'" />';
+      }).join('');
+      thumbsContainer.style.display = 'flex';
+    } else {
+      thumbsContainer.innerHTML = '';
+      thumbsContainer.style.display = 'none';
+    }
+  }
   document.getElementById('ppName').textContent = p.name;
   document.getElementById('ppBreadcrumbName').textContent = p.name;
   document.getElementById('ppPrice').textContent = '$' + p.price.toFixed(2);
@@ -2558,7 +2599,16 @@ document.addEventListener('DOMContentLoaded', function() {
         '<div class="product-img">' +
           '<span class="product-tag" style="background:'+tc+'">'+p.tag+'</span>' +
           (p.popular ? '<span class="badge-popular">🔥 Más Pedido</span>' : (p.extra==='mas-vendidos' ? '<span class="badge-mas-vendido">⭐ Top ventas</span>' : '')) +
-          '<img src="'+IMG_MAP[p.img]+'" alt="'+p.name+'" loading="lazy" onclick="openProductModal('+p.id+')" style="cursor:pointer;"/>' +
+          (function(){
+            var imgs = p.imgs ? p.imgs : [p.img];
+            if(imgs.length > 1){
+              var dots = imgs.map(function(im,i){return '<button class="card-slide-dot'+(i===0?' active':'')+'" onclick="event.stopPropagation();cardSlideTo('+p.id+','+i+')"></button>';}).join('');
+              var imgTags = imgs.map(function(im,i){return '<img src="'+IMG_MAP[im]+'" class="card-img'+(i===0?' active':'')+'" alt="'+p.name+'" loading="lazy" data-pid="'+p.id+'" data-idx="'+i+'" onclick="openProductModal('+p.id+')" style="cursor:pointer;"/>';}).join('');
+              return '<div class="card-img-wrap" id="cw-'+p.id+'" style="height:220px;">'+imgTags+'<div class="card-slide-dots">'+dots+'</div></div>';
+            } else {
+              return '<img src="'+IMG_MAP[p.img]+'" alt="'+p.name+'" loading="lazy" onclick="openProductModal('+p.id+')" class="card-img card-img-single" style="cursor:pointer;"/>';
+            }
+          })() +
         '</div>' +
         '<h3 class="product-name">'+p.name+'</h3>' +
         '<p class="product-desc">'+p.desc+'</p>' +
@@ -2748,7 +2798,7 @@ window.addEventListener('popstate', function(e) {
     var search = window.location.search;
     var cat = null;
     // Check hash like #categoria-baby-shower or #baby-shower
-    var hashMatch = hash.match(/^#(?:categoria-)?(baby-shower|bautizo|matrimonio|dia-madre|revelacion|cumpleanos|personajes|mas-vendidos|oferta|all)$/);
+    var hashMatch = hash.match(/^#(?:categoria-)?(baby-shower|bautizo|matrimonio|dia-madre|revelacion|cumpleanos|personajes|xv-anos|mas-vendidos|oferta|all)$/);
     if (hashMatch) cat = hashMatch[1];
     // Check ?categoria=baby-shower
     var urlParams = new URLSearchParams(search);
@@ -3108,6 +3158,51 @@ window.addEventListener('popstate', function(e) {
     input.value = '';
     input.placeholder = '¡Gracias! Te contactaremos pronto 🎉';
     setTimeout(function(){ input.placeholder = 'Ingresa tu correo electrónico'; }, 4000);
+  }
+</script>
+<script>
+  // Slideshow automático en cards
+  var _slideIntervals = {};
+  function startCardSlideshow(pid) {
+    if(_slideIntervals[pid]) return;
+    _slideIntervals[pid] = setInterval(function(){
+      var wrap = document.getElementById('cw-'+pid);
+      if(!wrap) { clearInterval(_slideIntervals[pid]); delete _slideIntervals[pid]; return; }
+      var imgs = wrap.querySelectorAll('.card-img');
+      var dots = wrap.querySelectorAll('.card-slide-dot');
+      var current = 0;
+      imgs.forEach(function(img,i){ if(img.classList.contains('active')) current = i; });
+      var next = (current + 1) % imgs.length;
+      imgs[current].classList.remove('active');
+      imgs[next].classList.add('active');
+      dots[current].classList.remove('active');
+      dots[next].classList.add('active');
+    }, 2500);
+  }
+  function cardSlideTo(pid, idx) {
+    var wrap = document.getElementById('cw-'+pid);
+    if(!wrap) return;
+    var imgs = wrap.querySelectorAll('.card-img');
+    var dots = wrap.querySelectorAll('.card-slide-dot');
+    imgs.forEach(function(img){ img.classList.remove('active'); });
+    dots.forEach(function(d){ d.classList.remove('active'); });
+    imgs[idx].classList.add('active');
+    dots[idx].classList.add('active');
+  }
+  // Iniciar slideshows al cargar productos
+  function initCardSlideshows() {
+    var wraps = document.querySelectorAll('.card-img-wrap[id^="cw-"]');
+    wraps.forEach(function(w){
+      var pid = parseInt(w.id.replace('cw-',''));
+      startCardSlideshow(pid);
+    });
+  }
+
+  // Cambiar imagen principal en galería del detalle
+  function ppSwitchImg(thumb, imgKey, idx) {
+    document.getElementById('ppImg').src = IMG_MAP[imgKey];
+    document.querySelectorAll('.pp-thumb').forEach(function(t){ t.classList.remove('active'); });
+    thumb.classList.add('active');
   }
 </script>
 </body>
