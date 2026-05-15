@@ -863,7 +863,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <li><a href="#pagos">Pagos</a></li>
     <li><a href="#proceso">Proceso</a></li>
     <li><a href="#politicas">Políticas</a></li>
-    <li><a href="#rastreo">Rastrear pedido</a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ul>
   <div class="nav-right">
@@ -1187,123 +1186,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </section>
 
 <!-- TRACKING SECTION -->
-<section class="tracking-section" id="rastreo">
-  <div class="tracking-wrap">
-    <div class="section-header reveal">
-      <span class="section-label">Seguimiento de pedido</span>
-      <h2 class="section-title">¿Dónde está <span>tu pedido?</span></h2>
-    </div>
-    <p style="text-align:center;font-size:0.82rem;color:var(--taupe);margin-top:-1rem;margin-bottom:0;">Ingresa el código que recibiste por WhatsApp</p>
-    <div class="tracking-search">
-      <input type="text" class="tracking-input" id="trackingInput" placeholder="Ej: VEL-2026-001" oninput="this.value=this.value.toUpperCase()"/>
-      <button class="tracking-btn" onclick="trackOrder()">Rastrear pedido</button>
-    </div>
-    <div class="tracking-result" id="trackingResult">
-      <div class="tracking-order-header">
-        <div>
-          <div class="tracking-order-num" id="trOrderNum"></div>
-          <div class="tracking-order-name" id="trOrderName"></div>
-          <div class="tracking-order-date" id="trOrderDate"></div>
-        </div>
-        <div class="tracking-status-badge" id="trStatusBadge"></div>
-      </div>
-      <div class="tracking-timeline">
-        <div class="tracking-timeline-progress" id="tlProgress"></div>
-        <div class="tl-step">
-          <div class="tl-dot" id="tl0">📥</div>
-          <div class="tl-label" id="tll0">Recibido</div>
-        </div>
-        <div class="tl-step">
-          <div class="tl-dot" id="tl1">✅</div>
-          <div class="tl-label" id="tll1">Confirmado</div>
-        </div>
-        <div class="tl-step">
-          <div class="tl-dot" id="tl2">🕯️</div>
-          <div class="tl-label" id="tll2">En producción</div>
-        </div>
-        <div class="tl-step">
-          <div class="tl-dot" id="tl3">🚚</div>
-          <div class="tl-label" id="tll3">En camino</div>
-        </div>
-        <div class="tl-step">
-          <div class="tl-dot" id="tl4">🎉</div>
-          <div class="tl-label" id="tll4">Entregado</div>
-        </div>
-      </div>
-      <div class="tracking-items">
-        <h4>Detalle del pedido</h4>
-        <div id="trItems"></div>
-      </div>
-    </div>
-    <div class="tracking-not-found" id="trackingNotFound">
-      <span>🔍</span>
-      No encontramos ese código. Verifica que esté bien escrito o escríbenos por WhatsApp.
-    </div>
-  </div>
-</section>
-
-<!-- ADMIN PANEL -->
-<section class="admin-section" id="admin">
-  <div class="admin-wrap">
-    <div class="section-header reveal">
-      <span class="section-label" style="color:var(--gold)">Panel de administración</span>
-      <h2 class="section-title" style="color:var(--cream)">Gestión de <span style="color:var(--gold-light);font-weight:300">Pedidos</span></h2>
-    </div>
-    <div class="admin-login" id="adminLogin">
-      <p style="font-size:0.75rem;color:var(--taupe);margin-bottom:1rem;letter-spacing:0.05em;">Ingresa tu PIN para acceder al panel</p>
-      <div class="admin-login-form">
-        <input type="password" class="admin-pin-input" id="adminPin" placeholder="PIN secreto" maxlength="6" onkeypress="if(event.key==='Enter') adminAccess()"/>
-        <button class="admin-login-btn" onclick="adminAccess()">Ingresar</button>
-        <span style="font-size:0.72rem;color:rgba(255,255,255,0.3);">Solo para administrador</span>
-      </div>
-    </div>
-    <div class="admin-panel" id="adminPanel">
-      <!-- Add new order -->
-      <div class="admin-add-form">
-        <h3 style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;font-weight:600;">➕ Agregar / Actualizar Pedido</h3>
-        <div class="admin-form-grid">
-          <div class="admin-field">
-            <label>Código de pedido</label>
-            <input type="text" id="aCode" placeholder="VEL-2026-001" oninput="this.value=this.value.toUpperCase()"/>
-          </div>
-          <div class="admin-field">
-            <label>Nombre del cliente</label>
-            <input type="text" id="aClient" placeholder="Nombre completo"/>
-          </div>
-          <div class="admin-field">
-            <label>Detalle del pedido</label>
-            <input type="text" id="aDetail" placeholder="Ej: Osito en Nube x2 docenas"/>
-          </div>
-          <div class="admin-field">
-            <label>Estado actual</label>
-            <select id="aStatus">
-              <option value="recibido">📥 Recibido</option>
-              <option value="confirmado">✅ Confirmado</option>
-              <option value="produccion">🕯️ En producción</option>
-              <option value="camino">🚚 En camino</option>
-              <option value="entregado">🎉 Entregado</option>
-            </select>
-          </div>
-        </div>
-        <button class="admin-save-btn" onclick="saveOrder()">💾 Guardar pedido</button>
-      </div>
-      <!-- Orders list -->
-      <h3 style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;font-weight:600;">📋 Pedidos activos</h3>
-      <div class="admin-orders-list" id="adminOrdersList"></div>
-    </div>
-  </div>
-</section>
 
 
-<section class="email-capture">
-  <h2>✉️ Únete a nuestra comunidad</h2>
-  <p>Recibe ofertas exclusivas, novedades y descuentos especiales directo a tu correo.</p>
-  <form class="email-form" onsubmit="submitEmail(event)">
-    <input class="email-input" type="email" id="emailCaptureInput" placeholder="Tu correo electrónico" required/>
-    <button class="email-submit" type="submit">Suscribirme</button>
-  </form>
-  <p class="email-thanks" id="emailThanks">¡Gracias! Te contactaremos pronto con ofertas exclusivas 🎉</p>
-</section>
+
+
+
+
 <section class="politica-section" id="politicas">
   <div class="politicas-header">
     <span class="section-label">Importante</span>
