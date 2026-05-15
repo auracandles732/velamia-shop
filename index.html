@@ -143,7 +143,7 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;}
   .product-card{background:#fff;border:0.5px solid var(--sand);transition:transform 0.3s,box-shadow 0.3s;}
   .product-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(42,35,24,0.1);}
-  .product-img{position:relative;aspect-ratio:1/1;overflow:hidden;background:var(--cream);}
+  .product-img{position:relative;height:260px;overflow:hidden;background:var(--cream);}
   .product-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s;}
   .product-card:hover .product-img img{transform:scale(1.04);}
   /* SALE STYLES */
@@ -867,6 +867,7 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
     #productsGrid{grid-template-columns:1fr 1fr;gap:0.8rem;}
     .card{border-radius:8px;}
     .card-img{height:160px;}
+    .product-img{height:180px;}
     .card-body{padding:0.8rem;}
     .card-name{font-size:0.75rem;}
     .card-price{font-size:0.9rem;}
@@ -2602,7 +2603,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if(imgs.length > 1){
               var dots = imgs.map(function(im,i){return '<button class="card-slide-dot'+(i===0?' active':'')+'" onclick="event.stopPropagation();cardSlideTo('+p.id+','+i+')"></button>';}).join('');
               var imgTags = imgs.map(function(im,i){return '<img src="'+IMG_MAP[im]+'" class="card-img'+(i===0?' active':'')+'" alt="'+p.name+'" loading="lazy" data-pid="'+p.id+'" data-idx="'+i+'" onclick="openProductModal('+p.id+')" style="cursor:pointer;"/>';}).join('');
-              return '<div class="card-img-wrap" id="cw-'+p.id+'" style="height:220px;">'+imgTags+'<div class="card-slide-dots">'+dots+'</div></div>';
+              return '<div class="card-img-wrap" id="cw-'+p.id+'" style="height:100%;">'+imgTags+'<div class="card-slide-dots">'+dots+'</div></div>';
             } else {
               return '<img src="'+IMG_MAP[p.img]+'" alt="'+p.name+'" loading="lazy" onclick="openProductModal('+p.id+')" class="card-img card-img-single" style="cursor:pointer;"/>';
             }
