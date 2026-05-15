@@ -830,6 +830,120 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .section-inner{max-width:1280px;margin:0 auto;}
   .productos-section, .how, .pagos-section, .canales-section, .politica-section{padding-left:max(2rem, calc((100% - 1280px)/2 + 2rem));padding-right:max(2rem, calc((100% - 1280px)/2 + 2rem));}
 
+
+  /* ══════════════════════════════════════════
+     MOBILE OPTIMIZADO — max-width: 480px
+  ══════════════════════════════════════════ */
+  @media(max-width:480px){
+
+    /* NAV */
+    nav{padding:0.7rem 1.2rem;}
+    .nav-links{display:none;}
+    .nav-logo-text{font-size:1rem;}
+    .nav-logo-img{width:38px;height:38px;}
+    .nav-cta{font-size:0.6rem;padding:0.5rem 1rem;}
+
+    /* HERO */
+    .hero-carousel{height:auto;min-height:92vh;}
+    .slide-promo{padding:5rem 1.2rem 2.5rem;gap:1.5rem;}
+    .promo-title{font-size:1.8rem;}
+    .promo-sub{font-size:0.78rem;}
+    .promo-cta{font-size:0.65rem;padding:0.75rem 1.8rem;}
+
+    /* STRIP / URGENCIA */
+    .urgency-bar{padding:0.8rem 1rem;margin-top:58px;}
+    .urgency-box-num{font-size:1.2rem;}
+    .urgency-subtitle{font-size:0.72rem;}
+
+    /* BARRA DE BÚSQUEDA */
+    .search-wrap{padding:1.5rem 1.2rem 0;}
+
+    /* FILTROS */
+    .filter-wrap{padding:1rem 1.2rem;gap:0.4rem;overflow-x:auto;justify-content:flex-start;flex-wrap:nowrap;}
+    .filter-btn{font-size:0.58rem;padding:0.45rem 0.9rem;white-space:nowrap;flex-shrink:0;}
+
+    /* GRID DE PRODUCTOS */
+    .products{padding:2rem 1.2rem;}
+    #productsGrid{grid-template-columns:1fr 1fr;gap:0.8rem;}
+    .card{border-radius:8px;}
+    .card-img{height:160px;}
+    .card-body{padding:0.8rem;}
+    .card-name{font-size:0.75rem;}
+    .card-price{font-size:0.9rem;}
+    .card-unit{font-size:0.6rem;}
+    .card-cta{font-size:0.6rem;padding:0.6rem;}
+    .card-wa-btn{font-size:0.55rem;padding:0.45rem 0.5rem;}
+
+    /* SECCIÓN "¿POR QUÉ ELEGIRNOS?" */
+    .why-us{padding:3rem 1.2rem;}
+    .why-grid{grid-template-columns:1fr;}
+
+    /* SECCIÓN "CÓMO FUNCIONA" */
+    .how{padding:3rem 1.2rem;}
+    .how-grid{grid-template-columns:1fr;gap:1rem;}
+    .how-step{padding:1.2rem;}
+
+    /* MÉTRICAS / FEATURES */
+    .features{padding:2rem 1.2rem;grid-template-columns:1fr 1fr;}
+    .feat-num{font-size:1.6rem;}
+
+    /* PAGOS */
+    .pagos-section{padding:3rem 1.2rem;}
+    .payment-grid{grid-template-columns:1fr;}
+
+    /* POLÍTICAS */
+    .politica-section{padding:3rem 1.2rem;}
+    .politicas-list{gap:0.7rem;}
+    .politica-card{padding:1rem;gap:0.8rem;}
+    .politica-content h3{font-size:0.85rem;}
+    .politica-content p{font-size:0.78rem;}
+    .payment-method-cards{grid-template-columns:1fr;}
+    .politicas-garantia{grid-template-columns:1fr;gap:1rem;}
+
+    /* CANALES */
+    .canales-section{padding:3rem 1.2rem;}
+    .canales-grid{grid-template-columns:repeat(2,1fr);gap:0.8rem;}
+    .canal-item{padding:1.2rem 0.6rem;}
+    .canal-icon svg{width:22px;height:22px;}
+    .canal-name{font-size:0.62rem;}
+    .canal-detail{font-size:0.7rem;}
+
+    /* FOOTER */
+    footer{padding:2.5rem 1.2rem 1.2rem;}
+    .footer-top{grid-template-columns:1fr;gap:1.8rem;}
+    .footer-col h4{font-size:0.72rem;margin-bottom:0.8rem;}
+    .footer-col a{font-size:0.85rem;}
+    .footer-col li{margin-bottom:0.5rem;}
+    .footer-tagline{font-size:0.8rem;}
+    .footer-social-icons{gap:0.8rem;}
+    .footer-newsletter-input{font-size:0.78rem;}
+    .footer-copy{font-size:0.7rem;text-align:center;}
+
+    /* MODALES */
+    .form-modal{width:96%!important;max-height:95vh;}
+    .form-modal-content{padding:1.2rem;}
+    .form-title{font-size:1.1rem;}
+    .form-options{grid-template-columns:1fr!important;}
+    .pform-product-name{font-size:0.9rem;}
+
+    /* CARRITO */
+    .cart-drawer{width:100%!important;}
+  }
+
+  /* TABLET — max-width: 768px */
+  @media(max-width:768px) and (min-width:481px){
+    nav{padding:0.75rem 2rem;}
+    .nav-links{display:none;}
+    .products{padding:2.5rem 2rem;}
+    #productsGrid{grid-template-columns:1fr 1fr;gap:1rem;}
+    .how{padding:3.5rem 2rem;}
+    .politica-section{padding:3rem 2rem;}
+    .canales-section{padding:3rem 2rem;}
+    .canales-grid{grid-template-columns:repeat(3,1fr);}
+    footer{padding:3rem 2rem 1.2rem;}
+    .footer-top{grid-template-columns:1fr 1fr;gap:2rem;}
+  }
+
 </style>
 
 <script type="application/ld+json">
