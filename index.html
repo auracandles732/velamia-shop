@@ -3019,15 +3019,6 @@ window.addEventListener('popstate', function(e) {
       'otro': 'Otro evento'
     };
 
-    // ── Enviar email de notificación automáticamente ──
-    enviarEmailPedido({
-      ocasion:     ocasionMap[ocasion.value] || ocasion.value,
-      cantidad:    cantidad.value,
-      presupuesto: presupuesto || '-',
-      detalles:    detalles   || '-',
-      producto:    '-'
-    });
-
     // ── Abrir WhatsApp ──
     var mensaje = "Hola Velamia! 👋\n\nQuiero hacer un pedido personalizado:\n\n";
     mensaje += "📌 Ocasión: " + (ocasionMap[ocasion.value] || ocasion.value) + "\n";
@@ -3194,19 +3185,6 @@ window.addEventListener('popstate', function(e) {
     }
 
     mensaje += "\n¿Está disponible para esa fecha?";
-
-    // ── Enviar email de notificación automáticamente ──
-    var detallesEmail = '';
-    if (nombre)   detallesEmail += 'Nombre: ' + nombre + ' | ';
-    if (detalles) detallesEmail += detalles;
-    enviarEmailPedido({
-      ocasion:     _currentProduct.name,
-      producto:    _currentProduct.name,
-      cantidad:    cantidad.value,
-      presupuesto: '$' + _currentProduct.price.toFixed(2) + ' por ' + (_currentProduct.unit === 'unidad' ? 'unidad' : 'docena'),
-      detalles:    detallesEmail || '-',
-      fecha:       fecha
-    });
 
     var wa_url = "https://wa.me/593995448686?text=" + encodeURIComponent(mensaje);
     window.open(wa_url, '_blank');
