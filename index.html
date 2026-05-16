@@ -2151,7 +2151,6 @@ function sendOrder() {
     detalles:    nombre + ' ' + apellido + ' | Tel: ' + tel + ' | Dir: ' + dir + (ciudad ? ' - ' + ciudad : '')
   });
 
-  window.open('https://wa.me/593995448686?text='+encodeURIComponent(msg),'_blank');
   document.getElementById('checkoutModal').classList.remove('open');
   // Generate order number
   var orderNum = 'VEL-2026-' + String(Math.floor(Math.random()*900)+100);
