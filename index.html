@@ -2963,59 +2963,65 @@ window.addEventListener('popstate', function(e) {
     document.getElementById('formModalBackdrop').classList.remove('show');
   }
 
+  // ── BASE DE DATOS: Google Sheets ──
+  var VELAMIA_SHEETS_URL = 'PENDIENTE_URL_APPS_SCRIPT';
+
+  function guardarPedidoEnSheets(data) {
+    if (!VELAMIA_SHEETS_URL || VELAMIA_SHEETS_URL === 'PENDIENTE_URL_APPS_SCRIPT') return;
+    try {
+      fetch(VELAMIA_SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify(data)
+      });
+    } catch(e) {}
+  }
+
   function submitPedidoForm(event) {
     event.preventDefault();
 
-    // Obtener valores del formulario
-    var ocasion = document.querySelector('input[name="ocasion"]:checked');
-    var cantidad = document.querySelector('input[name="cantidad"]:checked');
+    var ocasion    = document.querySelector('input[name="ocasion"]:checked');
+    var cantidad   = document.querySelector('input[name="cantidad"]:checked');
     var presupuesto = document.querySelector('input[name="presupuesto"]').value;
-    var detalles = document.querySelector('textarea[name="detalles"]').value;
+    var detalles   = document.querySelector('textarea[name="detalles"]').value;
 
-    // Validar que al menos ocasión y cantidad sean seleccionadas
     if (!ocasion || !cantidad) {
       alert('Por favor selecciona la ocasión y la cantidad de velas');
       return false;
     }
 
-    // Construir mensaje para WhatsApp
-    var mensaje = "Hola Velamia! 👋\n\n";
-    mensaje += "Quiero hacer un pedido personalizado:\n\n";
-
-    // Mapear ocasión
     var ocasionMap = {
       'baby-shower': 'Baby Shower',
       'bautizo': 'Bautizo',
       'matrimonio': 'Matrimonio',
       'cumpleanos': 'Cumpleaños',
       'revelacion': 'Revelación de Sexo',
+      'xv-anos': 'Quinceañera (XV Años)',
       'otro': 'Otro evento'
     };
-    mensaje += "📌 Ocasión: " + ocasionMap[ocasion.value] + "\n";
+
+    // ── Guardar en Google Sheets automáticamente ──
+    guardarPedidoEnSheets({
+      ocasion:     ocasionMap[ocasion.value] || ocasion.value,
+      cantidad:    cantidad.value,
+      presupuesto: presupuesto || '-',
+      detalles:    detalles   || '-',
+      producto:    '-',
+      fuente:      'Hacer Pedido'
+    });
+
+    // ── Abrir WhatsApp ──
+    var mensaje = "Hola Velamia! 👋\n\nQuiero hacer un pedido personalizado:\n\n";
+    mensaje += "📌 Ocasión: " + (ocasionMap[ocasion.value] || ocasion.value) + "\n";
     mensaje += "📍 Cantidad: " + cantidad.value + " velas\n";
-
-    if (presupuesto) {
-      mensaje += "💵 Presupuesto aproximado: " + presupuesto + "\n";
-    }
-
-    if (detalles) {
-      mensaje += "✨ Detalles: " + detalles + "\n";
-    }
-
+    if (presupuesto) mensaje += "💵 Presupuesto aproximado: " + presupuesto + "\n";
+    if (detalles)    mensaje += "✨ Detalles: " + detalles + "\n";
     mensaje += "\nQuisiera consultar sobre personalización y disponibilidad de fechas.";
 
-    // Generar URL de WhatsApp con el mensaje pre-llenado
-    var wa_url = "https://wa.me/593995448686?text=" + encodeURIComponent(mensaje);
+    window.open("https://wa.me/593995448686?text=" + encodeURIComponent(mensaje), '_blank');
 
-    // Abrir WhatsApp
-    window.open(wa_url, '_blank');
-
-    // Cerrar modal
     closeFormModal();
-
-    // Limpiar formulario
     document.getElementById('pedidoForm').reset();
-
     return false;
   }
 
