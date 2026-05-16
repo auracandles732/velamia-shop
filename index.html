@@ -41,6 +41,8 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
 <!-- End Meta Pixel Code -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Velamia – Velas Artesanales para Eventos</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init('SCTpDpns2B6VHRyfi');</script>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -2963,18 +2965,25 @@ window.addEventListener('popstate', function(e) {
     document.getElementById('formModalBackdrop').classList.remove('show');
   }
 
-  // ── BASE DE DATOS: Google Sheets ──
-  var VELAMIA_SHEETS_URL = 'PENDIENTE_URL_APPS_SCRIPT';
+  // ── NOTIFICACIÓN: EmailJS ──
+  function enviarEmailPedido(data) {
+    var templateParams = {
+      ocasion:     data.ocasion     || '-',
+      producto:    data.producto    || '-',
+      cantidad:    data.cantidad    || '-',
+      presupuesto: data.presupuesto || '-',
+      detalles:    data.detalles    || '-',
+      fecha:       new Date().toLocaleDateString('es-EC', {weekday:'long', year:'numeric', month:'long', day:'numeric'})
+    };
+    emailjs.send('service_719rxjj', 'obgrke2', templateParams)
+      .catch(function(err) { console.error('EmailJS error:', err); });
+  }
 
-  function guardarPedidoEnSheets(data) {
-    if (!VELAMIA_SHEETS_URL || VELAMIA_SHEETS_URL === 'PENDIENTE_URL_APPS_SCRIPT') return;
-    try {
-      fetch(VELAMIA_SHEETS_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify(data)
-      });
-    } catch(e) {}
+  function mostrarToastPedido() {
+    var toast = document.getElementById('pedidoToast');
+    if (!toast) return;
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, 4000);
   }
 
   function submitPedidoForm(event) {
@@ -3000,14 +3009,13 @@ window.addEventListener('popstate', function(e) {
       'otro': 'Otro evento'
     };
 
-    // ── Guardar en Google Sheets automáticamente ──
-    guardarPedidoEnSheets({
+    // ── Enviar email de notificación automáticamente ──
+    enviarEmailPedido({
       ocasion:     ocasionMap[ocasion.value] || ocasion.value,
       cantidad:    cantidad.value,
       presupuesto: presupuesto || '-',
       detalles:    detalles   || '-',
-      producto:    '-',
-      fuente:      'Hacer Pedido'
+      producto:    '-'
     });
 
     // ── Abrir WhatsApp ──
@@ -3022,6 +3030,7 @@ window.addEventListener('popstate', function(e) {
 
     closeFormModal();
     document.getElementById('pedidoForm').reset();
+    mostrarToastPedido();
     return false;
   }
 
@@ -3099,6 +3108,14 @@ window.addEventListener('popstate', function(e) {
   </div>
 </div>
 <div id="productFormModalBackdrop" class="form-modal-backdrop" onclick="closeProductFormModal()"></div>
+
+<!-- TOAST CONFIRMACIÓN PEDIDO -->
+<div id="pedidoToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:#2A2318;color:#fff;padding:14px 24px;border-radius:12px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,0.3);z-index:9999;transition:transform 0.4s ease;white-space:nowrap;pointer-events:none;">
+  ✅ ¡Pedido recibido! Te contactaremos pronto 🕯️
+</div>
+<style>
+  #pedidoToast.show { transform: translateX(-50%) translateY(0); }
+</style>
 <script>
   // MODAL FORMULARIO DE PRODUCTO
   var _currentProduct = null;
@@ -3168,10 +3185,24 @@ window.addEventListener('popstate', function(e) {
 
     mensaje += "\n¿Está disponible para esa fecha?";
 
+    // ── Enviar email de notificación automáticamente ──
+    var detallesEmail = '';
+    if (nombre)   detallesEmail += 'Nombre: ' + nombre + ' | ';
+    if (detalles) detallesEmail += detalles;
+    enviarEmailPedido({
+      ocasion:     _currentProduct.name,
+      producto:    _currentProduct.name,
+      cantidad:    cantidad.value,
+      presupuesto: '$' + _currentProduct.price.toFixed(2) + ' por ' + (_currentProduct.unit === 'unidad' ? 'unidad' : 'docena'),
+      detalles:    detallesEmail || '-',
+      fecha:       fecha
+    });
+
     var wa_url = "https://wa.me/593995448686?text=" + encodeURIComponent(mensaje);
     window.open(wa_url, '_blank');
 
     closeProductFormModal();
+    mostrarToastPedido();
     return false;
   }
 </script>
