@@ -1879,9 +1879,9 @@ function updateCartTotals() {
   var total = subtotal - discount - couponAmt + shipping;
   document.getElementById('cartSubtotal').textContent = '$' + subtotal.toFixed(2);
   var dr = document.getElementById('cartDiscountRow');
-  if (discount > 0) { dr.style.display='flex'; document.getElementById('cartDiscountVal').textContent='-$'+discount.toFixed(2); } else dr.style.display='none';
+  if (dr) { if (discount > 0) { dr.style.display='flex'; document.getElementById('cartDiscountVal').textContent='-$'+discount.toFixed(2); } else dr.style.display='none'; }
   var cr = document.getElementById('cartCouponRow');
-  if (couponAmt > 0) { cr.style.display='flex'; document.getElementById('cartCouponVal').textContent='-$'+couponAmt.toFixed(2); } else cr.style.display='none';
+  if (cr) { if (couponAmt > 0) { cr.style.display='flex'; document.getElementById('cartCouponVal').textContent='-$'+couponAmt.toFixed(2); } else cr.style.display='none'; }
   var shipEl = document.getElementById('cartShipping');
   shipEl.innerHTML = shipping===0 ? '<span class="cart-row-val free">Gratis!</span>' : '<span class="cart-row-val paid">$'+shipping.toFixed(2)+'</span>';
   document.getElementById('shippingNote').textContent = getShippingNote();
@@ -2670,8 +2670,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // Countdown removed
 
   // Close modals on overlay click
-  document.getElementById('productModal').addEventListener('click', function(e){ if(e.target===this) closeProductModal(); });
-  document.getElementById('orderConfirmOverlay').addEventListener('click', function(e){ if(e.target===this) closeOrderConfirm(); });
+  var pm = document.getElementById('productModal'); if (pm) pm.addEventListener('click', function(e){ if(e.target===this) closeProductModal(); });
+  var oc = document.getElementById('orderConfirmOverlay'); if (oc) oc.addEventListener('click', function(e){ if(e.target===this) closeOrderConfirm(); });
 
   // Reveal animations
   var reveals = document.querySelectorAll('.reveal');
