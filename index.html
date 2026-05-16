@@ -2985,7 +2985,7 @@ window.addEventListener('popstate', function(e) {
       detalles:    data.detalles    || '-',
       fecha:       new Date().toLocaleDateString('es-EC', {weekday:'long', year:'numeric', month:'long', day:'numeric'})
     };
-    emailjs.send('service_p0006g9', 'obgrke2', templateParams)
+    emailjs.send('service_p0006g9', 'template_o620em1', templateParams)
       .catch(function(err) { console.error('EmailJS error:', err); });
   }
 
