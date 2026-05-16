@@ -2117,6 +2117,16 @@ function sendOrder() {
       num_items: purchaseItems.length
     });
   }
+  // ── Enviar email de notificación automáticamente ──
+  var productosEmail = items.map(function(i){ return i.name+' x'+i.qty; }).join(', ');
+  enviarEmailPedido({
+    ocasion:     'Pedido por carrito',
+    producto:    productosEmail,
+    cantidad:    items.reduce(function(s,i){ return s+i.qty; }, 0) + ' unidad(es)',
+    presupuesto: '$' + total.toFixed(2),
+    detalles:    nombre + ' ' + apellido + ' | Tel: ' + tel + ' | Dir: ' + dir + (ciudad ? ' - ' + ciudad : '')
+  });
+
   window.open('https://wa.me/593995448686?text='+encodeURIComponent(msg),'_blank');
   document.getElementById('checkoutModal').classList.remove('open');
   // Generate order number
