@@ -1762,11 +1762,11 @@ const IMG_MAP = {
 const ADMIN_PIN = '1234';
 
 const PRODUCTS = [
-  {id:1,  name:"Osito en Nube", desc:"Incluye empaque y nombre personalizado", price:30, tag:"Popular", img:"img1", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img1","img1_2"]},
+  {id:1,  name:"Osito en Nube", desc:"Incluye empaque y nombre personalizado", price:30, tag:"Popular", img:"img1", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img1","img1_2"], fixedSale:true, onSale:true, oferta:true, originalPrice:30, salePrice:25.50, saleDiscount:15},
   {id:2,  name:"Osito en Base con Corazon", desc:"Ideal para baby shower y cumpleanos", price:30, tag:"Baby Shower", img:"img2", cat:"baby-shower", unit:"docena"},
-  {id:3,  name:"Osito en Nube con Corazon", desc:"Osito en nube con corazon al centro", price:30, tag:"Popular", img:"img3", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img3","img3_2"]},
+  {id:3,  name:"Osito en Nube con Corazon", desc:"Osito en nube con corazon al centro", price:30, tag:"Popular", img:"img3", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img3","img3_2"], fixedSale:true, onSale:true, oferta:true, originalPrice:30, salePrice:25.50, saleDiscount:15},
   {id:4,  name:"Elefante en Frasco de Vidrio", desc:"Elefantita en frasco - Baby shower nina", price:45, tag:"Premium", img:"img4", cat:"baby-shower", extra:"mas-vendidos", unit:"docena", imgs:["img4","img4_2"]},
-  {id:5,  name:"Osito en Nube con Corazon Alado", desc:"Diseno exclusivo con corazon alado", price:30, tag:"Popular", img:"img5", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img5","img5_2"]},
+  {id:5,  name:"Osito en Nube con Corazon Alado", desc:"Diseno exclusivo con corazon alado", price:30, tag:"Popular", img:"img5", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img5","img5_2"], fixedSale:true, onSale:true, oferta:true, originalPrice:30, salePrice:25.50, saleDiscount:15},
   {id:6,  name:"Pollito Bebe", desc:"En caja - Incluye empaque y nombre", price:32, tag:"Baby Shower", img:"img6", cat:"baby-shower", extra:"mas-vendidos", unit:"docena"},
   {id:7,  name:"Osito con Margarita", desc:"Lazo rosa o azul - Baby shower", price:30, tag:"Popular", img:"img7", cat:"baby-shower", extra:"mas-vendidos", unit:"docena"},
   {id:8,  name:"Vaquita con Acabado Tejido", desc:"Diseno unico artesanal estilo tejido", price:35, tag:"Baby Shower", img:"img8", cat:"baby-shower", unit:"docena"},
@@ -2600,9 +2600,9 @@ document.addEventListener('DOMContentLoaded', function() {
       seed = (seed * 1664525 + 1013904223) & 0xffffffff;
       return (seed >>> 0) / 0xffffffff;
     }
-    // Clean any previous sale flags (in case PRODUCTS has them from history)
+    // Clean any previous sale flags (preserve fixedSale products)
     PRODUCTS.forEach(function(p){
-      delete p.onSale; delete p.oferta; delete p.salePrice; delete p.originalPrice;
+      if (!p.fixedSale) { delete p.onSale; delete p.oferta; delete p.salePrice; delete p.originalPrice; }
     });
     // Select 6 random products to put on sale (excludes popular ones for fairness)
     var saleSeed = period * 7919; // different seed for sale selection
@@ -2667,8 +2667,8 @@ document.addEventListener('DOMContentLoaded', function() {
         '<p class="product-desc">'+p.desc+'</p>' +
         (p.onSale && isSaleActive() ? 
           '<p class="product-price-old">$'+p.originalPrice.toFixed(2)+'</p>' +
-          '<p class="product-price sale-price">$'+p.salePrice.toFixed(2)+' <span class="sale-badge">-10%</span></p>' +
-          '<p class="sale-until">🔥 Oferta por tiempo limitado</p>'
+          '<p class="product-price sale-price">$'+p.salePrice.toFixed(2)+' <span class="sale-badge">-'+(p.saleDiscount||10)+'%</span></p>' +
+          '<p class="sale-until">🔥 '+(p.fixedSale ? '¡15% de descuento!' : 'Oferta por tiempo limitado')+'</p>'
           :
           '<p class="product-price">$'+p.price.toFixed(2)+'</p>'
         ) +
