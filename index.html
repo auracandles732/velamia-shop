@@ -1991,6 +1991,14 @@ function addToCartQty(id) {
   if (typeof fbq !== 'undefined') {
     fbq('track', 'AddToCart', {content_name:p.name, content_category:p.cat, value:price*qty, currency:'USD'});
   }
+  // GA4 add_to_cart
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'add_to_cart', {
+      currency: 'USD',
+      value: price * qty,
+      items: [{ item_id: String(p.id), item_name: p.name, item_category: p.cat, price: price, quantity: qty }]
+    });
+  }
   updateCartUI();
   var btn = document.getElementById('btn-'+id);
   if (btn) {
@@ -2013,6 +2021,14 @@ function addToCart(id) {
       content_category: p.cat,
       value: price,
       currency: 'USD'
+    });
+  }
+  // GA4 add_to_cart
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'add_to_cart', {
+      currency: 'USD',
+      value: price,
+      items: [{ item_id: String(p.id), item_name: p.name, item_category: p.cat, price: price, quantity: 1 }]
     });
   }
   updateCartUI();
@@ -2085,6 +2101,16 @@ function openCheckout() {
       currency: 'USD'
     });
   }
+  // GA4 begin_checkout
+  if (typeof gtag !== 'undefined') {
+    var chkItems = Object.values(cart);
+    var chkTotal = chkItems.reduce(function(s,i){ return s+i.price*i.qty; }, 0);
+    gtag('event', 'begin_checkout', {
+      currency: 'USD',
+      value: chkTotal,
+      items: chkItems.map(function(i){ return { item_id: String(i.id), item_name: i.name, item_category: i.tag, price: i.price, quantity: i.qty }; })
+    });
+  }
   var items = Object.values(cart);
   var subtotal = items.reduce(function(s,i){ return s+i.price*i.qty; }, 0);
   var discount = getDiscount(subtotal);
@@ -2148,6 +2174,18 @@ function sendOrder() {
       value: purchaseTotal,
       currency: 'USD',
       num_items: purchaseItems.length
+    });
+  }
+  // GA4 purchase
+  if (typeof gtag !== 'undefined') {
+    var ga4Items = Object.values(cart);
+    var ga4Total = ga4Items.reduce(function(s,i){ return s+i.price*i.qty; }, 0);
+    var ga4OrderNum = 'VEL-2026-' + String(Math.floor(Math.random()*900)+100);
+    gtag('event', 'purchase', {
+      transaction_id: ga4OrderNum,
+      currency: 'USD',
+      value: ga4Total,
+      items: ga4Items.map(function(i){ return { item_id: String(i.id), item_name: i.name, item_category: i.tag, price: i.price, quantity: i.qty }; })
     });
   }
   // ── Enviar email de notificación automáticamente ──
@@ -2450,6 +2488,14 @@ function openProductPage(id, fromHistory) {
       currency: 'USD'
     });
   }
+  // GA4 view_item
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'view_item', {
+      currency: 'USD',
+      value: p.price,
+      items: [{ item_id: String(p.id), item_name: p.name, item_category: p.cat, price: p.price, quantity: 1 }]
+    });
+  }
   var unitLabel = p.unit==='unidad' ? 'UNIDADES' : 'DOCENAS';
   var ppImgs = p.imgs ? p.imgs : [p.img];
   var ppMainImg = document.getElementById('ppImg');
@@ -2550,6 +2596,14 @@ function addToCartFromPage(id, qty) {
   else cart[id].qty += qty;
   if (typeof fbq !== 'undefined') {
     fbq('track', 'AddToCart', {content_name:p.name, content_category:p.cat, value:price*qty, currency:'USD'});
+  }
+  // GA4 add_to_cart
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'add_to_cart', {
+      currency: 'USD',
+      value: price * qty,
+      items: [{ item_id: String(p.id), item_name: p.name, item_category: p.cat, price: price, quantity: qty }]
+    });
   }
   updateCartUI();
   openCart();
