@@ -2209,12 +2209,17 @@ function sendOrder() {
     direccion:   dir,
     referencias: ref || '-'
   };
-  fetch('https://script.google.com/macros/s/AKfycbyU-N7ktYUe6l1jQFXFuwEHE6Cld2-krdGMtDI-5iFkfMOIMU_lvicQU97YTskfc23hPw/exec', {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(sheetData)
-  }).catch(function(err){ console.warn('Sheets error:', err); });
+  var sheetUrl = 'https://script.google.com/macros/s/AKfycbyU-N7ktYUe6l1jQFXFuwEHE6Cld2-krdGMtDI-5iFkfMOIMU_lvicQU97YTskfc23hPw/exec?' +
+    'fecha='       + encodeURIComponent(sheetData.fecha) +
+    '&producto='   + encodeURIComponent(sheetData.producto) +
+    '&cantidad='   + encodeURIComponent(sheetData.cantidad) +
+    '&total='      + encodeURIComponent(sheetData.total) +
+    '&cliente='    + encodeURIComponent(sheetData.cliente) +
+    '&telefono='   + encodeURIComponent(sheetData.telefono) +
+    '&ciudad='     + encodeURIComponent(sheetData.ciudad) +
+    '&direccion='  + encodeURIComponent(sheetData.direccion) +
+    '&referencias='+ encodeURIComponent(sheetData.referencias);
+  fetch(sheetUrl, { method: 'GET', mode: 'no-cors' }).catch(function(err){ console.warn('Sheets error:', err); });
 
   document.getElementById('checkoutModal').classList.remove('open');
   // Generate order number
