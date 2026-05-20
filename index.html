@@ -2197,6 +2197,24 @@ function sendOrder() {
     presupuesto: '$' + total.toFixed(2),
     detalles:    nombre + ' ' + apellido + ' | Tel: ' + tel + ' | Dir: ' + dir + (ciudad ? ' - ' + ciudad : '')
   });
+  // ── Guardar pedido en Google Sheets ──
+  var sheetData = {
+    fecha:       new Date().toLocaleDateString('es-EC', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'}),
+    producto:    productosEmail,
+    cantidad:    items.reduce(function(s,i){ return s+i.qty; }, 0),
+    total:       '$' + total.toFixed(2),
+    cliente:     nombre + ' ' + apellido,
+    telefono:    tel,
+    ciudad:      ciudad || '-',
+    direccion:   dir,
+    referencias: ref || '-'
+  };
+  fetch('https://script.google.com/macros/s/AKfycbyU-N7ktYUe6l1jQFXFuwEHE6Cld2-krdGMtDI-5iFkfMOIMU_lvicQU97YTskfc23hPw/exec', {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(sheetData)
+  }).catch(function(err){ console.warn('Sheets error:', err); });
 
   document.getElementById('checkoutModal').classList.remove('open');
   // Generate order number
