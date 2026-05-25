@@ -2711,7 +2711,7 @@ document.addEventListener('DOMContentLoaded', function() {
       saleSeed = (saleSeed * 1664525 + 1013904223) & 0xffffffff;
       return (saleSeed >>> 0) / 0xffffffff;
     }
-    var saleCandidates = PRODUCTS.slice();
+    var saleCandidates = PRODUCTS.filter(function(p){ return p.id !== 1 && p.id !== 3 && p.id !== 5; });
     for (var k = saleCandidates.length - 1; k > 0; k--) {
       var ki = Math.floor(saleRandom() * (k + 1));
       var t = saleCandidates[k]; saleCandidates[k] = saleCandidates[ki]; saleCandidates[ki] = t;
