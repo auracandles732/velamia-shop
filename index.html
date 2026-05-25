@@ -1780,7 +1780,7 @@ const PRODUCTS = [
   {id:3,  name:"Osito en Nube con Corazon", desc:"Osito en nube con corazon al centro", price:30, tag:"Popular", img:"img3", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img3","img3_2"]},
   {id:4,  name:"Elefante en Frasco de Vidrio", desc:"Elefantita en frasco - Baby shower nina", price:45, tag:"Premium", img:"img4", cat:"baby-shower", extra:"mas-vendidos", unit:"docena", imgs:["img4","img4_2"]},
   {id:5,  name:"Osito en Nube con Corazon Alado", desc:"Diseno exclusivo con corazon alado", price:30, tag:"Popular", img:"img5", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img5","img5_2"]},
-  {id:6,  name:"Pollito Bebe", desc:"En caja - Incluye empaque y nombre", price:32, tag:"Baby Shower", img:"img6", cat:"baby-shower", extra:"mas-vendidos", unit:"docena", fixedSale:true, onSale:true, oferta:true, originalPrice:32, salePrice:27.20, saleDiscount:15},
+  {id:6,  name:"Pollito Bebe", desc:"En caja - Incluye empaque y nombre", price:32, tag:"Baby Shower", img:"img6", cat:"baby-shower", extra:"mas-vendidos", unit:"docena"},
   {id:7,  name:"Osito con Margarita", desc:"Lazo rosa o azul - Baby shower", price:30, tag:"Popular", img:"img7", cat:"baby-shower", extra:"mas-vendidos", unit:"docena"},
   {id:8,  name:"Vaquita con Acabado Tejido", desc:"Diseno unico artesanal estilo tejido", price:35, tag:"Baby Shower", img:"img8", cat:"baby-shower", unit:"docena"},
   {id:9,  name:"Osito en Frasco de Vidrio", desc:"Con flor - Recuerdo premium", price:45, tag:"Premium", img:"img9", cat:"baby-shower", unit:"docena"},
@@ -1809,7 +1809,7 @@ const PRODUCTS = [
 
   {id:32, name:"Huellitas Revelacion de Sexo", desc:"Vela huellitas ideal para revelacion de sexo", price:30, tag:"Revelacion", img:"bs_new1", cat:"revelacion", unit:"docena"},  
   {id:33, name:"Ositos en Frasco Boy o Girl", desc:"Vela ositos en frasco para baby shower", price:45, tag:"Baby Shower", img:"bs_new2", cat:"baby-shower", unit:"docena"},  
-  {id:34, name:"Leon en Vaso Verde", desc:"Vela leon en vaso verde ideal para baby shower", price:45, tag:"Baby Shower", img:"bs_new3", cat:"baby-shower", unit:"docena", imgs:["bs_new3","bs_new3_2"], fixedSale:true, onSale:true, oferta:true, originalPrice:45, salePrice:38.25, saleDiscount:15},  
+  {id:34, name:"Leon en Vaso Verde", desc:"Vela leon en vaso verde ideal para baby shower", price:45, tag:"Baby Shower", img:"bs_new3", cat:"baby-shower", unit:"docena", imgs:["bs_new3","bs_new3_2"]},  
   {id:35, name:"Leon Baby Shower Cajita", desc:"Vela leon en cajita decorada para baby shower", price:30, tag:"Baby Shower", img:"bs_new4", cat:"baby-shower", unit:"docena"},  
   {id:36, name:"Jirafa Baby Shower", desc:"Vela jirafa decorativa para baby shower", price:35, tag:"Baby Shower", img:"bs_new5", cat:"baby-shower", unit:"docena"},  
   {id:37, name:"Osito Rosa en Bolsa", desc:"Vela osito rosa en bolsa para baby shower", price:35, tag:"Baby Shower", img:"bs_new6", cat:"baby-shower", unit:"docena"},  
@@ -1837,7 +1837,7 @@ const PRODUCTS = [
   {id:56, name:"Vela Flor en Copa Quinceañera", desc:"Vela con flor artesanal en copa de vidrio - Personalizada con nombre e iniciales. Cera de soya premium", price:45, tag:"Quinceañera", img:"xv7", cat:"xv-anos", unit:"docena"},
   {id:57, name:"Vela Copa XV Floral", desc:"Vela en copa con diseño XV floral, tapa de madera y moño premium - Personalizada con nombre", price:55, tag:"Quinceañera", img:"xv8", cat:"xv-anos", unit:"docena"},
 
-  {id:58, name:"Conejito Rosa en Empaque", desc:"Incluye empaque + nombre personalizado. Ideal para baby shower y bautizo", price:38, tag:"Baby Shower", img:"conejito_rosa", cat:"baby-shower", unit:"docena", fixedSale:true, onSale:true, oferta:true, originalPrice:38, salePrice:32.30, saleDiscount:15},
+  {id:58, name:"Conejito Rosa en Empaque", desc:"Incluye empaque + nombre personalizado. Ideal para baby shower y bautizo", price:38, tag:"Baby Shower", img:"conejito_rosa", cat:"baby-shower", unit:"docena"},
   {id:59, name:"Abejita en Vaso Personalizado", desc:"Vela abejita en vaso de vidrio con nombre personalizado. Ideal para cumpleanos y baby shower", price:45, tag:"Baby Shower", img:"abejita_vaso", cat:"baby-shower", unit:"docena"},
   {id:60, name:"Osito Blanco en Empaque Lila", desc:"Incluye empaque + nombre personalizado. Ideal para bautizo y baby shower", price:38, tag:"Bautizo", img:"osito_lila", cat:"bautizo", unit:"docena"},
   {id:61, name:"Pinguino en Empaque Azul", desc:"Incluye empaque + nombre personalizado. Ideal para bautizo y baby shower", price:38, tag:"Bautizo", img:"pinguino_azul", cat:"bautizo", unit:"docena"}
@@ -2699,7 +2699,25 @@ document.addEventListener('DOMContentLoaded', function() {
     PRODUCTS.forEach(function(p){
       if (!p.fixedSale) { delete p.onSale; delete p.oferta; delete p.salePrice; delete p.originalPrice; }
     });
-    // Ofertas automaticas desactivadas - solo se usan los descuentos fijos (fixedSale)
+    // Seleccionar 10 productos al azar con 15% de descuento (rota cada 3 dias)
+    var saleSeed = period * 7919;
+    function saleRandom() {
+      saleSeed = (saleSeed * 1664525 + 1013904223) & 0xffffffff;
+      return (saleSeed >>> 0) / 0xffffffff;
+    }
+    var saleCandidates = PRODUCTS.slice();
+    for (var k = saleCandidates.length - 1; k > 0; k--) {
+      var ki = Math.floor(saleRandom() * (k + 1));
+      var t = saleCandidates[k]; saleCandidates[k] = saleCandidates[ki]; saleCandidates[ki] = t;
+    }
+    // Marcar 10 productos con 15% de descuento
+    saleCandidates.slice(0, 10).forEach(function(p){
+      p.onSale = true;
+      p.oferta = true;
+      p.originalPrice = p.price;
+      p.salePrice = Math.round(p.price * 0.85 * 100) / 100;
+      p.saleDiscount = 15;
+    });
     // Separate popular from non-popular for display order
     var popularProducts = PRODUCTS.filter(function(p){ return p.popular; });
     var otherProducts = PRODUCTS.filter(function(p){ return !p.popular; });
