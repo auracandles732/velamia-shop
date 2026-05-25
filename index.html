@@ -1973,7 +1973,9 @@ function updateCartUI() {
 }
 
 function isSaleActive() {
-  return true;  // 10% off random products (rotates every 3 days)
+  var today = new Date();
+  var day = today.getDate();
+  return day === 15 || day === 30;  // Ofertas activas solo el 15 y 30 de cada mes
 }
 
 function changeCardQty(id, delta) {
@@ -2687,9 +2689,10 @@ document.addEventListener('DOMContentLoaded', function() {
   if (pp) pp.style.display = 'none';
 
 
-  // Rotate product order every 3 days + select 6 random products for 10% off
+  // Seleccionar 10 productos al azar para oferta del 15 y 30 de cada mes
   (function() {
-    var period = Math.floor(Date.now() / (3 * 24 * 60 * 60 * 1000));
+    var d = new Date();
+    var period = d.getFullYear() * 12 + d.getMonth(); // cambia cada mes
     var seed = period;
     function seededRandom() {
       seed = (seed * 1664525 + 1013904223) & 0xffffffff;
