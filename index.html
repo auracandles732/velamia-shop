@@ -2699,25 +2699,7 @@ document.addEventListener('DOMContentLoaded', function() {
     PRODUCTS.forEach(function(p){
       if (!p.fixedSale) { delete p.onSale; delete p.oferta; delete p.salePrice; delete p.originalPrice; }
     });
-    // Select 6 random products to put on sale (excludes popular ones for fairness)
-    var saleSeed = period * 7919; // different seed for sale selection
-    function saleRandom() {
-      saleSeed = (saleSeed * 1664525 + 1013904223) & 0xffffffff;
-      return (saleSeed >>> 0) / 0xffffffff;
-    }
-    var saleCandidates = PRODUCTS.filter(function(p){ return !p.popular; }).slice();
-    // Shuffle candidates with saleRandom
-    for (var k = saleCandidates.length - 1; k > 0; k--) {
-      var ki = Math.floor(saleRandom() * (k + 1));
-      var t = saleCandidates[k]; saleCandidates[k] = saleCandidates[ki]; saleCandidates[ki] = t;
-    }
-    // Mark first 6 as on sale (10% off)
-    saleCandidates.slice(0, 6).forEach(function(p){
-      p.onSale = true;
-      p.oferta = true;
-      p.originalPrice = p.price;
-      p.salePrice = Math.round(p.price * 0.9 * 100) / 100;
-    });
+    // Ofertas automaticas desactivadas - solo se usan los descuentos fijos (fixedSale)
     // Separate popular from non-popular for display order
     var popularProducts = PRODUCTS.filter(function(p){ return p.popular; });
     var otherProducts = PRODUCTS.filter(function(p){ return !p.popular; });
