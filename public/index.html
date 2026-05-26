@@ -1798,7 +1798,7 @@ const PRODUCTS = [
   {id:18, name:"Osito Girl or Boy en Cajita", desc:"Osito en cajita con mono", price:30, tag:"Revelacion", img:"rev3", cat:"revelacion", unit:"docena"},
   {id:19, name:"Huellitas Rosa y Azul", desc:"Vela huellitas de bebe - Boy or Girl", price:19.99, tag:"Revelacion", img:"rev4", cat:"revelacion", unit:"docena"},
   {id:20, name:"Cruz con Flores Bautizo", desc:"Vela cruz con flores y cuerda", price:32, tag:"Bautizo", img:"bau1", cat:"bautizo", unit:"docena"},
-  {id:21, name:"Angel con Lazo y Medalla", desc:"Angel con lazo azul y medalla dorada. Foto referencial — el adorno de virgencita no está incluido en el producto.", price:35, tag:"Bautizo", img:"bau2", cat:"bautizo", unit:"docena"},
+  {id:21, name:"Angel con Lazo y Medalla", desc:"Angel con lazo azul y medalla dorada", price:35, tag:"Bautizo", img:"bau2", cat:"bautizo", unit:"docena", note:"* Foto referencial — el adorno de virgencita no está incluido en el producto."},
   {id:22, name:"Angel con Corazon en Bolsa", desc:"Angel con corazon - En bolsa personalizada", price:35, tag:"Bautizo", img:"bau3", cat:"bautizo", extra:"mas-vendidos", unit:"docena"},
   {id:23, name:"Paloma en Cajita Mi Bautismo", desc:"Paloma en cajita con mono", price:30, tag:"Bautizo", img:"bau4", cat:"bautizo", unit:"docena"},
   {id:24, name:"Angel Rezando con Rosario", desc:"Angel rezando con rosario", price:32, tag:"Bautizo", img:"bau5", cat:"bautizo", unit:"docena"},
@@ -2559,6 +2559,7 @@ function openProductPage(id, fromHistory) {
   var descHTML = '<p>' + p.desc + '.</p>' +
     '<p>Vela artesanal hecha a mano con cera de alta calidad. Cada pieza es única e ideal para hacer de tu evento un momento especial.</p>' +
     '<p>Incluye empaque elegante y nombre personalizado sin costo adicional. Pedidos bajo reserva.</p>';
+  if (p.note) descHTML += '<p style="font-size:12px;color:#8B7355;margin-top:12px;font-style:italic;">' + p.note + '</p>';
   document.getElementById('ppDesc').innerHTML = descHTML;
   // WhatsApp support link with product context
   var waMsg = 'Hola Velamia! 👋 Estoy viendo: ' + p.name + ' ($' + p.price.toFixed(2) + (p.unit==='unidad'?' por unidad':' por docena') + '). Quisiera consultar sobre personalización (cantidad exacta, diseño, fecha de entrega). ¿Me pueden ayudar?';
