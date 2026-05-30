@@ -2746,24 +2746,24 @@ document.addEventListener('DOMContentLoaded', function() {
     PRODUCTS.forEach(function(p){
       if (!p.fixedSale) { delete p.onSale; delete p.oferta; delete p.salePrice; delete p.originalPrice; }
     });
-    // Seleccionar 10 productos al azar con 15% de descuento (rota cada 3 dias)
+    // Seleccionar 10 productos al azar con 10% de descuento (rota cada 3 dias)
     var saleSeed = period * 7919;
     function saleRandom() {
       saleSeed = (saleSeed * 1664525 + 1013904223) & 0xffffffff;
       return (saleSeed >>> 0) / 0xffffffff;
     }
-    var saleCandidates = PRODUCTS.filter(function(p){ return !p.fixedSale && p.id !== 1 && p.id !== 3 && p.id !== 5; });
+    var saleCandidates = PRODUCTS.filter(function(p){ return !p.fixedSale && !p.nuevo && p.id !== 1 && p.id !== 3 && p.id !== 5; });
     for (var k = saleCandidates.length - 1; k > 0; k--) {
       var ki = Math.floor(saleRandom() * (k + 1));
       var t = saleCandidates[k]; saleCandidates[k] = saleCandidates[ki]; saleCandidates[ki] = t;
     }
-    // Marcar 10 productos con 15% de descuento
+    // Marcar 10 productos con 10% de descuento
     saleCandidates.slice(0, 10).forEach(function(p){
       p.onSale = true;
       p.oferta = true;
       p.originalPrice = p.price;
-      p.salePrice = Math.round(p.price * 0.85 * 100) / 100;
-      p.saleDiscount = 15;
+      p.salePrice = Math.round(p.price * 0.90 * 100) / 100;
+      p.saleDiscount = 10;
     });
     // Separate featured and popular products from the rotated catalog.
     var featuredProducts = PRODUCTS.filter(function(p){ return p.featured; });
