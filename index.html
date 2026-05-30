@@ -3215,19 +3215,19 @@ window.addEventListener('popstate', function(e) {
         <label class="form-label">¿Cuántas unidades necesitas?</label>
         <div class="form-options" style="grid-template-columns:1fr 1fr;">
           <label class="form-option">
-            <input type="radio" name="pcantidad" value="1 unidad" class="form-radio">
+            <input type="radio" name="pcantidad" value="1 unidad" class="form-radio" required>
             <span class="option-text">1 unidad</span>
           </label>
           <label class="form-option">
-            <input type="radio" name="pcantidad" value="6 unidades (1/2 docena)" class="form-radio">
+            <input type="radio" name="pcantidad" value="6 unidades (1/2 docena)" class="form-radio" required>
             <span class="option-text">6 und. (½ doc.)</span>
           </label>
           <label class="form-option">
-            <input type="radio" name="pcantidad" value="12 unidades (1 docena)" class="form-radio">
+            <input type="radio" name="pcantidad" value="12 unidades (1 docena)" class="form-radio" required>
             <span class="option-text">12 und. (1 doc.)</span>
           </label>
           <label class="form-option">
-            <input type="radio" name="pcantidad" value="más de 12 unidades" class="form-radio">
+            <input type="radio" name="pcantidad" value="más de 12 unidades" class="form-radio" required>
             <span class="option-text">Más de 12</span>
           </label>
         </div>
@@ -3236,19 +3236,19 @@ window.addEventListener('popstate', function(e) {
       <!-- NOMBRE A PERSONALIZAR -->
       <div class="form-group">
         <label class="form-label">Nombre(s) a personalizar</label>
-        <input type="text" name="pnombre" placeholder="Ej: Valentina, Sebastián & Ana..." class="form-input">
+        <input type="text" name="pnombre" placeholder="Ej: Valentina, Sebastián & Ana..." class="form-input" required>
       </div>
 
       <!-- FECHA DEL EVENTO -->
       <div class="form-group">
         <label class="form-label">Fecha del evento</label>
-        <input type="text" name="pfecha" placeholder="Ej: 25 de junio de 2026" class="form-input">
+        <input type="text" name="pfecha" placeholder="Ej: 25 de junio de 2026" class="form-input" required>
       </div>
 
       <!-- DETALLES ADICIONALES -->
       <div class="form-group">
-        <label class="form-label">Colores o detalles adicionales (opcional)</label>
-        <textarea name="pdetalles" placeholder="Ej: Colores rosado y dorado, incluir fecha en etiqueta..." class="form-textarea" rows="2"></textarea>
+        <label class="form-label">Colores o detalles adicionales</label>
+        <textarea name="pdetalles" placeholder="Ej: Colores rosado y dorado, incluir fecha en etiqueta..." class="form-textarea" rows="2" required></textarea>
       </div>
 
       <button type="submit" class="form-submit-btn">📲 Consultar en WhatsApp</button>
@@ -3301,17 +3301,32 @@ window.addEventListener('popstate', function(e) {
     event.preventDefault();
 
     var cantidad = document.querySelector('input[name="pcantidad"]:checked');
-    var nombre = document.querySelector('input[name="pnombre"]').value;
-    var fecha = document.querySelector('input[name="pfecha"]').value;
-    var detalles = document.querySelector('textarea[name="pdetalles"]').value;
-
+    var nombreInput = document.querySelector('input[name="pnombre"]');
+    var fechaInput = document.querySelector('input[name="pfecha"]');
+    var detallesInput = document.querySelector('textarea[name="pdetalles"]');
+    var nombre = nombreInput.value.trim();
+    var fecha = fechaInput.value.trim();
+    var detalles = detallesInput.value.trim();
     if (!cantidad) {
       alert('Por favor selecciona la cantidad de unidades');
       return false;
     }
 
+    if (!nombre) {
+      alert('Por favor escribe el nombre o nombres a personalizar');
+      nombreInput.focus();
+      return false;
+    }
+
     if (!fecha) {
       alert('Por favor indica la fecha de tu evento');
+      fechaInput.focus();
+      return false;
+    }
+
+    if (!detalles) {
+      alert('Por favor escribe los colores o detalles adicionales');
+      detallesInput.focus();
       return false;
     }
 
