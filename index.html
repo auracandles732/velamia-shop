@@ -336,6 +336,8 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .filter-btn.active{background:var(--dark);color:var(--gold-light);border-color:var(--dark);}
   .filter-btn.mas-vendidos-btn{border-color:var(--gold);color:var(--brown);background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.05));}
   .filter-btn.mas-vendidos-btn.active{background:linear-gradient(135deg,var(--gold),#b8912a);color:var(--dark);border-color:var(--gold);}
+  .filter-btn.nuevos-btn{border-color:#D86F8A;color:#8B4A5A;background:rgba(216,111,138,0.08);}
+  .filter-btn.nuevos-btn.active{background:#D86F8A;color:#fff;border-color:#D86F8A;}
   .product-card{transition:transform 0.3s,box-shadow 0.3s,opacity 0.3s;}
   .product-card.hidden{display:none;}
   .no-products{text-align:center;padding:3rem;color:var(--taupe);width:100%;}
@@ -1088,6 +1090,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div class="filter-wrap">
     <button class="filter-btn active" onclick="filterProducts('all')">🕯️ Todos</button>
+    <button class="filter-btn nuevos-btn" onclick="filterProducts('lanzamientos')">✨ Lanzamientos nuevos</button>
     <button class="filter-btn mas-vendidos-btn" onclick="filterProducts('mas-vendidos')">⭐ Más Vendidos</button>
     <button class="filter-btn oferta-btn" onclick="filterProducts('oferta')">🔥 Ofertas</button>
     <button class="filter-btn" onclick="filterProducts('xv-anos')">👑 XV Años</button>
@@ -1525,6 +1528,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <h4>Eventos</h4>
       <ul>
         <li><a href="#productos" onclick="filterProducts('baby-shower')">Baby shower</a></li>
+        <li><a href="#productos" onclick="filterProducts('lanzamientos')">Lanzamientos nuevos</a></li>
         <li><a href="#productos" onclick="filterProducts('bautizo')">Bautizos</a></li>
         <li><a href="#productos" onclick="filterProducts('matrimonio')">Bodas</a></li>
         <li><a href="#productos" onclick="filterProducts('cumpleanos')">Cumpleaños</a></li>
@@ -1785,13 +1789,13 @@ const IMG_MAP = {
 const ADMIN_PIN = '1234';
 
 const PRODUCTS = [
-  {id:62, name:"Promocion Especial Baby Shower", desc:"Oferta exclusiva solo por tiempo limitado. Velitas personalizadas para eventos desde 2 docenas, pedidos bajo reserva", price:24.99, tag:"Oferta Exclusiva", img:"baby_shower_promo_2_docenas", cat:"baby-shower", featured:true, unit:"docena", unitLabel:"promo 2 docenas (24 unidades)", qtyLabel:"promos de 2 docenas", fixedSale:true, onSale:true, oferta:true, originalPrice:35.98, salePrice:24.99, saleDiscount:31, saleText:"Oferta exclusiva solo por tiempo limitado"},
-  {id:63, name:"Osito en Canasta con Globos", desc:"Incluye empaque + nombre personalizado. Ideal para baby shower, bautizo y matrimonio", price:40, tag:"Baby Shower", img:"osito_canasta_globos", cat:"baby-shower", unit:"docena"},
-  {id:64, name:"Leoncito en Base Hexagonal", desc:"Incluye empaque + nombre personalizado. Ideal para baby shower, bautizo y matrimonio", price:35, tag:"Baby Shower", img:"leoncito_base_hexagonal", cat:"baby-shower", unit:"docena"},
-  {id:65, name:"Conejito en Caja Transparente con Lazo Lila", desc:"Incluye caja transparente con lazo lila + nombre personalizado. Ideal para baby shower y bautizo", price:35, tag:"Baby Shower", img:"conejito_caja_lazo_lila", cat:"baby-shower", unit:"docena"},
-  {id:66, name:"Mariposa en Vaso con Tapa de Madera", desc:"Vela en vaso con mariposa decorativa. Incluye empaque + nombre personalizado", price:50, tag:"Premium", img:"mariposa_vaso_tapa_madera", cat:"baby-shower", unit:"docena"},
-  {id:67, name:"Osito Rosa en Frasco con Corcho", desc:"Osito rosa en frasco de vidrio con tapa de corcho. Incluye empaque + nombre personalizado", price:35, tag:"Baby Shower", img:"osito_rosa_frasco_corcho", cat:"baby-shower", unit:"docena"},
-  {id:68, name:"Osito en Base Circular con Nombre", desc:"Osito con lazo rosado en base circular personalizada. Incluye nombre", price:32, tag:"Baby Shower", img:"osito_base_circular_nombre", cat:"baby-shower", unit:"docena"},
+  {id:62, name:"Promocion Especial Baby Shower", desc:"Oferta exclusiva solo por tiempo limitado. Velitas personalizadas para eventos desde 2 docenas, pedidos bajo reserva", price:24.99, tag:"Oferta Exclusiva", img:"baby_shower_promo_2_docenas", cat:"baby-shower", featured:true, nuevo:true, unit:"docena", unitLabel:"promo 2 docenas (24 unidades)", qtyLabel:"promos de 2 docenas", fixedSale:true, onSale:true, oferta:true, originalPrice:35.98, salePrice:24.99, saleDiscount:31, saleText:"Oferta exclusiva solo por tiempo limitado"},
+  {id:63, name:"Osito en Canasta con Globos", desc:"Incluye empaque + nombre personalizado. Ideal para baby shower, bautizo y matrimonio", price:40, tag:"Baby Shower", img:"osito_canasta_globos", cat:"baby-shower", nuevo:true, unit:"docena"},
+  {id:64, name:"Leoncito en Base Hexagonal", desc:"Incluye empaque + nombre personalizado. Ideal para baby shower, bautizo y matrimonio", price:35, tag:"Baby Shower", img:"leoncito_base_hexagonal", cat:"baby-shower", nuevo:true, unit:"docena"},
+  {id:65, name:"Conejito en Caja Transparente con Lazo Lila", desc:"Incluye caja transparente con lazo lila + nombre personalizado. Ideal para baby shower y bautizo", price:35, tag:"Baby Shower", img:"conejito_caja_lazo_lila", cat:"baby-shower", nuevo:true, unit:"docena"},
+  {id:66, name:"Mariposa en Vaso con Tapa de Madera", desc:"Vela en vaso con mariposa decorativa. Incluye empaque + nombre personalizado", price:50, tag:"Premium", img:"mariposa_vaso_tapa_madera", cat:"baby-shower", nuevo:true, unit:"docena"},
+  {id:67, name:"Osito Rosa en Frasco con Corcho", desc:"Osito rosa en frasco de vidrio con tapa de corcho. Incluye empaque + nombre personalizado", price:35, tag:"Baby Shower", img:"osito_rosa_frasco_corcho", cat:"baby-shower", nuevo:true, unit:"docena"},
+  {id:68, name:"Osito en Base Circular con Nombre", desc:"Osito con lazo rosado en base circular personalizada. Incluye nombre", price:32, tag:"Baby Shower", img:"osito_base_circular_nombre", cat:"baby-shower", nuevo:true, unit:"docena"},
   {id:1,  name:"Osito en Nube", desc:"Incluye empaque y nombre personalizado", price:30, tag:"Popular", img:"img1", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img1","img1_2"]},
   {id:2,  name:"Osito en Base con Corazon", desc:"Ideal para baby shower y cumpleanos", price:30, tag:"Baby Shower", img:"img2", cat:"baby-shower", unit:"docena"},
   {id:3,  name:"Osito en Nube con Corazon", desc:"Osito en nube con corazon al centro", price:30, tag:"Popular", img:"img3", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img3","img3_2"]},
@@ -2116,9 +2120,10 @@ function filterProducts(cat) {
   var visible = 0;
   cards.forEach(function(card) {
     var match = cat==='all' 
-      || card.dataset.cat===cat 
+      || card.dataset.cat===cat
       || (cat==='mas-vendidos' && card.dataset.extra==='mas-vendidos')
-      || (cat==='oferta' && card.dataset.oferta==='true');
+      || (cat==='oferta' && card.dataset.oferta==='true')
+      || (cat==='lanzamientos' && card.dataset.nuevo==='true');
     if (match) { card.classList.remove('hidden'); visible++; }
     else card.classList.add('hidden');
   });
@@ -2783,6 +2788,7 @@ document.addEventListener('DOMContentLoaded', function() {
       card.dataset.cat = p.cat;
       if (p.extra) card.dataset.extra = p.extra;
       if (p.oferta) card.dataset.oferta = 'true';
+      if (p.nuevo) card.dataset.nuevo = 'true';
       var unitLabel = getProductUnitLabel(p);
       var qtyLabel = getProductQtyLabel(p);
       card.innerHTML =
@@ -2990,7 +2996,7 @@ window.addEventListener('popstate', function(e) {
     var search = window.location.search;
     var cat = null;
     // Check hash like #categoria-baby-shower or #baby-shower
-    var hashMatch = hash.match(/^#(?:categoria-)?(baby-shower|bautizo|matrimonio|dia-madre|revelacion|cumpleanos|personajes|xv-anos|mas-vendidos|oferta|all)$/);
+    var hashMatch = hash.match(/^#(?:categoria-)?(baby-shower|bautizo|matrimonio|dia-madre|revelacion|cumpleanos|personajes|xv-anos|mas-vendidos|oferta|lanzamientos|all)$/);
     if (hashMatch) cat = hashMatch[1];
     // Check ?categoria=baby-shower
     var urlParams = new URLSearchParams(search);
