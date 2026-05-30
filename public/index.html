@@ -1739,6 +1739,7 @@ const IMG_MAP = {
   "mat6": "images/mat6.png",
 
   "bs_new1": "images/bs_new1.jpeg",
+  "baby_shower_promo_2_docenas": "images/baby_shower_promo_2_docenas.png",
   "bs_new2": "images/bs_new2.jpeg",
   "bs_new3": "images/bs_new3.jpeg",
   "bs_new3_2": "images/bs_new3_2.png",
@@ -1778,6 +1779,7 @@ const IMG_MAP = {
 const ADMIN_PIN = '1234';
 
 const PRODUCTS = [
+  {id:62, name:"Promocion Especial Baby Shower", desc:"Oferta exclusiva solo por tiempo limitado. Velitas personalizadas para eventos desde 2 docenas, pedidos bajo reserva", price:24.99, tag:"Oferta Exclusiva", img:"baby_shower_promo_2_docenas", cat:"baby-shower", featured:true, unit:"docena", unitLabel:"promo 2 docenas (24 unidades)", qtyLabel:"promos de 2 docenas", fixedSale:true, onSale:true, oferta:true, originalPrice:35.98, salePrice:24.99, saleDiscount:31, saleText:"Oferta exclusiva solo por tiempo limitado"},
   {id:1,  name:"Osito en Nube", desc:"Incluye empaque y nombre personalizado", price:30, tag:"Popular", img:"img1", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img1","img1_2"]},
   {id:2,  name:"Osito en Base con Corazon", desc:"Ideal para baby shower y cumpleanos", price:30, tag:"Baby Shower", img:"img2", cat:"baby-shower", unit:"docena"},
   {id:3,  name:"Osito en Nube con Corazon", desc:"Osito en nube con corazon al centro", price:30, tag:"Popular", img:"img3", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img3","img3_2"]},
@@ -1955,12 +1957,13 @@ function updateCartUI() {
   footer.style.display = 'block';
   var html = '';
   items.forEach(function(i) {
-    var uLabel = i.unit === 'unidad' ? 'unidad(es)' : 'docena(s)';
+    var uLabel = i.qtyLabel || (i.unit === 'unidad' ? 'unidad(es)' : 'docena(s)');
+    var priceUnit = i.unitLabel || (i.unit === 'unidad' ? 'por unidad' : 'por docena');
     html += '<div class="cart-item">';
     html += '<img class="cart-item-img" src="' + IMG_MAP[i.img] + '" alt="' + i.name + '"/>';
     html += '<div>';
     html += '<div class="cart-item-name">' + i.name + '</div>';
-    html += '<div class="cart-item-sub">$' + i.price.toFixed(2) + ' por ' + (i.unit==='unidad'?'unidad':'docena') + '</div>';
+    html += '<div class="cart-item-sub">$' + i.price.toFixed(2) + ' ' + priceUnit + '</div>';
     html += '<div class="cart-item-price">Subtotal: $' + (i.price*i.qty).toFixed(2) + '</div>';
     html += '<div class="cart-qty">';
     html += '<button class="qty-btn" onclick="changeQty(' + i.id + ',-1)">-</button>';
@@ -1981,6 +1984,22 @@ function isSaleActive() {
   return day === 15 || day === 30;  // Ofertas activas solo el 15 y 30 de cada mes
 }
 
+function isProductSaleActive(p) {
+  return !!(p && p.onSale && (p.fixedSale || isSaleActive()));
+}
+
+function getProductPrice(p) {
+  return isProductSaleActive(p) ? p.salePrice : p.price;
+}
+
+function getProductUnitLabel(p) {
+  return p.unitLabel || (p.unit === 'unidad' ? 'por unidad' : 'por docena (12 unidades)');
+}
+
+function getProductQtyLabel(p) {
+  return p.qtyLabel || (p.unit === 'unidad' ? 'unidades' : 'docenas');
+}
+
 function changeCardQty(id, delta) {
   var el = document.getElementById('card-qty-' + id);
   if (!el) return;
@@ -1995,9 +2014,9 @@ function addToCartQty(id) {
   var qty = el ? parseInt(el.textContent) : 1;
   var p = PRODUCTS.find(function(x){ return x.id===id; });
   if (!p) return;
-  var price = (p.onSale && isSaleActive()) ? p.salePrice : p.price;
+  var price = getProductPrice(p);
   if (!cart[id]) {
-    cart[id] = {id:p.id, name:p.name, desc:p.desc, price:price, tag:p.tag, img:p.img, unit:p.unit, qty:qty, onSale:(p.onSale&&isSaleActive())};
+    cart[id] = {id:p.id, name:p.name, desc:p.desc, price:price, tag:p.tag, img:p.img, unit:p.unit, unitLabel:p.unitLabel, qtyLabel:p.qtyLabel, qty:qty, onSale:isProductSaleActive(p)};
   } else {
     cart[id].qty += qty;
   }
@@ -2025,8 +2044,8 @@ function addToCartQty(id) {
 
 function addToCart(id) {
   var p = PRODUCTS.find(function(x){ return x.id===id; });
-  var price = (p.onSale && isSaleActive()) ? p.salePrice : p.price;
-  if (!cart[id]) cart[id] = {id:p.id,name:p.name,desc:p.desc,price:price,tag:p.tag,img:p.img,unit:p.unit,qty:1,onSale:(p.onSale&&isSaleActive())};
+  var price = getProductPrice(p);
+  if (!cart[id]) cart[id] = {id:p.id,name:p.name,desc:p.desc,price:price,tag:p.tag,img:p.img,unit:p.unit,unitLabel:p.unitLabel,qtyLabel:p.qtyLabel,qty:1,onSale:isProductSaleActive(p)};
   else cart[id].qty++;
   // FB AddToCart event
   if (typeof fbq !== 'undefined') {
@@ -2169,7 +2188,7 @@ function sendOrder() {
   var zone = document.getElementById('shippingZone').value;
   var msg = 'NUEVO PEDIDO VELAMIA\n\n';
   msg += 'PRODUCTOS:\n';
-  items.forEach(function(i){ msg += '- '+i.name+' x '+i.qty+' '+(i.unit==='unidad'?'unidad':'docena')+'(s) = $'+(i.price*i.qty).toFixed(2)+'\n'; });
+  items.forEach(function(i){ msg += '- '+i.name+' x '+i.qty+' '+(i.qtyLabel || (i.unit==='unidad'?'unidad(es)':'docena(s)'))+' = $'+(i.price*i.qty).toFixed(2)+'\n'; });
   msg += '\nSubtotal: $'+subtotal.toFixed(2);
   if (discount>0) msg += '\nDescuento: -$'+discount.toFixed(2);
   if (couponCode && couponDiscount>0) msg += '\nCupon '+couponCode+' (-'+Math.round(couponDiscount*100)+'%): -$'+(subtotal*couponDiscount).toFixed(2);
@@ -2517,11 +2536,12 @@ function openProductPage(id, fromHistory) {
   if (!fromHistory) {
     history.pushState({page:'product', id:id}, '', '#producto-' + id);
   }
+  var displayPrice = getProductPrice(p);
   if (typeof fbq !== 'undefined') {
     fbq('track', 'ViewContent', {
       content_name: p.name,
       content_category: p.cat,
-      value: p.price,
+      value: displayPrice,
       currency: 'USD'
     });
   }
@@ -2529,11 +2549,11 @@ function openProductPage(id, fromHistory) {
   if (typeof gtag !== 'undefined') {
     gtag('event', 'view_item', {
       currency: 'USD',
-      value: p.price,
-      items: [{ item_id: String(p.id), item_name: p.name, item_category: p.cat, price: p.price, quantity: 1 }]
+      value: displayPrice,
+      items: [{ item_id: String(p.id), item_name: p.name, item_category: p.cat, price: displayPrice, quantity: 1 }]
     });
   }
-  var unitLabel = p.unit==='unidad' ? 'UNIDADES' : 'DOCENAS';
+  var unitLabel = getProductUnitLabel(p).toUpperCase();
   var ppImgs = p.imgs ? p.imgs : [p.img];
   var ppMainImg = document.getElementById('ppImg');
   ppMainImg.src = IMG_MAP[ppImgs[0]];
@@ -2553,7 +2573,7 @@ function openProductPage(id, fromHistory) {
   }
   document.getElementById('ppName').textContent = p.name;
   document.getElementById('ppBreadcrumbName').textContent = p.name;
-  document.getElementById('ppPrice').textContent = '$' + p.price.toFixed(2);
+  document.getElementById('ppPrice').textContent = '$' + displayPrice.toFixed(2);
   document.getElementById('ppUnitLabel').textContent = unitLabel;
   document.getElementById('ppQty').textContent = '1';
   var descHTML = '<p>' + p.desc + '.</p>' +
@@ -2563,6 +2583,7 @@ function openProductPage(id, fromHistory) {
   document.getElementById('ppDesc').innerHTML = descHTML;
   // WhatsApp support link with product context
   var waMsg = 'Hola Velamia! 👋 Estoy viendo: ' + p.name + ' ($' + p.price.toFixed(2) + (p.unit==='unidad'?' por unidad':' por docena') + '). Quisiera consultar sobre personalización (cantidad exacta, diseño, fecha de entrega). ¿Me pueden ayudar?';
+  waMsg = 'Hola Velamia! Estoy viendo: ' + p.name + ' ($' + displayPrice.toFixed(2) + ' ' + getProductUnitLabel(p) + '). Quisiera consultar sobre personalizacion (cantidad exacta, diseno, fecha de entrega). Me pueden ayudar?';
   document.getElementById('ppWaBtn').href = 'https://wa.me/593995448686?text=' + encodeURIComponent(waMsg);
   var addBtn = document.getElementById('ppAddBtn');
   addBtn.textContent = 'AÑADIR AL CARRITO';
@@ -2629,8 +2650,8 @@ function closeProductModal() { closeProductPage(); }
 function addToCartFromPage(id, qty) {
   var p = PRODUCTS.find(function(x){ return x.id===id; });
   if (!p) return;
-  var price = p.price;
-  if (!cart[id]) cart[id] = {id:p.id, name:p.name, desc:p.desc, price:price, tag:p.tag, img:p.img, unit:p.unit, qty:qty};
+  var price = getProductPrice(p);
+  if (!cart[id]) cart[id] = {id:p.id, name:p.name, desc:p.desc, price:price, tag:p.tag, img:p.img, unit:p.unit, unitLabel:p.unitLabel, qtyLabel:p.qtyLabel, qty:qty, onSale:isProductSaleActive(p)};
   else cart[id].qty += qty;
   if (typeof fbq !== 'undefined') {
     fbq('track', 'AddToCart', {content_name:p.name, content_category:p.cat, value:price*qty, currency:'USD'});
@@ -2712,7 +2733,7 @@ document.addEventListener('DOMContentLoaded', function() {
       saleSeed = (saleSeed * 1664525 + 1013904223) & 0xffffffff;
       return (saleSeed >>> 0) / 0xffffffff;
     }
-    var saleCandidates = PRODUCTS.filter(function(p){ return p.id !== 1 && p.id !== 3 && p.id !== 5; });
+    var saleCandidates = PRODUCTS.filter(function(p){ return !p.fixedSale && p.id !== 1 && p.id !== 3 && p.id !== 5; });
     for (var k = saleCandidates.length - 1; k > 0; k--) {
       var ki = Math.floor(saleRandom() * (k + 1));
       var t = saleCandidates[k]; saleCandidates[k] = saleCandidates[ki]; saleCandidates[ki] = t;
@@ -2725,16 +2746,18 @@ document.addEventListener('DOMContentLoaded', function() {
       p.salePrice = Math.round(p.price * 0.85 * 100) / 100;
       p.saleDiscount = 15;
     });
-    // Separate popular from non-popular for display order
-    var popularProducts = PRODUCTS.filter(function(p){ return p.popular; });
-    var otherProducts = PRODUCTS.filter(function(p){ return !p.popular; });
+    // Separate featured and popular products from the rotated catalog.
+    var featuredProducts = PRODUCTS.filter(function(p){ return p.featured; });
+    var popularProducts = PRODUCTS.filter(function(p){ return p.popular && !p.featured; });
+    var otherProducts = PRODUCTS.filter(function(p){ return !p.popular && !p.featured; });
     // Shuffle only the non-popular ones
     for (var i = otherProducts.length - 1; i > 0; i--) {
       var j = Math.floor(seededRandom() * (i + 1));
       var tmp = otherProducts[i]; otherProducts[i] = otherProducts[j]; otherProducts[j] = tmp;
     }
-    // Reconstruct: popular first, then rotated others
+    // Reconstruct: featured first, popular next, then rotated others.
     PRODUCTS.length = 0;
+    featuredProducts.forEach(function(p){ PRODUCTS.push(p); });
     popularProducts.forEach(function(p){ PRODUCTS.push(p); });
     otherProducts.forEach(function(p){ PRODUCTS.push(p); });
   })();
@@ -2743,13 +2766,14 @@ document.addEventListener('DOMContentLoaded', function() {
   var grid = document.getElementById('productsGrid');
   if (grid) {
     PRODUCTS.forEach(function(p) {
-      var tc = (p.tag==='Premium'||p.tag==='Mas vendida') ? '#C9A84C' : '#8B7355';
+      var tc = p.oferta ? '#E63946' : ((p.tag==='Premium'||p.tag==='Mas vendida') ? '#C9A84C' : '#8B7355');
       var card = document.createElement('div');
       card.className = 'product-card';
       card.dataset.cat = p.cat;
       if (p.extra) card.dataset.extra = p.extra;
       if (p.oferta) card.dataset.oferta = 'true';
-      var unitLabel = p.unit==='unidad' ? 'por unidad' : 'por docena (12 unidades)';
+      var unitLabel = getProductUnitLabel(p);
+      var qtyLabel = getProductQtyLabel(p);
       card.innerHTML =
         '<div class="product-img">' +
           '<span class="product-tag" style="background:'+tc+'">'+p.tag+'</span>' +
@@ -2767,16 +2791,16 @@ document.addEventListener('DOMContentLoaded', function() {
         '</div>' +
         '<h3 class="product-name">'+p.name+'</h3>' +
         '<p class="product-desc">'+p.desc+'</p>' +
-        (p.onSale && isSaleActive() ? 
+        (isProductSaleActive(p) ?
           '<p class="product-price-old">$'+p.originalPrice.toFixed(2)+'</p>' +
           '<p class="product-price sale-price">$'+p.salePrice.toFixed(2)+' <span class="sale-badge">-'+(p.saleDiscount||10)+'%</span></p>' +
-          '<p class="sale-until">🔥 '+(p.fixedSale ? '¡15% de descuento!' : 'Oferta por tiempo limitado')+'</p>'
+          '<p class="sale-until">'+(p.saleText || (p.fixedSale ? 'Oferta exclusiva por tiempo limitado' : 'Oferta por tiempo limitado'))+'</p>'
           :
           '<p class="product-price">$'+p.price.toFixed(2)+'</p>'
         ) +
         '<p class="product-unit">'+unitLabel+'</p>' +
         '<div style="flex:1;"></div>' +
-        '<div class="card-qty-label">Cantidad ('+(p.unit==="unidad"?"unidades":"docenas")+')</div>' +
+        '<div class="card-qty-label">Cantidad ('+qtyLabel+')</div>' +
         '<div class="card-qty-selector">' +
           '<button class="card-qty-btn" onclick="event.stopPropagation();changeCardQty('+p.id+',-1)">&#8722;</button>' +
           '<div class="card-qty-val" id="card-qty-'+p.id+'">1</div>' +
@@ -3257,7 +3281,7 @@ window.addEventListener('popstate', function(e) {
 
     // Mostrar info del producto
     document.getElementById('pformProductName').textContent = product.name;
-    var priceText = '$' + product.price.toFixed(2) + (product.unit === 'unidad' ? ' por unidad' : ' por docena');
+    var priceText = '$' + getProductPrice(product).toFixed(2) + ' ' + getProductUnitLabel(product);
     document.getElementById('pformProductPrice').textContent = priceText;
 
     // Mostrar modal
@@ -3296,7 +3320,7 @@ window.addEventListener('popstate', function(e) {
     var mensaje = "Hola Velamia! 👋\n\n";
     mensaje += "Estoy interesado/a en el siguiente producto:\n\n";
     mensaje += "🕯️ *" + _currentProduct.name + "*\n";
-    mensaje += "💵 Precio: $" + _currentProduct.price.toFixed(2) + (_currentProduct.unit === 'unidad' ? ' por unidad' : ' por docena') + "\n";
+    mensaje += "Precio: $" + getProductPrice(_currentProduct).toFixed(2) + " " + getProductUnitLabel(_currentProduct) + "\n";
     mensaje += "📍 Cantidad: " + cantidad.value + "\n";
 
     if (nombre) {
