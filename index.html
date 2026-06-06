@@ -3350,24 +3350,15 @@ window.addEventListener('popstate', function(e) {
       return false;
     }
 
-    // Construir mensaje WhatsApp
-    var mensaje = "Hola Velamia! 👋\n\n";
-    mensaje += "Estoy interesado/a en el siguiente producto:\n\n";
-    mensaje += "🕯️ *" + _currentProduct.name + "*\n";
-    mensaje += "Precio: $" + getProductPrice(_currentProduct).toFixed(2) + " " + getProductUnitLabel(_currentProduct) + "\n";
+    // Construir mensaje WhatsApp con el mismo formato claro del formulario general.
+    var mensaje = "Hola Velamia! 👋\n\nQuiero hacer un pedido personalizado:\n\n";
+    mensaje += "📌 Producto: " + _currentProduct.name + "\n";
+    mensaje += "💵 Precio: $" + getProductPrice(_currentProduct).toFixed(2) + " " + getProductUnitLabel(_currentProduct) + "\n";
     mensaje += "📍 Cantidad: " + cantidad.value + "\n";
-
-    if (nombre) {
-      mensaje += "✍️ Nombre(s) a personalizar: " + nombre + "\n";
-    }
-
+    mensaje += "✍️ Nombre(s) a personalizar: " + nombre + "\n";
     mensaje += "📅 Fecha del evento: " + fecha + "\n";
-
-    if (detalles) {
-      mensaje += "✨ Detalles adicionales: " + detalles + "\n";
-    }
-
-    mensaje += "\n¿Está disponible para esa fecha?";
+    mensaje += "✨ Detalles: " + detalles + "\n";
+    mensaje += "\nQuisiera consultar sobre personalización y disponibilidad de fechas.";
 
     var wa_url = "https://wa.me/593978920167?text=" + encodeURIComponent(mensaje);
     window.open(wa_url, '_blank');
