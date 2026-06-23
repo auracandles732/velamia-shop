@@ -590,6 +590,20 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .pp-desc{font-size:0.82rem;line-height:1.7;color:#555;font-weight:400;text-align:justify;}
   .pp-desc p{margin-bottom:0.8rem;}
   .pp-desc p:last-child{margin-bottom:0;}
+  /* PERSONALIZADOR */
+  .pp-customize{background:#fff;border:1px solid var(--sand);border-radius:14px;padding:1.1rem 1.2rem;margin:1.2rem 0;}
+  .pp-cust-title{font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--brown);margin-bottom:1rem;}
+  .pp-part{margin-bottom:1rem;}
+  .pp-part:last-of-type{margin-bottom:0.8rem;}
+  .pp-part-label{font-size:0.78rem;font-weight:600;color:var(--dark);margin-bottom:0.5rem;}
+  .pp-swatches{display:flex;flex-wrap:wrap;gap:0.5rem;}
+  .pp-swatch{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer;padding:0;transition:transform 0.15s;position:relative;}
+  .pp-swatch:hover{transform:scale(1.1);}
+  .pp-swatch.active{border-color:var(--gold);}
+  .pp-name-input{width:100%;padding:0.7rem 0.9rem;border:1px solid var(--sand);border-radius:9px;font-family:'Montserrat',sans-serif;font-size:0.85rem;color:var(--dark);outline:none;box-sizing:border-box;}
+  .pp-name-input:focus{border-color:var(--brown);}
+  .pp-cust-summary{background:var(--cream);border-radius:9px;padding:0.7rem 0.9rem;font-size:0.72rem;color:#5F5E5A;line-height:1.7;margin-top:0.9rem;}
+  .pp-cust-summary b{color:var(--dark);font-weight:600;}
   .pp-price{font-size:1rem;font-weight:400;color:#111;margin:0.8rem 0 0.6rem;}
   .pp-qty-row{display:flex;align-items:center;gap:1.5rem;margin:0.4rem 0 1.2rem;}
   .pp-qty-label{font-size:0.72rem;font-weight:500;letter-spacing:0.18em;color:#111;}
@@ -1494,6 +1508,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="pp-info-side">
       <h1 class="pp-name" id="ppName"></h1>
       <div class="pp-desc" id="ppDesc"></div>
+      <div id="ppCustomize" class="pp-customize" style="display:none;"></div>
       <div class="pp-price" id="ppPrice"></div>
       <div class="pp-qty-row">
         <span class="pp-qty-label" id="ppUnitLabel">DOCENAS</span>
@@ -1804,9 +1819,9 @@ const PRODUCTS = [
   {id:70, name:"Pollito en Huevo", desc:"Vela pollito saliendo del huevo con empaque personalizado. Ideal para baby shower y bautizo", price:30, tag:"Baby Shower", img:"pollito_huevo", cat:"baby-shower", nuevo:true, unit:"docena"},
   {id:71, name:"Osito con Cubo Personalizado", desc:"Vela osito con cubo personalizado en bolsa con lazo. Ideal para baby shower, bautizo y cumpleaños", price:28, tag:"Baby Shower", img:"osito_cubo", cat:"baby-shower", nuevo:true, unit:"docena"},
   {id:72, name:"Elefantita con Moño Rosa", desc:"Vela elefantita con moño rosa en empaque elegante. Ideal para baby shower y bautizo", price:35, tag:"Baby Shower", img:"elefantita_rosa", cat:"baby-shower", nuevo:true, unit:"docena"},
-  {id:1,  name:"Osito en Nube", desc:"Incluye empaque y nombre personalizado", price:30, tag:"Popular", img:"img1", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img1","img1_2"]},
+  {id:1,  name:"Osito en Nube", desc:"Incluye empaque y nombre personalizado", price:30, tag:"Popular", img:"img1", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img1","img1_2"], parts:[{key:"osito",label:"🧸 Color del osito",colors:["Crema","Beige","Café claro","Café","Blanco"]},{key:"nube",label:"☁️ Color de la nube",colors:["Blanco","Rosa","Celeste","Lila","Crema"]}]},
   {id:2,  name:"Osito en Base con Corazon", desc:"Ideal para baby shower y cumpleanos", price:30, tag:"Baby Shower", img:"img2", cat:"baby-shower", unit:"docena"},
-  {id:3,  name:"Osito en Nube con Corazon", desc:"Osito en nube con corazon al centro", price:30, tag:"Popular", img:"img3", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img3","img3_2"]},
+  {id:3,  name:"Osito en Nube con Corazon", desc:"Osito en nube con corazon al centro", price:30, tag:"Popular", img:"img3", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img3","img3_2"], parts:[{key:"osito",label:"🧸 Color del osito",colors:["Crema","Beige","Café claro","Café","Blanco"]},{key:"nube",label:"☁️ Color de la nube",colors:["Blanco","Rosa","Celeste","Lila","Crema"]},{key:"corazon",label:"❤️ Color del corazón",colors:["Rojo","Rosa","Dorado","Blanco"]}]},
   {id:4,  name:"Elefante en Frasco de Vidrio", desc:"Elefantita en frasco - Baby shower nina", price:45, tag:"Premium", img:"img4", cat:"baby-shower", extra:"mas-vendidos", unit:"docena", imgs:["img4","img4_2"]},
   {id:5,  name:"Osito en Nube con Corazon Alado", desc:"Diseno exclusivo con corazon alado", price:30, tag:"Popular", img:"img5", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img5","img5_2"]},
   {id:6,  name:"Pollito Bebe", desc:"En caja - Incluye empaque y nombre", price:32, tag:"Baby Shower", img:"img6", cat:"baby-shower", extra:"mas-vendidos", unit:"docena"},
@@ -1988,6 +2003,7 @@ function updateCartUI() {
     html += '<div>';
     html += '<div class="cart-item-name">' + i.name + '</div>';
     html += '<div class="cart-item-sub">$' + i.price.toFixed(2) + ' ' + priceUnit + '</div>';
+    if (i.custom) html += '<div style="font-size:0.68rem;color:#8B7355;margin-bottom:0.4rem;line-height:1.5;">🎨 ' + i.custom + '</div>';
     html += '<div class="cart-item-price">Subtotal: $' + (i.price*i.qty).toFixed(2) + '</div>';
     html += '<div class="cart-qty">';
     html += '<button class="qty-btn" onclick="changeQty(' + i.id + ',-1)">-</button>';
@@ -2213,7 +2229,7 @@ function sendOrder() {
   var zone = document.getElementById('shippingZone').value;
   var msg = 'NUEVO PEDIDO VELAMIA\n\n';
   msg += 'PRODUCTOS:\n';
-  items.forEach(function(i){ msg += '- '+i.name+' x '+i.qty+' '+(i.qtyLabel || (i.unit==='unidad'?'unidad(es)':'docena(s)'))+' = $'+(i.price*i.qty).toFixed(2)+'\n'; });
+  items.forEach(function(i){ msg += '- '+i.name+' x '+i.qty+' '+(i.qtyLabel || (i.unit==='unidad'?'unidad(es)':'docena(s)'))+' = $'+(i.price*i.qty).toFixed(2)+'\n'; if (i.custom) msg += '   🎨 '+i.custom+'\n'; });
   msg += '\nSubtotal: $'+subtotal.toFixed(2);
   if (discount>0) msg += '\nDescuento: -$'+discount.toFixed(2);
   if (couponCode && couponDiscount>0) msg += '\nCupon '+couponCode+' (-'+Math.round(couponDiscount*100)+'%): -$'+(subtotal*couponDiscount).toFixed(2);
@@ -2247,7 +2263,7 @@ function sendOrder() {
     });
   }
   // ── Enviar email de notificación automáticamente ──
-  var productosEmail = items.map(function(i){ return i.name+' x'+i.qty; }).join(', ');
+  var productosEmail = items.map(function(i){ return i.name+' x'+i.qty + (i.custom ? ' ('+i.custom+')' : ''); }).join(', ');
   enviarEmailPedido({
     ocasion:     'Pedido por carrito',
     producto:    productosEmail,
@@ -2549,6 +2565,73 @@ function changePpQty(delta) {
   if (el) el.textContent = ppCurrentQty;
 }
 
+// ── PERSONALIZADOR DE COLORES POR PIEZA ──
+var PP_COLOR_HEX = {
+  "Crema":"#EAE3D6","Beige":"#D9C7A8","Café claro":"#C9A074","Café":"#9B7B5B",
+  "Blanco":"#FFFFFF","Rosa":"#F4C9D7","Celeste":"#B8D4EC","Lila":"#C7B8DD",
+  "Rojo":"#E24B4A","Dorado":"#D4AF37"
+};
+var ppCustomState = {}; // { osito:"Crema", nube:"Blanco", nombre:"..." }
+
+function buildCustomizer(p) {
+  var box = document.getElementById('ppCustomize');
+  ppCustomState = {};
+  if (!p.parts || !p.parts.length) { box.style.display='none'; box.innerHTML=''; return; }
+  var html = '<div class="pp-cust-title">✨ Personaliza tu vela</div>';
+  p.parts.forEach(function(part){
+    ppCustomState[part.key] = part.colors[0]; // color por defecto = primero
+    html += '<div class="pp-part"><div class="pp-part-label">'+part.label+'</div><div class="pp-swatches" data-key="'+part.key+'">';
+    part.colors.forEach(function(col,i){
+      var hex = PP_COLOR_HEX[col] || '#ccc';
+      var border = (hex.toUpperCase()==='#FFFFFF') ? ';box-shadow:inset 0 0 0 1px #ddd' : '';
+      html += '<button type="button" class="pp-swatch'+(i===0?' active':'')+'" style="background:'+hex+border+'" title="'+col+'" data-col="'+col+'"></button>';
+    });
+    html += '</div></div>';
+  });
+  html += '<div class="pp-part"><div class="pp-part-label">✍️ Nombre a personalizar</div><input type="text" class="pp-name-input" id="ppNameInput" maxlength="20" placeholder="Ej: Valentina, Mateo..."/></div>';
+  html += '<div class="pp-cust-summary" id="ppCustSummary"></div>';
+  box.innerHTML = html;
+  box.style.display = 'block';
+
+  box.querySelectorAll('.pp-swatches').forEach(function(row){
+    var key = row.dataset.key;
+    row.querySelectorAll('.pp-swatch').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        row.querySelectorAll('.pp-swatch').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        ppCustomState[key] = btn.dataset.col;
+        updateCustSummary(p);
+      });
+    });
+  });
+  var nameInput = document.getElementById('ppNameInput');
+  nameInput.addEventListener('input', function(){ ppCustomState.nombre = nameInput.value; updateCustSummary(p); });
+  updateCustSummary(p);
+}
+
+function updateCustSummary(p) {
+  var el = document.getElementById('ppCustSummary');
+  if (!el) return;
+  var parts = p.parts.map(function(part){
+    return part.label.replace(/^[^ ]+ /,'').replace('Color del ','').replace('Color de la ','').replace('Color del ','') + ': <b>' + (ppCustomState[part.key]||'-') + '</b>';
+  });
+  var txt = '<b>Tu elección:</b><br>' + parts.join(' · ');
+  if (ppCustomState.nombre) txt += ' · Nombre: <b>' + ppCustomState.nombre + '</b>';
+  el.innerHTML = txt;
+}
+
+// Devuelve texto de personalización para pedido (email/whatsapp) o '' si no aplica
+function getCustomizationText(p) {
+  if (!p || !p.parts || !p.parts.length) return '';
+  var parts = p.parts.map(function(part){
+    var clean = part.label.replace(/^[^ ]+ /,'');
+    return clean + ': ' + (ppCustomState[part.key]||'-');
+  });
+  var txt = parts.join(' | ');
+  if (ppCustomState.nombre) txt += ' | Nombre: ' + ppCustomState.nombre;
+  return txt;
+}
+
 // Open product as a NEW PAGE (hides main content, shows product detail)
 function openProductModal(id) { openProductPage(id); }  // alias para compatibilidad
 
@@ -2606,6 +2689,7 @@ function openProductPage(id, fromHistory) {
     '<p>Incluye empaque elegante y nombre personalizado sin costo adicional. Pedidos bajo reserva.</p>';
   if (p.note) descHTML += '<p style="font-size:12px;color:#8B7355;margin-top:12px;font-style:italic;">' + p.note + '</p>';
   document.getElementById('ppDesc').innerHTML = descHTML;
+  buildCustomizer(p);
   // WhatsApp support link with product context
   var waMsg = 'Hola Velamia! 👋 Estoy viendo: ' + p.name + ' ($' + p.price.toFixed(2) + (p.unit==='unidad'?' por unidad':' por docena') + '). Quisiera consultar sobre personalización (cantidad exacta, diseño, fecha de entrega). ¿Me pueden ayudar?';
   waMsg = 'Hola Velamia! Estoy viendo: ' + p.name + ' ($' + displayPrice.toFixed(2) + ' ' + getProductUnitLabel(p) + '). Quisiera consultar sobre personalizacion (cantidad exacta, diseno, fecha de entrega). Me pueden ayudar?';
@@ -2676,8 +2760,9 @@ function addToCartFromPage(id, qty) {
   var p = PRODUCTS.find(function(x){ return x.id===id; });
   if (!p) return;
   var price = getProductPrice(p);
-  if (!cart[id]) cart[id] = {id:p.id, name:p.name, desc:p.desc, price:price, tag:p.tag, img:p.img, unit:p.unit, unitLabel:p.unitLabel, qtyLabel:p.qtyLabel, qty:qty, onSale:isProductSaleActive(p)};
-  else cart[id].qty += qty;
+  var custom = getCustomizationText(p);
+  if (!cart[id]) cart[id] = {id:p.id, name:p.name, desc:p.desc, price:price, tag:p.tag, img:p.img, unit:p.unit, unitLabel:p.unitLabel, qtyLabel:p.qtyLabel, qty:qty, onSale:isProductSaleActive(p), custom:custom};
+  else { cart[id].qty += qty; if (custom) cart[id].custom = custom; }
   if (typeof fbq !== 'undefined') {
     fbq('track', 'AddToCart', {content_name:p.name, content_category:p.cat, value:price*qty, currency:'USD'});
   }
