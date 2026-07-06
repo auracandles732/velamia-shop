@@ -492,8 +492,9 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
 
   /* CHATBOT */
   
-  /* Floating Cart Button - Lucena style */
-  .floating-cart{position:fixed;bottom:2rem;right:2rem;z-index:9998;width:56px;height:56px;border-radius:50%;background:#fff;border:1px solid var(--sand);box-shadow:0 4px 16px rgba(0,0,0,0.12);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--dark);transition:all 0.25s ease;padding:0;}
+  /* Floating Cart Button - OCULTO (ya existe el carrito en el menú superior) */
+  .floating-cart{display:none !important;}
+  .floating-cart-hidden-orig{position:fixed;bottom:2rem;right:2rem;z-index:9998;width:56px;height:56px;border-radius:50%;background:#fff;border:1px solid var(--sand);box-shadow:0 4px 16px rgba(0,0,0,0.12);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--dark);transition:all 0.25s ease;padding:0;}
   .floating-cart:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.18);background:var(--cream);}
   .floating-cart-badge{position:absolute;top:-4px;right:-4px;background:#111;color:#fff;font-size:0.65rem;font-weight:700;width:22px;height:22px;border-radius:50%;display:none;align-items:center;justify-content:center;border:2px solid #fff;}
   .floating-cart-badge.show{display:flex;}
@@ -501,11 +502,10 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   body.cart-open .floating-cart{display:none !important;}
   /* Position chat fab above the cart on mobile */
   @media(max-width:768px){
-    .floating-cart{bottom:1.2rem;right:1.2rem;width:50px;height:50px;}
-    .chat-fab{bottom:5.5rem !important;}
+    .chat-fab{bottom:1.2rem !important;right:1.2rem !important;}
   }
 
-  .chat-fab{position:fixed;bottom:6rem;right:2rem;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;gap:0.8rem;}
+  .chat-fab{position:fixed;bottom:2rem;right:2rem;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;gap:0.8rem;}
   .chat-fab-btn{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--dark),#4a3728);border:2px solid var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:transform 0.3s,box-shadow 0.3s;}
   .chat-fab-btn:hover{transform:scale(1.08);box-shadow:0 8px 30px rgba(201,168,76,0.4);}
   .chat-fab-pulse{position:absolute;bottom:0;right:0;width:60px;height:60px;border-radius:50%;background:rgba(201,168,76,0.3);animation:chatPulse 2s ease-out infinite;pointer-events:none;}
