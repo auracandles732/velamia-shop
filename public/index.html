@@ -2857,20 +2857,19 @@ document.addEventListener('DOMContentLoaded', function() {
       p.salePrice = Math.round(p.price * 0.90 * 100) / 100;
       p.saleDiscount = 10;
     });
-    // Separate featured and popular products from the rotated catalog.
+    // Promos destacadas se mantienen primero; el resto se baraja AL AZAR en CADA carga
+    // (así cada visita muestra modelos distintos y la vista se siente fresca)
     var featuredProducts = PRODUCTS.filter(function(p){ return p.featured; });
-    var popularProducts = PRODUCTS.filter(function(p){ return p.popular && !p.featured; });
-    var otherProducts = PRODUCTS.filter(function(p){ return !p.popular && !p.featured; });
-    // Shuffle only the non-popular ones
-    for (var i = otherProducts.length - 1; i > 0; i--) {
-      var j = Math.floor(seededRandom() * (i + 1));
-      var tmp = otherProducts[i]; otherProducts[i] = otherProducts[j]; otherProducts[j] = tmp;
+    var restProducts = PRODUCTS.filter(function(p){ return !p.featured; });
+    // Barajar el resto al azar en cada recarga de la página
+    for (var i = restProducts.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = restProducts[i]; restProducts[i] = restProducts[j]; restProducts[j] = tmp;
     }
-    // Reconstruct: featured first, popular next, then rotated others.
+    // Reconstruir: promos destacadas primero, luego todo lo demás mezclado
     PRODUCTS.length = 0;
     featuredProducts.forEach(function(p){ PRODUCTS.push(p); });
-    popularProducts.forEach(function(p){ PRODUCTS.push(p); });
-    otherProducts.forEach(function(p){ PRODUCTS.push(p); });
+    restProducts.forEach(function(p){ PRODUCTS.push(p); });
   })();
 
   // Render products
