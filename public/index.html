@@ -982,9 +982,10 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .card-img-wrap .card-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity 0.7s ease;}
   .card-img-wrap .card-img.active{opacity:1;}
   .card-img-wrap .card-img-single{position:relative;opacity:1;}
-  .card-slide-dots{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:3;}
-  .card-slide-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.5);border:none;padding:0;cursor:pointer;transition:background 0.2s;}
-  .card-slide-dot.active{background:#fff;}
+  .card-slide-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:3;background:rgba(0,0,0,0.18);padding:5px 8px;border-radius:50px;}
+  .card-slide-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.6);border:none;padding:0;cursor:pointer;transition:background 0.2s,transform 0.2s;}
+  .card-slide-dot:hover{transform:scale(1.2);}
+  .card-slide-dot.active{background:#fff;transform:scale(1.15);}
 
   /* Galería en detalle del producto */
   .pp-gallery{display:flex;flex-direction:column;gap:0.7rem;}
@@ -3505,13 +3506,10 @@ window.addEventListener('popstate', function(e) {
     imgs[idx].classList.add('active');
     dots[idx].classList.add('active');
   }
-  // Iniciar slideshows al cargar productos
+  // Slideshow MANUAL: el cliente cambia las fotos tocando los puntitos.
+  // (Se desactivó el deslizamiento automático a pedido)
   function initCardSlideshows() {
-    var wraps = document.querySelectorAll('.card-img-wrap[id^="cw-"]');
-    wraps.forEach(function(w){
-      var pid = parseInt(w.id.replace('cw-',''));
-      startCardSlideshow(pid);
-    });
+    // sin auto-rotación — las fotos se cambian manualmente con cardSlideTo()
   }
 
   // Cambiar imagen principal en galería del detalle
