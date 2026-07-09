@@ -25,6 +25,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-W2BL7J6B');</script>
 <!-- End Google Tag Manager -->
+<!-- Paymentez / Nuvei SDK -->
+<script src="https://cdn.paymentez.com/ccapi/sdk/payment_checkout_3.0.0.min.js"></script>
 <!-- Google Analytics 4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GFSXJ2LK3Q"></script>
 <script>
@@ -173,7 +175,8 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .product-name{font-size:1rem;font-weight:600;padding:1rem 1rem 0.2rem;}
   .product-desc{font-size:0.75rem;color:var(--dark);font-weight:400;padding:0 1rem 0.4rem;line-height:1.6;}
   .product-price{font-size:1rem;color:var(--brown);font-weight:700;padding:0 1rem 0.2rem;}
-  .product-unit{font-size:0.68rem;color:var(--taupe);padding:0 1rem 1rem;}
+  .product-unit{font-size:0.68rem;color:var(--taupe);padding:0 1rem 0.4rem;}
+  .foto-ref{font-size:0.62rem;color:#aaa;font-style:italic;padding:0 1rem 0.8rem;margin:0;}
 
   /* Card quantity selector */
   .card-qty-selector{display:flex;align-items:center;justify-content:center;gap:0;margin:0.5rem 1rem 0.3rem;}
@@ -243,11 +246,6 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .order-summary-shipping{display:flex;justify-content:space-between;font-size:0.82rem;padding:0.35rem 0;}
   .order-total{display:flex;justify-content:space-between;font-size:1rem;font-weight:700;padding-top:0.8rem;border-top:1px solid var(--sand);margin-top:0.5rem;}
 
-  .bank-box{background:var(--cream);border:0.5px solid var(--sand);border-radius:4px;padding:1.2rem;margin-bottom:1rem;}
-  .bank-row{display:flex;justify-content:space-between;font-size:0.8rem;padding:0.35rem 0;border-bottom:0.5px solid var(--sand);}
-  .bank-row:last-child{border-bottom:none;}
-  .bank-lbl{color:var(--taupe);}
-  .bank-val{font-weight:600;}
 
   .form-group{margin-bottom:1rem;}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
@@ -336,8 +334,6 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .filter-btn.active{background:var(--dark);color:var(--gold-light);border-color:var(--dark);}
   .filter-btn.mas-vendidos-btn{border-color:var(--gold);color:var(--brown);background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.05));}
   .filter-btn.mas-vendidos-btn.active{background:linear-gradient(135deg,var(--gold),#b8912a);color:var(--dark);border-color:var(--gold);}
-  .filter-btn.nuevos-btn{border-color:#D86F8A;color:#8B4A5A;background:rgba(216,111,138,0.08);}
-  .filter-btn.nuevos-btn.active{background:#D86F8A;color:#fff;border-color:#D86F8A;}
   .product-card{transition:transform 0.3s,box-shadow 0.3s,opacity 0.3s;}
   .product-card.hidden{display:none;}
   .no-products{text-align:center;padding:3rem;color:var(--taupe);width:100%;}
@@ -989,7 +985,7 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   "name": "Velamia",
   "description": "Velas artesanales personalizadas para eventos especiales en Ecuador",
   "url": "https://velamia.shop",
-  "telephone": "+593978920167",
+  "telephone": "+593995448686",
   "priceRange": "$9 - $45",
   "image": "https://velamia.shop",
   "address": {
@@ -1000,12 +996,12 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   },
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "+593978920167",
+    "telephone": "+593995448686",
     "contactType": "sales",
     "availableLanguage": "Spanish",
     "contactOption": "TollFree"
   },
-  "sameAs": ["https://wa.me/593978920167"]
+  "sameAs": ["https://wa.me/593995448686"]
 }
 </script>
 </head>
@@ -1090,7 +1086,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div class="filter-wrap">
     <button class="filter-btn active" onclick="filterProducts('all')">🕯️ Todos</button>
-    <button class="filter-btn nuevos-btn" onclick="filterProducts('lanzamientos')">✨ Lanzamientos nuevos</button>
     <button class="filter-btn mas-vendidos-btn" onclick="filterProducts('mas-vendidos')">⭐ Más Vendidos</button>
     <button class="filter-btn oferta-btn" onclick="filterProducts('oferta')">🔥 Ofertas</button>
     <button class="filter-btn" onclick="filterProducts('xv-anos')">👑 XV Años</button>
@@ -1166,69 +1161,70 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="reviews-grid">
     <div class="review-card reveal" style="transition-delay:0.1s">
       <div class="review-stars">⭐⭐⭐⭐⭐</div>
-      <p class="review-text">"Pedí las velas para el baby shower de mi hija y quedaron hermosas. Todos los invitados preguntaron dónde las conseguí. ¡Definitivamente las recomiendo!"</p>
+      <p class="review-text">"Hice el pedido desde Quito y llegó perfectamente empacado. Las velitas del bautizo de mi niña quedaron preciosas, todos los invitados me pidieron el contacto. ¡100% recomendada!"</p>
       <div class="review-author">
-        <div class="review-avatar">M</div>
+        <div class="review-avatar">S</div>
         <div>
-          <div class="review-name">María González</div>
-          <div class="review-event">Baby Shower · Guayaquil</div>
+          <div class="review-name">Sofía Zambrano</div>
+          <div class="review-event">Bautizo · Quito</div>
         </div>
       </div>
     </div>
     <div class="review-card reveal" style="transition-delay:0.2s">
       <div class="review-stars">⭐⭐⭐⭐⭐</div>
-      <p class="review-text">"Las velas para el bautizo de Sebastián fueron perfectas. El empaque, la personalización, todo impecable. Llegaron a tiempo y superaron mis expectativas."</p>
+      <p class="review-text">"Viví nerviosa por pedir a distancia pero fue todo un éxito. Las velas del baby shower llegaron a Cuenca intactas, en sus cajitas, tal cual las vi en Instagram. Hermosas de verdad."</p>
       <div class="review-author">
-        <div class="review-avatar">A</div>
+        <div class="review-avatar">D</div>
         <div>
-          <div class="review-name">Andrea Moreira</div>
-          <div class="review-event">Bautizo · Guayaquil</div>
+          <div class="review-name">Daniela Ríos</div>
+          <div class="review-event">Baby Shower · Cuenca</div>
         </div>
       </div>
     </div>
     <div class="review-card reveal" style="transition-delay:0.3s">
       <div class="review-stars">⭐⭐⭐⭐⭐</div>
-      <p class="review-text">"Encargué las velas para mi matrimonio y fue la mejor decisión. Los detalles son increíbles y mis invitados se emocionaron con el recuerdito. ¡Gracias Velamia!"</p>
+      <p class="review-text">"Me encantó la atención desde el primer mensaje. Pedí las velas para la revelación de sexo de mi bebé y superaron todo lo que imaginé. Mis amigas en Ambato quedaron enamoradas."</p>
       <div class="review-author">
-        <div class="review-avatar">V</div>
+        <div class="review-avatar">K</div>
         <div>
-          <div class="review-name">Valeria Estrada</div>
-          <div class="review-event">Matrimonio · Guayaquil</div>
+          <div class="review-name">Karina Salazar</div>
+          <div class="review-event">Revelación de Sexo · Ambato</div>
         </div>
       </div>
     </div>
     <div class="review-card reveal" style="transition-delay:0.4s">
       <div class="review-stars">⭐⭐⭐⭐⭐</div>
-      <p class="review-text">"Hice el pedido por WhatsApp y fue súper fácil. Me ayudaron a elegir el diseño, me mandaron fotos del proceso y llegaron antes de lo esperado. ¡Servicio 10/10!"</p>
+      <p class="review-text">"Pedí los recuerditos de matrimonio desde Manta y el envío fue rapidísimo. La personalización quedó exactamente como la pedí. Todos mis invitados se fueron encantados con el detallito."</p>
       <div class="review-author">
-        <div class="review-avatar">P</div>
+        <div class="review-avatar">G</div>
         <div>
-          <div class="review-name">Patricia Loor</div>
-          <div class="review-event">Revelación de Sexo · Guayaquil</div>
+          <div class="review-name">Gabriela Moreira</div>
+          <div class="review-event">Matrimonio · Manta</div>
         </div>
       </div>
     </div>
     <div class="review-card reveal" style="transition-delay:0.5s">
       <div class="review-stars">⭐⭐⭐⭐⭐</div>
-      <p class="review-text">"Le regalé la vela de mamá embarazada a mi hermana para el Día de la Madre y lloró de la emoción. Es una pieza hermosa, parece de galería. Vale cada centavo."</p>
+      <p class="review-text">"Le regalé a mi hermana la vela de mamá embarazada para su baby shower en Loja y lloró de emoción al abrirla. La calidad es impresionante, parece hecha por artistas. Vale cada centavo."</p>
       <div class="review-author">
-        <div class="review-avatar">C</div>
+        <div class="review-avatar">M</div>
         <div>
-          <div class="review-name">Carolina Vera</div>
-          <div class="review-event">Día de la Madre · Guayaquil</div>
+          <div class="review-name">Michelle Ojeda</div>
+          <div class="review-event">Baby Shower · Loja</div>
         </div>
       </div>
     </div>
     <div class="review-card reveal" style="transition-delay:0.6s">
       <div class="review-stars">⭐⭐⭐⭐⭐</div>
-      <p class="review-text">"Segunda vez que encargo con Velamia y nunca me decepciona. La calidad es consistente, los precios son justos y la atención es muy amable. ¡Ya tengo mi tercera orden lista!"</p>
+      <p class="review-text">"Ya van tres pedidos desde Ibarra y siempre quedan espectaculares. La atención es súper personalizada, te asesoran en todo. No existe otro lugar donde se consiga esta calidad en Ecuador."</p>
       <div class="review-author">
-        <div class="review-avatar">L</div>
+        <div class="review-avatar">P</div>
         <div>
-          <div class="review-name">Lucía Armijos</div>
-          <div class="review-event">Baby Shower · Guayaquil</div>
+          <div class="review-name">Paola Narváez</div>
+          <div class="review-event">Bautizo · Ibarra</div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </section>
@@ -1240,13 +1236,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   <div class="payment-grid">
     <div class="payment-card reveal">
-      <h3><span>🏦</span> Transferencia Bancaria</h3>
-      <div class="payment-row"><span class="payment-label">Banco</span><span class="payment-value">Banco Pichincha</span></div>
-      <div class="payment-row"><span class="payment-label">Tipo de cuenta</span><span class="payment-value">Ahorros</span></div>
-      <div class="payment-row"><span class="payment-label">Número de cuenta</span><span class="payment-value">2209632506</span></div>
-      <div class="payment-row"><span class="payment-label">Titular</span><span class="payment-value">Zaida Bucheli</span></div>
-      <div class="payment-row"><span class="payment-label">Cédula</span><span class="payment-value">0953235215</span></div>
-      <div class="payment-note">📎 Sube tu comprobante en el carrito al finalizar tu pedido.</div>
+      <h3><span>💳</span> Pago con Tarjeta</h3>
+      <div class="payment-row"><span class="payment-label">Visa</span><span class="payment-value">✓ Aceptada</span></div>
+      <div class="payment-row"><span class="payment-label">Mastercard</span><span class="payment-value">✓ Aceptada</span></div>
+      <div class="payment-row"><span class="payment-label">Diners Club</span><span class="payment-value">✓ Aceptada</span></div>
+      <div class="payment-row"><span class="payment-label">American Express</span><span class="payment-value">✓ Aceptada</span></div>
+      <div class="payment-note">🔒 Pago 100% seguro procesado por Nuvei. Tus datos de tarjeta nunca son almacenados por Velamia.</div>
     </div>
     <div class="payment-card reveal" style="transition-delay:0.15s">
       <h3><span>🚚</span> Política de Envíos</h3>
@@ -1274,7 +1269,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="how-grid">
     <div class="how-step reveal" style="transition-delay:0.1s"><div class="how-num">01</div><h3 class="how-title">Elige</h3><p class="how-desc">Escoge tu diseño favorito y agrégalo al carrito.</p></div>
     <div class="how-step reveal" style="transition-delay:0.2s"><div class="how-num">02</div><h3 class="how-title">Personaliza</h3><p class="how-desc">Indica la cantidad de docenas y tu ubicación.</p></div>
-    <div class="how-step reveal" style="transition-delay:0.3s"><div class="how-num">03</div><h3 class="how-title">Paga</h3><p class="how-desc">Transfiere y sube tu comprobante en el carrito.</p></div>
+    <div class="how-step reveal" style="transition-delay:0.3s"><div class="how-num">03</div><h3 class="how-title">Paga</h3><p class="how-desc">Paga de forma segura con tu tarjeta de crédito o débito.</p></div>
     <div class="how-step reveal" style="transition-delay:0.4s"><div class="how-num">04</div><h3 class="how-title">Recibe</h3><p class="how-desc">Te contactamos y entregamos tu pedido. 🕯️</p></div>
   </div>
 </section>
@@ -1326,14 +1321,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <span class="canal-detail">@velamia.ec</span>
     </a>
 
-    <a href="https://wa.me/593978920167" target="_blank" class="canal-item">
+    <a href="https://wa.me/593995448686" target="_blank" class="canal-item">
       <div class="canal-icon">
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.737-.961zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
         </svg>
       </div>
       <span class="canal-name">WHATSAPP</span>
-      <span class="canal-detail">+593 97 892 0167</span>
+      <span class="canal-detail">+593 99 544 8686</span>
     </a>
 
     <a href="mailto:contacto@velamia.shop" class="canal-item">
@@ -1384,23 +1379,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <p class="pm-note"><strong>Importante:</strong> Una vez procesado el pago con tarjeta NO se acepta devolución de dinero bajo ninguna circunstancia.</p>
         </div>
       </div>
-      <div class="payment-method-card">
-        <div class="pm-header">
-          <span class="pm-icon">🏦</span>
-          <span class="pm-name">Transferencia Bancaria</span>
-          <span class="pm-tag">Banco Pichincha</span>
-        </div>
-        <div class="pm-body">
-          <p><strong>Anticipo del 50%</strong> para confirmar el pedido + 50% antes del envío.</p>
-          <ul class="pm-list">
-            <li>✓ Sin comisiones adicionales</li>
-            <li>✓ Permite pago por abonos (hasta completar 50%)</li>
-            <li>✓ Comprobante por WhatsApp</li>
-            <li>✓ Requiere validación manual del pago</li>
-          </ul>
-          <p class="pm-note"><strong>Importante:</strong> El anticipo del 50% NO es reembolsable una vez iniciada la producción.</p>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1411,7 +1389,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="politica-num">1</div>
       <div class="politica-content">
         <h3>Confirmación del pedido</h3>
-        <p>El pedido se considera confirmado únicamente cuando se recibe el pago (100% con tarjeta o 50% por transferencia). Sin pago, el pedido no entra en producción ni se reserva fecha.</p>
+        <p>El pedido se considera confirmado únicamente cuando se recibe el pago al 100% con tarjeta. Sin pago, el pedido no entra en producción ni se reserva fecha.</p>
       </div>
     </div>
     <div class="politica-card highlight-card">
@@ -1425,7 +1403,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="politica-num">3</div>
       <div class="politica-content">
         <h3>Reserva de fecha — Compromiso del cliente</h3>
-        <p>Velamia agenda los pedidos por fecha. Una vez pactada la fecha de entrega, esta no puede modificarse y queda reservada exclusivamente para ese pedido. El cliente se compromete a cumplir con el saldo total (en caso de transferencia) en la fecha pactada, una vez terminado el pedido.</p>
+        <p>Velamia agenda los pedidos por fecha. Una vez pactada la fecha de entrega, esta no puede modificarse y queda reservada exclusivamente para ese pedido.</p>
       </div>
     </div>
     <div class="politica-card">
@@ -1443,18 +1421,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
     <div class="politica-card">
-      <div class="politica-num">6</div>
-      <div class="politica-content">
-        <h3>Pago por abonos (solo aplica a transferencia)</h3>
-        <p>Si se acuerda pago por abonos, el pedido solo inicia producción cuando se completa el 50% del valor total. Mientras no se alcance ese monto, el pedido permanece en espera sin fecha asignada.</p>
-      </div>
-    </div>
-    <div class="politica-card">
-      <div class="politica-num">7</div>
-      <div class="politica-content">
-        <h3>Saldo restante (solo aplica a transferencia)</h3>
-        <p>El 50% restante debe cancelarse antes del envío o entrega del pedido. No se despacha ningún pedido con saldo pendiente.</p>
-      </div>
     </div>
   </div>
 
@@ -1528,7 +1494,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <h4>Eventos</h4>
       <ul>
         <li><a href="#productos" onclick="filterProducts('baby-shower')">Baby shower</a></li>
-        <li><a href="#productos" onclick="filterProducts('lanzamientos')">Lanzamientos nuevos</a></li>
         <li><a href="#productos" onclick="filterProducts('bautizo')">Bautizos</a></li>
         <li><a href="#productos" onclick="filterProducts('matrimonio')">Bodas</a></li>
         <li><a href="#productos" onclick="filterProducts('cumpleanos')">Cumpleaños</a></li>
@@ -1559,7 +1524,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="https://instagram.com/velamia.ec" target="_blank" title="Instagram">
           <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
         </a>
-        <a href="https://wa.me/593978920167" target="_blank" title="WhatsApp">
+        <a href="https://wa.me/593995448686" target="_blank" title="WhatsApp">
           <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.737-.961zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
         </a>
         <a href="https://www.tiktok.com/@velamia.ec" target="_blank" title="TikTok">
@@ -1652,26 +1617,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="order-total"><span>Total a pagar</span><span id="orderTotal">$0.00</span></div>
       </div>
       <div class="modal-section">
-        <h3>Datos para transferencia</h3>
-        <div class="bank-box">
-          <div class="bank-row"><span class="bank-lbl">Banco</span><span class="bank-val">Banco Pichincha</span></div>
-          <div class="bank-row"><span class="bank-lbl">Tipo</span><span class="bank-val">Ahorros</span></div>
-          <div class="bank-row"><span class="bank-lbl">Número de cuenta</span><span class="bank-val">2209632506</span></div>
-          <div class="bank-row"><span class="bank-lbl">Titular</span><span class="bank-val">Zaida Bucheli</span></div>
-          <div class="bank-row"><span class="bank-lbl">Cédula</span><span class="bank-val">0953235215</span></div>
-        </div>
-      </div>
-      <div class="modal-section">
-        <h3>Comprobante de pago</h3>
-        <label class="file-upload" for="comprobanteInput">
-          <input type="file" id="comprobanteInput" accept="image/*,.pdf" onchange="handleFile(this)">
-          <div class="file-upload-icon">📎</div>
-          <div class="file-upload-text">Sube tu comprobante aquí</div>
-          <div class="file-upload-sub">PNG, JPG o PDF · Máx 10MB</div>
-          <div class="file-preview" id="filePreview"></div>
-        </label>
-      </div>
-      <div class="modal-section">
         <h3>Tus datos de entrega</h3>
         <div class="form-row">
           <div class="form-group"><label>Nombres *</label><input type="text" id="fNombre" placeholder="Tu nombre"/></div>
@@ -1682,13 +1627,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="form-group"><label>Sector / Ciudad</label><input type="text" id="fCiudad" placeholder="Ej: Norte de Guayaquil"/></div>
         </div>
         <div class="form-group"><label>Dirección completa *</label><input type="text" id="fDireccion" placeholder="Calle, número, edificio..."/></div>
+        <div class="form-group"><label>Correo electrónico *</label><input type="email" id="fEmail" placeholder="tucorreo@gmail.com"/></div>
         <div class="form-group"><label>Referencias</label><textarea id="fReferencias" placeholder="Cerca de... color de casa... piso..."></textarea></div>
       </div>
       <div class="politicas-checkbox">
         <input type="checkbox" id="aceptaPoliticas">
         <label for="aceptaPoliticas">He leído y acepto las <a href="#politicas" target="_blank">políticas</a> de Velamia.</label>
       </div>
-      <button class="btn-send" onclick="sendOrder()">✅ Confirmar pedido</button>
+      <button class="btn-send" id="btnPagar" onclick="initPaymentezCheckout()">💳 Pagar con tarjeta</button>
     </div>
     <div class="success-screen" id="successScreen">
       <div class="success-icon">🎉</div>
@@ -1743,14 +1689,6 @@ const IMG_MAP = {
   "mat6": "images/mat6.png",
 
   "bs_new1": "images/bs_new1.jpeg",
-  "baby_shower_promo_2_docenas": "images/baby_shower_promo_2_docenas.png",
-  "osito_canasta_globos": "images/osito_canasta_globos.png",
-  "leoncito_base_hexagonal": "images/leoncito_base_hexagonal.png",
-  "conejito_caja_lazo_lila": "images/conejito_caja_lazo_lila.png",
-  "mariposa_vaso_tapa_madera": "images/mariposa_vaso_tapa_madera.png",
-  "osito_rosa_frasco_corcho": "images/osito_rosa_frasco_corcho.png",
-  "osito_base_circular_nombre": "images/osito_base_circular_nombre.png",
-  "virgencita_bautizo_colores": "images/virgencita_bautizo_colores.png",
   "bs_new2": "images/bs_new2.jpeg",
   "bs_new3": "images/bs_new3.jpeg",
   "bs_new3_2": "images/bs_new3_2.png",
@@ -1790,14 +1728,6 @@ const IMG_MAP = {
 const ADMIN_PIN = '1234';
 
 const PRODUCTS = [
-  {id:62, name:"Promocion Especial Baby Shower", desc:"Oferta exclusiva solo por tiempo limitado. Velitas personalizadas para eventos desde 2 docenas, pedidos bajo reserva", price:24.99, tag:"Oferta Exclusiva", img:"baby_shower_promo_2_docenas", cat:"baby-shower", featured:true, nuevo:true, unit:"docena", unitLabel:"promo 2 docenas (24 unidades)", qtyLabel:"promos de 2 docenas", fixedSale:true, onSale:true, oferta:true, originalPrice:35.98, salePrice:24.99, saleDiscount:31, saleText:"Oferta exclusiva solo por tiempo limitado"},
-  {id:63, name:"Osito en Canasta con Globos", desc:"Incluye empaque + nombre personalizado. Ideal para baby shower, bautizo y matrimonio", price:40, tag:"Baby Shower", img:"osito_canasta_globos", cat:"baby-shower", nuevo:true, unit:"docena"},
-  {id:64, name:"Leoncito en Base Hexagonal", desc:"Incluye empaque + nombre personalizado. Ideal para baby shower, bautizo y matrimonio", price:35, tag:"Baby Shower", img:"leoncito_base_hexagonal", cat:"baby-shower", nuevo:true, unit:"docena"},
-  {id:65, name:"Conejito en Caja Transparente con Lazo Lila", desc:"Incluye caja transparente con lazo lila + nombre personalizado. Ideal para baby shower y bautizo", price:35, tag:"Baby Shower", img:"conejito_caja_lazo_lila", cat:"baby-shower", nuevo:true, unit:"docena"},
-  {id:66, name:"Mariposa en Vaso con Tapa de Madera", desc:"Vela en vaso con mariposa decorativa. Incluye empaque + nombre personalizado", price:50, tag:"Premium", img:"mariposa_vaso_tapa_madera", cat:"baby-shower", nuevo:true, unit:"docena"},
-  {id:67, name:"Osito Rosa en Frasco con Corcho", desc:"Osito rosa en frasco de vidrio con tapa de corcho. Incluye empaque + nombre personalizado", price:35, tag:"Baby Shower", img:"osito_rosa_frasco_corcho", cat:"baby-shower", nuevo:true, unit:"docena"},
-  {id:68, name:"Osito en Base Circular con Nombre", desc:"Osito con lazo rosado en base circular personalizada. Incluye nombre", price:32, tag:"Baby Shower", img:"osito_base_circular_nombre", cat:"baby-shower", nuevo:true, unit:"docena"},
-  {id:69, name:"Virgencita Bautizo en Colores", desc:"Velita de virgencita para bautizo en colores rosado y morado. Pedidos bajo reserva", price:32, tag:"Bautizo", img:"virgencita_bautizo_colores", cat:"bautizo", nuevo:true, unit:"docena"},
   {id:1,  name:"Osito en Nube", desc:"Incluye empaque y nombre personalizado", price:30, tag:"Popular", img:"img1", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img1","img1_2"]},
   {id:2,  name:"Osito en Base con Corazon", desc:"Ideal para baby shower y cumpleanos", price:30, tag:"Baby Shower", img:"img2", cat:"baby-shower", unit:"docena"},
   {id:3,  name:"Osito en Nube con Corazon", desc:"Osito en nube con corazon al centro", price:30, tag:"Popular", img:"img3", cat:"baby-shower", extra:"mas-vendidos", popular:true, unit:"docena", imgs:["img3","img3_2"]},
@@ -1818,9 +1748,9 @@ const PRODUCTS = [
   {id:18, name:"Osito Girl or Boy en Cajita", desc:"Osito en cajita con mono", price:30, tag:"Revelacion", img:"rev3", cat:"revelacion", unit:"docena"},
   {id:19, name:"Huellitas Rosa y Azul", desc:"Vela huellitas de bebe - Boy or Girl", price:19.99, tag:"Revelacion", img:"rev4", cat:"revelacion", unit:"docena"},
   {id:20, name:"Cruz con Flores Bautizo", desc:"Vela cruz con flores y cuerda", price:32, tag:"Bautizo", img:"bau1", cat:"bautizo", unit:"docena"},
-  {id:21, name:"Angel con Lazo y Medalla", desc:"Angel con lazo azul y medalla dorada. Foto referencial — el adorno de virgencita no está incluido en el producto.", price:35, tag:"Bautizo", img:"bau2", cat:"bautizo", unit:"docena"},
+  {id:21, name:"Angel con Lazo y Medalla", desc:"Angel con lazo azul y medalla dorada", price:35, tag:"Bautizo", img:"bau2", cat:"bautizo", unit:"docena"},
   {id:22, name:"Angel con Corazon en Bolsa", desc:"Angel con corazon - En bolsa personalizada", price:35, tag:"Bautizo", img:"bau3", cat:"bautizo", extra:"mas-vendidos", unit:"docena"},
-  {id:23, name:"Cubito con Bolitas Redondas en Cajita", desc:"Cubito con bolitas redondas en cajita con mono", price:30, tag:"Bautizo", img:"bau4", cat:"bautizo", unit:"docena"},
+  {id:23, name:"Paloma en Cajita Mi Bautismo", desc:"Paloma en cajita con mono", price:30, tag:"Bautizo", img:"bau4", cat:"bautizo", unit:"docena"},
   {id:24, name:"Angel Rezando con Rosario", desc:"Angel rezando con rosario", price:32, tag:"Bautizo", img:"bau5", cat:"bautizo", unit:"docena"},
   {id:25, name:"Virgen con Corazon Dorado", desc:"Virgen con detalles dorados", price:32, tag:"Bautizo", img:"bau6", cat:"bautizo", unit:"docena"},
   {id:26, name:"Novios en Arco Romantico", desc:"Vela cilindrica con novios en arco", price:45, tag:"Matrimonio", img:"mat1", cat:"matrimonio", unit:"docena"},
@@ -1860,15 +1790,32 @@ const PRODUCTS = [
   {id:56, name:"Vela Flor en Copa Quinceañera", desc:"Vela con flor artesanal en copa de vidrio - Personalizada con nombre e iniciales. Cera de soya premium", price:45, tag:"Quinceañera", img:"xv7", cat:"xv-anos", unit:"docena"},
   {id:57, name:"Vela Copa XV Floral", desc:"Vela en copa con diseño XV floral, tapa de madera y moño premium - Personalizada con nombre", price:55, tag:"Quinceañera", img:"xv8", cat:"xv-anos", unit:"docena"},
 
-  {id:58, name:"Osito en Caja con Lazo Morado", desc:"Incluye caja con lazo morado + nombre personalizado. Ideal para baby shower y bautizo", price:38, tag:"Baby Shower", img:"conejito_rosa", cat:"baby-shower", unit:"docena"},
+  {id:58, name:"Conejito Rosa en Empaque", desc:"Incluye empaque + nombre personalizado. Ideal para baby shower y bautizo", price:38, tag:"Baby Shower", img:"conejito_rosa", cat:"baby-shower", unit:"docena"},
   {id:59, name:"Abejita en Vaso Personalizado", desc:"Vela abejita en vaso de vidrio con nombre personalizado. Ideal para cumpleanos y baby shower", price:45, tag:"Baby Shower", img:"abejita_vaso", cat:"baby-shower", unit:"docena"},
-  {id:60, name:"Conejito en Cajita con Lazo", desc:"Incluye empaque + nombre personalizado. Ideal para bautizo y baby shower", price:38, tag:"Bautizo", img:"osito_lila", cat:"bautizo", unit:"docena"},
+  {id:60, name:"Osito Blanco en Empaque Lila", desc:"Incluye empaque + nombre personalizado. Ideal para bautizo y baby shower", price:38, tag:"Bautizo", img:"osito_lila", cat:"bautizo", unit:"docena"},
   {id:61, name:"Pinguino en Empaque Azul", desc:"Incluye empaque + nombre personalizado. Ideal para bautizo y baby shower", price:38, tag:"Bautizo", img:"pinguino_azul", cat:"bautizo", unit:"docena"}
 ];
 
 // ── CART ──
 var cart = {};
-var fileName = '';
+var paymentCheckout = null;
+function initPaymentezSDK() {
+  if (typeof PaymentCheckout === 'undefined') return;
+  paymentCheckout = new PaymentCheckout.modal({
+    env_mode: 'stg',
+    onOpen: function() {},
+    onClose: function() {},
+    onResponse: function(response) {
+      var tx = response.transaction;
+      if (tx && tx.status === 'success' && tx.status_detail === 3) {
+        completarPedidoPagado(tx);
+      } else {
+        alert('El pago no fue aprobado. Por favor intenta nuevamente.');
+      }
+    }
+  });
+}
+window.addEventListener('load', initPaymentezSDK);
 
 // ── CAROUSEL ──
 var currentSlide = 0;
@@ -1975,13 +1922,12 @@ function updateCartUI() {
   footer.style.display = 'block';
   var html = '';
   items.forEach(function(i) {
-    var uLabel = i.qtyLabel || (i.unit === 'unidad' ? 'unidad(es)' : 'docena(s)');
-    var priceUnit = i.unitLabel || (i.unit === 'unidad' ? 'por unidad' : 'por docena');
+    var uLabel = i.unit === 'unidad' ? 'unidad(es)' : 'docena(s)';
     html += '<div class="cart-item">';
     html += '<img class="cart-item-img" src="' + IMG_MAP[i.img] + '" alt="' + i.name + '"/>';
     html += '<div>';
     html += '<div class="cart-item-name">' + i.name + '</div>';
-    html += '<div class="cart-item-sub">$' + i.price.toFixed(2) + ' ' + priceUnit + '</div>';
+    html += '<div class="cart-item-sub">$' + i.price.toFixed(2) + ' por ' + (i.unit==='unidad'?'unidad':'docena') + '</div>';
     html += '<div class="cart-item-price">Subtotal: $' + (i.price*i.qty).toFixed(2) + '</div>';
     html += '<div class="cart-qty">';
     html += '<button class="qty-btn" onclick="changeQty(' + i.id + ',-1)">-</button>';
@@ -2002,22 +1948,6 @@ function isSaleActive() {
   return day === 15 || day === 30;  // Ofertas activas solo el 15 y 30 de cada mes
 }
 
-function isProductSaleActive(p) {
-  return !!(p && p.onSale && (p.fixedSale || isSaleActive()));
-}
-
-function getProductPrice(p) {
-  return isProductSaleActive(p) ? p.salePrice : p.price;
-}
-
-function getProductUnitLabel(p) {
-  return p.unitLabel || (p.unit === 'unidad' ? 'por unidad' : 'por docena (12 unidades)');
-}
-
-function getProductQtyLabel(p) {
-  return p.qtyLabel || (p.unit === 'unidad' ? 'unidades' : 'docenas');
-}
-
 function changeCardQty(id, delta) {
   var el = document.getElementById('card-qty-' + id);
   if (!el) return;
@@ -2032,9 +1962,9 @@ function addToCartQty(id) {
   var qty = el ? parseInt(el.textContent) : 1;
   var p = PRODUCTS.find(function(x){ return x.id===id; });
   if (!p) return;
-  var price = getProductPrice(p);
+  var price = (p.onSale && isSaleActive()) ? p.salePrice : p.price;
   if (!cart[id]) {
-    cart[id] = {id:p.id, name:p.name, desc:p.desc, price:price, tag:p.tag, img:p.img, unit:p.unit, unitLabel:p.unitLabel, qtyLabel:p.qtyLabel, qty:qty, onSale:isProductSaleActive(p)};
+    cart[id] = {id:p.id, name:p.name, desc:p.desc, price:price, tag:p.tag, img:p.img, unit:p.unit, qty:qty, onSale:(p.onSale&&isSaleActive())};
   } else {
     cart[id].qty += qty;
   }
@@ -2062,8 +1992,8 @@ function addToCartQty(id) {
 
 function addToCart(id) {
   var p = PRODUCTS.find(function(x){ return x.id===id; });
-  var price = getProductPrice(p);
-  if (!cart[id]) cart[id] = {id:p.id,name:p.name,desc:p.desc,price:price,tag:p.tag,img:p.img,unit:p.unit,unitLabel:p.unitLabel,qtyLabel:p.qtyLabel,qty:1,onSale:isProductSaleActive(p)};
+  var price = (p.onSale && isSaleActive()) ? p.salePrice : p.price;
+  if (!cart[id]) cart[id] = {id:p.id,name:p.name,desc:p.desc,price:price,tag:p.tag,img:p.img,unit:p.unit,qty:1,onSale:(p.onSale&&isSaleActive())};
   else cart[id].qty++;
   // FB AddToCart event
   if (typeof fbq !== 'undefined') {
@@ -2122,10 +2052,9 @@ function filterProducts(cat) {
   var visible = 0;
   cards.forEach(function(card) {
     var match = cat==='all' 
-      || card.dataset.cat===cat
+      || card.dataset.cat===cat 
       || (cat==='mas-vendidos' && card.dataset.extra==='mas-vendidos')
-      || (cat==='oferta' && card.dataset.oferta==='true')
-      || (cat==='lanzamientos' && card.dataset.nuevo==='true');
+      || (cat==='oferta' && card.dataset.oferta==='true');
     if (match) { card.classList.remove('hidden'); visible++; }
     else card.classList.add('hidden');
   });
@@ -2184,19 +2113,14 @@ function openCheckout() {
 function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); document.getElementById('checkoutBody').style.display='block'; document.getElementById('successScreen').classList.remove('show'); document.body.classList.remove('cart-open'); }
 function closeAll() { closeCheckout(); cart={}; updateCartUI(); }
 
-function handleFile(input) {
-  if (input.files && input.files[0]) { fileName = input.files[0].name; document.getElementById('filePreview').textContent = 'OK: ' + fileName; }
-}
 
-function sendOrder() {
+function initPaymentezCheckout() {
   var nombre = document.getElementById('fNombre').value.trim();
   var apellido = document.getElementById('fApellido').value.trim();
   var tel = document.getElementById('fTelefono').value.trim();
   var dir = document.getElementById('fDireccion').value.trim();
-  var ciudad = document.getElementById('fCiudad').value.trim();
-  var ref = document.getElementById('fReferencias').value.trim();
-  if (!nombre||!apellido||!tel||!dir) { alert('Completa los campos obligatorios.'); return; }
-  if (!fileName) { alert('Por favor sube el comprobante de pago para continuar.'); return; }
+  var email = document.getElementById('fEmail') ? document.getElementById('fEmail').value.trim() : '';
+  if (!nombre||!apellido||!tel||!dir||!email) { alert('Completa todos los campos obligatorios, incluyendo el correo electrónico.'); return; }
   var aceptaPol = document.getElementById('aceptaPoliticas');
   if (aceptaPol && !aceptaPol.checked) { alert('Debes aceptar las políticas de pedido para continuar.'); return; }
   var items = Object.values(cart);
@@ -2204,82 +2128,85 @@ function sendOrder() {
   var discount = getDiscount(subtotal);
   var shipping = getShippingCost();
   var total = subtotal - discount + shipping;
-  var zone = document.getElementById('shippingZone').value;
-  var msg = 'NUEVO PEDIDO VELAMIA\n\n';
-  msg += 'PRODUCTOS:\n';
-  items.forEach(function(i){ msg += '- '+i.name+' x '+i.qty+' '+(i.qtyLabel || (i.unit==='unidad'?'unidad(es)':'docena(s)'))+' = $'+(i.price*i.qty).toFixed(2)+'\n'; });
-  msg += '\nSubtotal: $'+subtotal.toFixed(2);
-  if (discount>0) msg += '\nDescuento: -$'+discount.toFixed(2);
-  if (couponCode && couponDiscount>0) msg += '\nCupon '+couponCode+' (-'+Math.round(couponDiscount*100)+'%): -$'+(subtotal*couponDiscount).toFixed(2);
-  msg += '\nEnvio: '+(shipping===0?'GRATIS':'$'+shipping.toFixed(2));
-  msg += '\n\nTOTAL: $'+total.toFixed(2);
-  msg += '\n\nCLIENTE:\n- '+nombre+' '+apellido+'\n- Tel: '+tel+'\n- Dir: '+dir;
-  if (ciudad) msg += '\n- Sector: '+ciudad;
-  if (ref) msg += '\n- Ref: '+ref;
-  msg += '\n\nPago: Transferencia Banco Pichincha 2209632506';
-  if (fileName) msg += '\nComprobante: '+fileName;
-  // FB Purchase event
-  if (typeof fbq !== 'undefined') {
-    var purchaseItems = Object.values(cart);
-    var purchaseTotal = purchaseItems.reduce(function(s,i){ return s+i.price*i.qty; }, 0);
-    fbq('track', 'Purchase', {
-      value: purchaseTotal,
-      currency: 'USD',
-      num_items: purchaseItems.length
-    });
-  }
-  // GA4 purchase
-  if (typeof gtag !== 'undefined') {
-    var ga4Items = Object.values(cart);
-    var ga4Total = ga4Items.reduce(function(s,i){ return s+i.price*i.qty; }, 0);
-    var ga4OrderNum = 'VEL-2026-' + String(Math.floor(Math.random()*900)+100);
-    gtag('event', 'purchase', {
-      transaction_id: ga4OrderNum,
-      currency: 'USD',
-      value: ga4Total,
-      items: ga4Items.map(function(i){ return { item_id: String(i.id), item_name: i.name, item_category: i.tag, price: i.price, quantity: i.qty }; })
-    });
-  }
-  // ── Enviar email de notificación automáticamente ──
-  var productosEmail = items.map(function(i){ return i.name+' x'+i.qty; }).join(', ');
-  enviarEmailPedido({
-    ocasion:     'Pedido por carrito',
-    producto:    productosEmail,
-    cantidad:    items.reduce(function(s,i){ return s+i.qty; }, 0) + ' unidad(es)',
-    presupuesto: '$' + total.toFixed(2),
-    detalles:    nombre + ' ' + apellido + ' | Tel: ' + tel + ' | Dir: ' + dir + (ciudad ? ' - ' + ciudad : '')
-  });
-  // ── Guardar pedido en Google Sheets ──
-  var sheetData = {
-    fecha:       new Date().toLocaleDateString('es-EC', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'}),
-    producto:    productosEmail,
-    cantidad:    items.reduce(function(s,i){ return s+i.qty; }, 0),
-    total:       '$' + total.toFixed(2),
-    cliente:     nombre + ' ' + apellido,
-    telefono:    tel,
-    ciudad:      ciudad || '-',
-    direccion:   dir,
-    referencias: ref || '-'
-  };
-  var sheetUrl = 'https://script.google.com/macros/s/AKfycbyU-N7ktYUe6l1jQFXFuwEHE6Cld2-krdGMtDI-5iFkfMOIMU_lvicQU97YTskfc23hPw/exec?' +
-    'fecha='       + encodeURIComponent(sheetData.fecha) +
-    '&producto='   + encodeURIComponent(sheetData.producto) +
-    '&cantidad='   + encodeURIComponent(sheetData.cantidad) +
-    '&total='      + encodeURIComponent(sheetData.total) +
-    '&cliente='    + encodeURIComponent(sheetData.cliente) +
-    '&telefono='   + encodeURIComponent(sheetData.telefono) +
-    '&ciudad='     + encodeURIComponent(sheetData.ciudad) +
-    '&direccion='  + encodeURIComponent(sheetData.direccion) +
-    '&referencias='+ encodeURIComponent(sheetData.referencias);
-  fetch(sheetUrl, { method: 'GET', mode: 'no-cors' }).catch(function(err){ console.warn('Sheets error:', err); });
-
-  document.getElementById('checkoutModal').classList.remove('open');
-  // Generate order number
   var orderNum = 'VEL-2026-' + String(Math.floor(Math.random()*900)+100);
-  document.getElementById('confirmOrderNum').textContent = 'Pedido #' + orderNum;
+  var description = items.map(function(i){ return i.name+' x'+i.qty; }).join(', ').substring(0, 250);
+  window._pendingOrder = {
+    nombre: nombre, apellido: apellido, tel: tel, dir: dir, email: email,
+    ciudad: document.getElementById('fCiudad').value.trim(),
+    ref: document.getElementById('fReferencias').value.trim(),
+    items: items, subtotal: subtotal, discount: discount, shipping: shipping,
+    total: total, orderNum: orderNum
+  };
+  var btn = document.getElementById('btnPagar');
+  btn.textContent = 'Procesando...'; btn.disabled = true;
+  fetch('/api/create-payment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ amount: total, description: description, devReference: orderNum, userId: tel, userEmail: email })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data) {
+    btn.textContent = '💳 Pagar con tarjeta'; btn.disabled = false;
+    if (data.reference && paymentCheckout) {
+      paymentCheckout.open({ reference: data.reference });
+    } else {
+      alert('Error al iniciar el pago. Intenta nuevamente.');
+    }
+  })
+  .catch(function() {
+    btn.textContent = '💳 Pagar con tarjeta'; btn.disabled = false;
+    alert('Error de conexión. Intenta nuevamente.');
+  });
+}
+
+function completarPedidoPagado(tx) {
+  var o = window._pendingOrder;
+  if (!o) return;
+  // WhatsApp
+  var msg = '✅ NUEVO PEDIDO VELAMIA — PAGO APROBADO\n\n';
+  msg += 'PRODUCTOS:\n';
+  o.items.forEach(function(i){ msg += '- '+i.name+' x '+i.qty+' = $'+(i.price*i.qty).toFixed(2)+'\n'; });
+  msg += '\nSubtotal: $'+o.subtotal.toFixed(2);
+  if (o.discount>0) msg += '\nDescuento: -$'+o.discount.toFixed(2);
+  msg += '\nEnvío: '+(o.shipping===0?'GRATIS':'$'+o.shipping.toFixed(2));
+  msg += '\nTOTAL: $'+o.total.toFixed(2);
+  msg += '\n\nCLIENTE:\n- '+o.nombre+' '+o.apellido+'\n- Tel: '+o.tel+'\n- Email: '+o.email+'\n- Dir: '+o.dir;
+  if (o.ciudad) msg += '\n- Sector: '+o.ciudad;
+  if (o.ref) msg += '\n- Ref: '+o.ref;
+  msg += '\n\n💳 Pago con tarjeta — APROBADO';
+  msg += '\nTransaction ID: '+tx.id;
+  msg += '\nAutorización: '+(tx.authorization_code||'-');
+  msg += '\nPedido: #'+o.orderNum;
+  // FB Purchase
+  if (typeof fbq !== 'undefined') fbq('track', 'Purchase', { value: o.total, currency: 'USD', num_items: o.items.length });
+  // GA4 purchase
+  if (typeof gtag !== 'undefined') gtag('event', 'purchase', { transaction_id: o.orderNum, currency: 'USD', value: o.total, items: o.items.map(function(i){ return { item_id: String(i.id), item_name: i.name, price: i.price, quantity: i.qty }; }) });
+  // Email notificación interna a Velamia
+  var productosEmail = o.items.map(function(i){ return i.name+' x'+i.qty; }).join(', ');
+  enviarEmailPedido({ ocasion: 'Pedido pagado con tarjeta', producto: productosEmail, cantidad: o.items.reduce(function(s,i){ return s+i.qty; },0)+' unidad(es)', presupuesto: '$'+o.total.toFixed(2), detalles: o.nombre+' '+o.apellido+' | Tel: '+o.tel+' | Dir: '+o.dir+(o.ciudad?' - '+o.ciudad:'') });
+  // Email de confirmación al cliente (requerido por Nuvei)
+  enviarEmailCliente({ nombre: o.nombre, email: o.email, productos: productosEmail, total: o.total.toFixed(2), orderNum: o.orderNum, transactionId: tx.id, authCode: tx.authorization_code||'-' });
+  // Google Sheets
+  var sheetUrl = 'https://script.google.com/macros/s/AKfycbyU-N7ktYUe6l1jQFXFuwEHE6Cld2-krdGMtDI-5iFkfMOIMU_lvicQU97YTskfc23hPw/exec?' +
+    'fecha='+encodeURIComponent(new Date().toLocaleDateString('es-EC',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}))+
+    '&producto='+encodeURIComponent(productosEmail)+
+    '&cantidad='+encodeURIComponent(o.items.reduce(function(s,i){return s+i.qty;},0))+
+    '&total='+encodeURIComponent('$'+o.total.toFixed(2))+
+    '&cliente='+encodeURIComponent(o.nombre+' '+o.apellido)+
+    '&telefono='+encodeURIComponent(o.tel)+
+    '&ciudad='+encodeURIComponent(o.ciudad||'-')+
+    '&direccion='+encodeURIComponent(o.dir)+
+    '&referencias='+encodeURIComponent(o.ref||'-');
+  fetch(sheetUrl, { method: 'GET', mode: 'no-cors' }).catch(function(){});
+  // Cerrar modal y mostrar confirmación
+  document.getElementById('checkoutModal').classList.remove('open');
+  document.getElementById('confirmOrderNum').textContent = 'Pedido #'+o.orderNum;
   document.getElementById('orderConfirmOverlay').classList.add('open');
   cart = {}; updateCartUI();
+  window._pendingOrder = null;
 }
+
+function handleFile(input) {}
 
 // ── SEARCH ──
 function searchProducts(query) {
@@ -2447,8 +2374,8 @@ function getBotResponse(text) {
     return "Si! Tenemos 5% de descuento automatico en compras de 3 o mas docenas. Se aplica directamente en el carrito.";
   if (q.indexOf('minimo')>-1||q.indexOf('cuantas')>-1||q.indexOf('menos')>-1)
     return "El pedido minimo es 1 docena (12 unidades). Puedes mezclar disenos. Los pedidos se hacen bajo reserva.";
-  if (q.indexOf('pago')>-1||q.indexOf('transferencia')>-1||q.indexOf('banco')>-1)
-    return "Aceptamos transferencia bancaria al Banco Pichincha, cuenta ahorros 2209632506 a nombre de Zaida Bucheli.";
+  if (q.indexOf('pago')>-1||q.indexOf('tarjeta')>-1||q.indexOf('banco')>-1)
+    return "Aceptamos pago con tarjeta de crédito y débito de forma segura a través de Nuvei. ¡Rápido y sin complicaciones!";
   if (q.indexOf('personaliz')>-1||q.indexOf('nombre')>-1||q.indexOf('color')>-1)
     return "Si! Todos los disenos son personalizables. Podemos agregar el nombre, colores y detalles especiales.";
   if (q.indexOf('baby')>-1||q.indexOf('shower')>-1)
@@ -2460,12 +2387,12 @@ function getBotResponse(text) {
   if (q.indexOf('madre')>-1)
     return "Para el Dia de la Madre tenemos velas individuales desde $5 la unidad. Disenos preciosos para regalar!";
   if (q.indexOf('como')>-1||q.indexOf('pedido')>-1||q.indexOf('comprar')>-1)
-    return "Es muy facil! Agrega al carrito aqui en la pagina y paga por transferencia. O escribenos al WhatsApp 0978920167 y te atendemos personalmente.";
+    return "Es muy facil! Agrega al carrito aqui en la pagina y paga con tu tarjeta de forma segura. O escribenos al WhatsApp y te atendemos personalmente.";
   if (q.indexOf('hola')>-1||q.indexOf('buenos')>-1||q.indexOf('buenas')>-1)
     return "Hola! Como puedo ayudarte hoy? Puedo decirte sobre disenos, precios, envios y como hacer tu pedido.";
   if (q.indexOf('gracias')>-1||q.indexOf('perfecto')>-1)
     return "Con mucho gusto! Si tienes mas preguntas estoy aqui. Tambien puedes escribirnos al WhatsApp para coordinar tu pedido.";
-  return "Gracias por tu mensaje! Para mas detalles, escribenos al WhatsApp 0978920167 donde te atendemos personalmente.";
+  return "Gracias por tu mensaje! Para mas detalles, escribenos al WhatsApp 0995448686 donde te atendemos personalmente.";
 }
 
 function sendChatMessage() {
@@ -2555,12 +2482,11 @@ function openProductPage(id, fromHistory) {
   if (!fromHistory) {
     history.pushState({page:'product', id:id}, '', '#producto-' + id);
   }
-  var displayPrice = getProductPrice(p);
   if (typeof fbq !== 'undefined') {
     fbq('track', 'ViewContent', {
       content_name: p.name,
       content_category: p.cat,
-      value: displayPrice,
+      value: p.price,
       currency: 'USD'
     });
   }
@@ -2568,11 +2494,11 @@ function openProductPage(id, fromHistory) {
   if (typeof gtag !== 'undefined') {
     gtag('event', 'view_item', {
       currency: 'USD',
-      value: displayPrice,
-      items: [{ item_id: String(p.id), item_name: p.name, item_category: p.cat, price: displayPrice, quantity: 1 }]
+      value: p.price,
+      items: [{ item_id: String(p.id), item_name: p.name, item_category: p.cat, price: p.price, quantity: 1 }]
     });
   }
-  var unitLabel = getProductUnitLabel(p).toUpperCase();
+  var unitLabel = p.unit==='unidad' ? 'UNIDADES' : 'DOCENAS';
   var ppImgs = p.imgs ? p.imgs : [p.img];
   var ppMainImg = document.getElementById('ppImg');
   ppMainImg.src = IMG_MAP[ppImgs[0]];
@@ -2592,7 +2518,7 @@ function openProductPage(id, fromHistory) {
   }
   document.getElementById('ppName').textContent = p.name;
   document.getElementById('ppBreadcrumbName').textContent = p.name;
-  document.getElementById('ppPrice').textContent = '$' + displayPrice.toFixed(2);
+  document.getElementById('ppPrice').textContent = '$' + p.price.toFixed(2);
   document.getElementById('ppUnitLabel').textContent = unitLabel;
   document.getElementById('ppQty').textContent = '1';
   var descHTML = '<p>' + p.desc + '.</p>' +
@@ -2601,8 +2527,7 @@ function openProductPage(id, fromHistory) {
   document.getElementById('ppDesc').innerHTML = descHTML;
   // WhatsApp support link with product context
   var waMsg = 'Hola Velamia! 👋 Estoy viendo: ' + p.name + ' ($' + p.price.toFixed(2) + (p.unit==='unidad'?' por unidad':' por docena') + '). Quisiera consultar sobre personalización (cantidad exacta, diseño, fecha de entrega). ¿Me pueden ayudar?';
-  waMsg = 'Hola Velamia! Estoy viendo: ' + p.name + ' ($' + displayPrice.toFixed(2) + ' ' + getProductUnitLabel(p) + '). Quisiera consultar sobre personalizacion (cantidad exacta, diseno, fecha de entrega). Me pueden ayudar?';
-  document.getElementById('ppWaBtn').href = 'https://wa.me/593978920167?text=' + encodeURIComponent(waMsg);
+  document.getElementById('ppWaBtn').href = 'https://wa.me/593995448686?text=' + encodeURIComponent(waMsg);
   var addBtn = document.getElementById('ppAddBtn');
   addBtn.textContent = 'AÑADIR AL CARRITO';
   addBtn.classList.remove('added');
@@ -2668,8 +2593,8 @@ function closeProductModal() { closeProductPage(); }
 function addToCartFromPage(id, qty) {
   var p = PRODUCTS.find(function(x){ return x.id===id; });
   if (!p) return;
-  var price = getProductPrice(p);
-  if (!cart[id]) cart[id] = {id:p.id, name:p.name, desc:p.desc, price:price, tag:p.tag, img:p.img, unit:p.unit, unitLabel:p.unitLabel, qtyLabel:p.qtyLabel, qty:qty, onSale:isProductSaleActive(p)};
+  var price = p.price;
+  if (!cart[id]) cart[id] = {id:p.id, name:p.name, desc:p.desc, price:price, tag:p.tag, img:p.img, unit:p.unit, qty:qty};
   else cart[id].qty += qty;
   if (typeof fbq !== 'undefined') {
     fbq('track', 'AddToCart', {content_name:p.name, content_category:p.cat, value:price*qty, currency:'USD'});
@@ -2745,37 +2670,35 @@ document.addEventListener('DOMContentLoaded', function() {
     PRODUCTS.forEach(function(p){
       if (!p.fixedSale) { delete p.onSale; delete p.oferta; delete p.salePrice; delete p.originalPrice; }
     });
-    // Seleccionar 10 productos al azar con 10% de descuento (rota cada 3 dias)
+    // Seleccionar 10 productos al azar con 15% de descuento (rota cada 3 dias)
     var saleSeed = period * 7919;
     function saleRandom() {
       saleSeed = (saleSeed * 1664525 + 1013904223) & 0xffffffff;
       return (saleSeed >>> 0) / 0xffffffff;
     }
-    var saleCandidates = PRODUCTS.filter(function(p){ return !p.fixedSale && !p.nuevo && p.id !== 1 && p.id !== 3 && p.id !== 5; });
+    var saleCandidates = PRODUCTS.filter(function(p){ return p.id !== 1 && p.id !== 3 && p.id !== 5; });
     for (var k = saleCandidates.length - 1; k > 0; k--) {
       var ki = Math.floor(saleRandom() * (k + 1));
       var t = saleCandidates[k]; saleCandidates[k] = saleCandidates[ki]; saleCandidates[ki] = t;
     }
-    // Marcar 10 productos con 10% de descuento
+    // Marcar 10 productos con 15% de descuento
     saleCandidates.slice(0, 10).forEach(function(p){
       p.onSale = true;
       p.oferta = true;
       p.originalPrice = p.price;
-      p.salePrice = Math.round(p.price * 0.90 * 100) / 100;
-      p.saleDiscount = 10;
+      p.salePrice = Math.round(p.price * 0.85 * 100) / 100;
+      p.saleDiscount = 15;
     });
-    // Separate featured and popular products from the rotated catalog.
-    var featuredProducts = PRODUCTS.filter(function(p){ return p.featured; });
-    var popularProducts = PRODUCTS.filter(function(p){ return p.popular && !p.featured; });
-    var otherProducts = PRODUCTS.filter(function(p){ return !p.popular && !p.featured; });
+    // Separate popular from non-popular for display order
+    var popularProducts = PRODUCTS.filter(function(p){ return p.popular; });
+    var otherProducts = PRODUCTS.filter(function(p){ return !p.popular; });
     // Shuffle only the non-popular ones
     for (var i = otherProducts.length - 1; i > 0; i--) {
       var j = Math.floor(seededRandom() * (i + 1));
       var tmp = otherProducts[i]; otherProducts[i] = otherProducts[j]; otherProducts[j] = tmp;
     }
-    // Reconstruct: featured first, popular next, then rotated others.
+    // Reconstruct: popular first, then rotated others
     PRODUCTS.length = 0;
-    featuredProducts.forEach(function(p){ PRODUCTS.push(p); });
     popularProducts.forEach(function(p){ PRODUCTS.push(p); });
     otherProducts.forEach(function(p){ PRODUCTS.push(p); });
   })();
@@ -2784,15 +2707,13 @@ document.addEventListener('DOMContentLoaded', function() {
   var grid = document.getElementById('productsGrid');
   if (grid) {
     PRODUCTS.forEach(function(p) {
-      var tc = p.oferta ? '#E63946' : ((p.tag==='Premium'||p.tag==='Mas vendida') ? '#C9A84C' : '#8B7355');
+      var tc = (p.tag==='Premium'||p.tag==='Mas vendida') ? '#C9A84C' : '#8B7355';
       var card = document.createElement('div');
       card.className = 'product-card';
       card.dataset.cat = p.cat;
       if (p.extra) card.dataset.extra = p.extra;
       if (p.oferta) card.dataset.oferta = 'true';
-      if (p.nuevo) card.dataset.nuevo = 'true';
-      var unitLabel = getProductUnitLabel(p);
-      var qtyLabel = getProductQtyLabel(p);
+      var unitLabel = p.unit==='unidad' ? 'por unidad' : 'por docena (12 unidades)';
       card.innerHTML =
         '<div class="product-img">' +
           '<span class="product-tag" style="background:'+tc+'">'+p.tag+'</span>' +
@@ -2810,16 +2731,17 @@ document.addEventListener('DOMContentLoaded', function() {
         '</div>' +
         '<h3 class="product-name">'+p.name+'</h3>' +
         '<p class="product-desc">'+p.desc+'</p>' +
-        (isProductSaleActive(p) ?
+        (p.onSale && isSaleActive() ? 
           '<p class="product-price-old">$'+p.originalPrice.toFixed(2)+'</p>' +
           '<p class="product-price sale-price">$'+p.salePrice.toFixed(2)+' <span class="sale-badge">-'+(p.saleDiscount||10)+'%</span></p>' +
-          '<p class="sale-until">'+(p.saleText || (p.fixedSale ? 'Oferta exclusiva por tiempo limitado' : 'Oferta por tiempo limitado'))+'</p>'
+          '<p class="sale-until">🔥 '+(p.fixedSale ? '¡15% de descuento!' : 'Oferta por tiempo limitado')+'</p>'
           :
           '<p class="product-price">$'+p.price.toFixed(2)+'</p>'
         ) +
         '<p class="product-unit">'+unitLabel+'</p>' +
+        '<p class="foto-ref">*<em>Fotos referenciales</em></p>' +
         '<div style="flex:1;"></div>' +
-        '<div class="card-qty-label">Cantidad ('+qtyLabel+')</div>' +
+        '<div class="card-qty-label">Cantidad ('+(p.unit==="unidad"?"unidades":"docenas")+')</div>' +
         '<div class="card-qty-selector">' +
           '<button class="card-qty-btn" onclick="event.stopPropagation();changeCardQty('+p.id+',-1)">&#8722;</button>' +
           '<div class="card-qty-val" id="card-qty-'+p.id+'">1</div>' +
@@ -2926,7 +2848,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <button class="chat-suggestion chat-suggestion-btn" onclick="sendMessage('¿Hacen envíos?')">¿Hacen envíos?</button>
     <button class="chat-suggestion chat-suggestion-btn" onclick="sendMessage('¿Cómo hago un pedido?')">¿Cómo hago un pedido?</button>
   </div>
-  <a href="https://wa.me/593978920167?text=Hola! Quiero hacer un pedido de velas Velamia 🕯️" target="_blank" class="chat-wa-btn">📲 Continuar en WhatsApp</a>
+  <a href="https://wa.me/593995448686?text=Hola! Quiero hacer un pedido de velas Velamia 🕯️" target="_blank" class="chat-wa-btn">📲 Continuar en WhatsApp</a>
   <div class="chat-input-area">
     <input type="text" class="chat-input" id="chatInputField" placeholder="Escribe tu pregunta..." onkeypress="if(event.key==='Enter') sendChatMessage()"/>
     <button class="chat-send" id="chatSendBtn" onclick="sendChatMessage()">➤</button>
@@ -2998,7 +2920,7 @@ window.addEventListener('popstate', function(e) {
     var search = window.location.search;
     var cat = null;
     // Check hash like #categoria-baby-shower or #baby-shower
-    var hashMatch = hash.match(/^#(?:categoria-)?(baby-shower|bautizo|matrimonio|dia-madre|revelacion|cumpleanos|personajes|xv-anos|mas-vendidos|oferta|lanzamientos|all)$/);
+    var hashMatch = hash.match(/^#(?:categoria-)?(baby-shower|bautizo|matrimonio|dia-madre|revelacion|cumpleanos|personajes|xv-anos|mas-vendidos|oferta|all)$/);
     if (hashMatch) cat = hashMatch[1];
     // Check ?categoria=baby-shower
     var urlParams = new URLSearchParams(search);
@@ -3143,6 +3065,20 @@ window.addEventListener('popstate', function(e) {
     document.getElementById('formModalBackdrop').classList.remove('show');
   }
 
+  // ── CONFIRMACIÓN AL CLIENTE: EmailJS ──
+  function enviarEmailCliente(data) {
+    emailjs.send('service_p0006g9', 'fncnzug', {
+      to_name:        data.nombre,
+      to_email:       data.email,
+      productos:      data.productos,
+      total:          '$' + data.total,
+      pedido_num:     data.orderNum,
+      transaction_id: data.transactionId,
+      auth_code:      data.authCode,
+      fecha:          new Date().toLocaleDateString('es-EC', {weekday:'long', year:'numeric', month:'long', day:'numeric'})
+    }).catch(function(err) { console.error('EmailJS cliente error:', err); });
+  }
+
   // ── NOTIFICACIÓN: EmailJS ──
   function enviarEmailPedido(data) {
     var templateParams = {
@@ -3195,7 +3131,7 @@ window.addEventListener('popstate', function(e) {
     if (detalles)    mensaje += "✨ Detalles: " + detalles + "\n";
     mensaje += "\nQuisiera consultar sobre personalización y disponibilidad de fechas.";
 
-    window.open("https://wa.me/593978920167?text=" + encodeURIComponent(mensaje), '_blank');
+    window.open("https://wa.me/593995448686?text=" + encodeURIComponent(mensaje), '_blank');
 
     closeFormModal();
     document.getElementById('pedidoForm').reset();
@@ -3235,19 +3171,19 @@ window.addEventListener('popstate', function(e) {
         <label class="form-label">¿Cuántas unidades necesitas?</label>
         <div class="form-options" style="grid-template-columns:1fr 1fr;">
           <label class="form-option">
-            <input type="radio" name="pcantidad" value="1 unidad" class="form-radio" required>
+            <input type="radio" name="pcantidad" value="1 unidad" class="form-radio">
             <span class="option-text">1 unidad</span>
           </label>
           <label class="form-option">
-            <input type="radio" name="pcantidad" value="6 unidades (1/2 docena)" class="form-radio" required>
+            <input type="radio" name="pcantidad" value="6 unidades (1/2 docena)" class="form-radio">
             <span class="option-text">6 und. (½ doc.)</span>
           </label>
           <label class="form-option">
-            <input type="radio" name="pcantidad" value="12 unidades (1 docena)" class="form-radio" required>
+            <input type="radio" name="pcantidad" value="12 unidades (1 docena)" class="form-radio">
             <span class="option-text">12 und. (1 doc.)</span>
           </label>
           <label class="form-option">
-            <input type="radio" name="pcantidad" value="más de 12 unidades" class="form-radio" required>
+            <input type="radio" name="pcantidad" value="más de 12 unidades" class="form-radio">
             <span class="option-text">Más de 12</span>
           </label>
         </div>
@@ -3256,19 +3192,19 @@ window.addEventListener('popstate', function(e) {
       <!-- NOMBRE A PERSONALIZAR -->
       <div class="form-group">
         <label class="form-label">Nombre(s) a personalizar</label>
-        <input type="text" name="pnombre" placeholder="Ej: Valentina, Sebastián & Ana..." class="form-input" required>
+        <input type="text" name="pnombre" placeholder="Ej: Valentina, Sebastián & Ana..." class="form-input">
       </div>
 
       <!-- FECHA DEL EVENTO -->
       <div class="form-group">
         <label class="form-label">Fecha del evento</label>
-        <input type="text" name="pfecha" placeholder="Ej: 25 de junio de 2026" class="form-input" required>
+        <input type="text" name="pfecha" placeholder="Ej: 25 de junio de 2026" class="form-input">
       </div>
 
       <!-- DETALLES ADICIONALES -->
       <div class="form-group">
-        <label class="form-label">Colores o detalles adicionales</label>
-        <textarea name="pdetalles" placeholder="Ej: Colores rosado y dorado, incluir fecha en etiqueta..." class="form-textarea" rows="2" required></textarea>
+        <label class="form-label">Colores o detalles adicionales (opcional)</label>
+        <textarea name="pdetalles" placeholder="Ej: Colores rosado y dorado, incluir fecha en etiqueta..." class="form-textarea" rows="2"></textarea>
       </div>
 
       <button type="submit" class="form-submit-btn">📲 Consultar en WhatsApp</button>
@@ -3300,7 +3236,7 @@ window.addEventListener('popstate', function(e) {
 
     // Mostrar info del producto
     document.getElementById('pformProductName').textContent = product.name;
-    var priceText = '$' + getProductPrice(product).toFixed(2) + ' ' + getProductUnitLabel(product);
+    var priceText = '$' + product.price.toFixed(2) + (product.unit === 'unidad' ? ' por unidad' : ' por docena');
     document.getElementById('pformProductPrice').textContent = priceText;
 
     // Mostrar modal
@@ -3321,46 +3257,40 @@ window.addEventListener('popstate', function(e) {
     event.preventDefault();
 
     var cantidad = document.querySelector('input[name="pcantidad"]:checked');
-    var nombreInput = document.querySelector('input[name="pnombre"]');
-    var fechaInput = document.querySelector('input[name="pfecha"]');
-    var detallesInput = document.querySelector('textarea[name="pdetalles"]');
-    var nombre = nombreInput.value.trim();
-    var fecha = fechaInput.value.trim();
-    var detalles = detallesInput.value.trim();
+    var nombre = document.querySelector('input[name="pnombre"]').value;
+    var fecha = document.querySelector('input[name="pfecha"]').value;
+    var detalles = document.querySelector('textarea[name="pdetalles"]').value;
+
     if (!cantidad) {
       alert('Por favor selecciona la cantidad de unidades');
       return false;
     }
 
-    if (!nombre) {
-      alert('Por favor escribe el nombre o nombres a personalizar');
-      nombreInput.focus();
-      return false;
-    }
-
     if (!fecha) {
       alert('Por favor indica la fecha de tu evento');
-      fechaInput.focus();
       return false;
     }
 
-    if (!detalles) {
-      alert('Por favor escribe los colores o detalles adicionales');
-      detallesInput.focus();
-      return false;
-    }
-
-    // Construir mensaje WhatsApp con el mismo formato claro del formulario general.
-    var mensaje = "Hola Velamia! 👋\n\nQuiero hacer un pedido personalizado:\n\n";
-    mensaje += "📌 Producto: " + _currentProduct.name + "\n";
-    mensaje += "💵 Precio: $" + getProductPrice(_currentProduct).toFixed(2) + " " + getProductUnitLabel(_currentProduct) + "\n";
+    // Construir mensaje WhatsApp
+    var mensaje = "Hola Velamia! 👋\n\n";
+    mensaje += "Estoy interesado/a en el siguiente producto:\n\n";
+    mensaje += "🕯️ *" + _currentProduct.name + "*\n";
+    mensaje += "💵 Precio: $" + _currentProduct.price.toFixed(2) + (_currentProduct.unit === 'unidad' ? ' por unidad' : ' por docena') + "\n";
     mensaje += "📍 Cantidad: " + cantidad.value + "\n";
-    mensaje += "✍️ Nombre(s) a personalizar: " + nombre + "\n";
-    mensaje += "📅 Fecha del evento: " + fecha + "\n";
-    mensaje += "✨ Detalles: " + detalles + "\n";
-    mensaje += "\nQuisiera consultar sobre personalización y disponibilidad de fechas.";
 
-    var wa_url = "https://wa.me/593978920167?text=" + encodeURIComponent(mensaje);
+    if (nombre) {
+      mensaje += "✍️ Nombre(s) a personalizar: " + nombre + "\n";
+    }
+
+    mensaje += "📅 Fecha del evento: " + fecha + "\n";
+
+    if (detalles) {
+      mensaje += "✨ Detalles adicionales: " + detalles + "\n";
+    }
+
+    mensaje += "\n¿Está disponible para esa fecha?";
+
+    var wa_url = "https://wa.me/593995448686?text=" + encodeURIComponent(mensaje);
     window.open(wa_url, '_blank');
 
     closeProductFormModal();
