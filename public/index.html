@@ -2155,7 +2155,16 @@ function initPaymentezCheckout() {
   .then(function(data) {
     btn.textContent = '💳 Pagar con tarjeta'; btn.disabled = false;
     if (data.reference && paymentCheckout) {
-      paymentCheckout.open({ reference: data.reference });
+      paymentCheckout.open({
+        reference: data.reference,
+        conf: {
+          style_version: '2',
+          theme: {
+            logo: 'https://cdn.paymentez.com/img/nv/nuvei_logo.png',
+            primary_color: '#C800A1'
+          }
+        }
+      });
     } else {
       alert('Error al iniciar el pago. Intenta nuevamente.');
     }

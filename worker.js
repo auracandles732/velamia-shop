@@ -62,6 +62,13 @@ export default {
               dev_reference: devReference,
               installments_type: 0,
             },
+            conf: {
+              style_version: 2,
+              theme: {
+                logo: 'https://cdn.paymentez.com/img/nv/nuvei_logo.png',
+                primary_color: '#C800A1',
+              },
+            },
             user: { id: userId, email: userEmail },
           }),
         });
