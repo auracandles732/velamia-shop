@@ -1814,7 +1814,9 @@ function initPaymentezSDK() {
     onClose: function() {},
     onResponse: function(response) {
       var tx = response.transaction;
-      if (tx && tx.status === 'success' && tx.status_detail === 3) {
+      if (tx && tx.status === 'success' && (tx.status_detail === 3 || tx.status_detail === '3')) {
+        completarPedidoPagado(tx);
+      } else if (tx && tx.status === 'success') {
         completarPedidoPagado(tx);
       } else {
         alert('El pago no fue aprobado. Por favor intenta nuevamente.');
@@ -3083,7 +3085,7 @@ window.addEventListener('popstate', function(e) {
 
   // ── CONFIRMACIÓN AL CLIENTE: EmailJS ──
   function enviarEmailCliente(data) {
-    emailjs.send('service_p0006g9', 'fncnzug', {
+    emailjs.send('service_p0006g9', 'template_oimzdpp', {
       to_name:        data.nombre,
       to_email:       data.email,
       productos:      data.productos,
@@ -3092,7 +3094,7 @@ window.addEventListener('popstate', function(e) {
       transaction_id: data.transactionId,
       auth_code:      data.authCode,
       fecha:          new Date().toLocaleDateString('es-EC', {weekday:'long', year:'numeric', month:'long', day:'numeric'})
-    }).catch(function(err) { console.error('EmailJS cliente error:', err); });
+    }).catch(function(err) { console.error('EmailJS error:', err); });
   }
 
   // ── NOTIFICACIÓN: EmailJS ──
