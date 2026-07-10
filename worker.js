@@ -61,6 +61,8 @@ export default {
               vat: 0,
               dev_reference: devReference,
               installments_type: 0,
+              taxable_amount: 0,
+              tax_percentage: 0,
             },
             conf: {
               style_version: 2,
