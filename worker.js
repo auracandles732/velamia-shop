@@ -1,8 +1,8 @@
 // Credenciales Paymentez (ambiente de pruebas)
-const APP_CODE   = 'TESTNUVEISTG-EC-SERVER';
-const APP_KEY    = 'JSQFl89yPhJrUPhPN03yolvCbI3FRR';
-const PAY_URL    = 'https://ccapi-stg.paymentez.com/v2/transaction/init_reference/';
-const REFUND_URL = 'https://noccapi-stg.paymentez.com/order/refund/';
+const APP_CODE   = 'VELAMIAEC-EC-SERVER';
+const APP_KEY    = 'Hl5y0z5yOs19EQvfjb7WctYtELxXc1';
+const PAY_URL    = 'https://ccapi.paymentez.com/v2/transaction/init_reference/';
+const REFUND_URL = 'https://noccapi.paymentez.com/order/refund/';
 
 // Genera el Auth-Token que pide Paymentez
 async function generateAuthToken() {

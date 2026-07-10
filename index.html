@@ -1802,7 +1802,7 @@ var paymentCheckout = null;
 function initPaymentezSDK() {
   if (typeof PaymentCheckout === 'undefined') return;
   paymentCheckout = new PaymentCheckout.modal({
-    env_mode: 'stg',
+    env_mode: 'prod',
     conf: {
       style_version: '2',
       theme: {
