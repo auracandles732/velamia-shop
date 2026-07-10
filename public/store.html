@@ -246,11 +246,6 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .order-summary-shipping{display:flex;justify-content:space-between;font-size:0.82rem;padding:0.35rem 0;}
   .order-total{display:flex;justify-content:space-between;font-size:1rem;font-weight:700;padding-top:0.8rem;border-top:1px solid var(--sand);margin-top:0.5rem;}
 
-  .bank-box{background:var(--cream);border:0.5px solid var(--sand);border-radius:4px;padding:1.2rem;margin-bottom:1rem;}
-  .bank-row{display:flex;justify-content:space-between;font-size:0.8rem;padding:0.35rem 0;border-bottom:0.5px solid var(--sand);}
-  .bank-row:last-child{border-bottom:none;}
-  .bank-lbl{color:var(--taupe);}
-  .bank-val{font-weight:600;}
 
   .form-group{margin-bottom:1rem;}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
@@ -1384,23 +1379,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <p class="pm-note"><strong>Importante:</strong> Una vez procesado el pago con tarjeta NO se acepta devolución de dinero bajo ninguna circunstancia.</p>
         </div>
       </div>
-      <div class="payment-method-card">
-        <div class="pm-header">
-          <span class="pm-icon">🏦</span>
-          <span class="pm-name">Transferencia Bancaria</span>
-          <span class="pm-tag">Banco Pichincha</span>
-        </div>
-        <div class="pm-body">
-          <p><strong>Anticipo del 50%</strong> para confirmar el pedido + 50% antes del envío.</p>
-          <ul class="pm-list">
-            <li>✓ Sin comisiones adicionales</li>
-            <li>✓ Permite pago por abonos (hasta completar 50%)</li>
-            <li>✓ Comprobante por WhatsApp</li>
-            <li>✓ Requiere validación manual del pago</li>
-          </ul>
-          <p class="pm-note"><strong>Importante:</strong> El anticipo del 50% NO es reembolsable una vez iniciada la producción.</p>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1411,7 +1389,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="politica-num">1</div>
       <div class="politica-content">
         <h3>Confirmación del pedido</h3>
-        <p>El pedido se considera confirmado únicamente cuando se recibe el pago (100% con tarjeta o 50% por transferencia). Sin pago, el pedido no entra en producción ni se reserva fecha.</p>
+        <p>El pedido se considera confirmado únicamente cuando se recibe el pago al 100% con tarjeta. Sin pago, el pedido no entra en producción ni se reserva fecha.</p>
       </div>
     </div>
     <div class="politica-card highlight-card">
@@ -1425,7 +1403,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="politica-num">3</div>
       <div class="politica-content">
         <h3>Reserva de fecha — Compromiso del cliente</h3>
-        <p>Velamia agenda los pedidos por fecha. Una vez pactada la fecha de entrega, esta no puede modificarse y queda reservada exclusivamente para ese pedido. El cliente se compromete a cumplir con el saldo total (en caso de transferencia) en la fecha pactada, una vez terminado el pedido.</p>
+        <p>Velamia agenda los pedidos por fecha. Una vez pactada la fecha de entrega, esta no puede modificarse y queda reservada exclusivamente para ese pedido.</p>
       </div>
     </div>
     <div class="politica-card">
@@ -1443,18 +1421,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
     <div class="politica-card">
-      <div class="politica-num">6</div>
-      <div class="politica-content">
-        <h3>Pago por abonos (solo aplica a transferencia)</h3>
-        <p>Si se acuerda pago por abonos, el pedido solo inicia producción cuando se completa el 50% del valor total. Mientras no se alcance ese monto, el pedido permanece en espera sin fecha asignada.</p>
-      </div>
-    </div>
-    <div class="politica-card">
-      <div class="politica-num">7</div>
-      <div class="politica-content">
-        <h3>Saldo restante (solo aplica a transferencia)</h3>
-        <p>El 50% restante debe cancelarse antes del envío o entrega del pedido. No se despacha ningún pedido con saldo pendiente.</p>
-      </div>
     </div>
   </div>
 
@@ -1836,12 +1802,21 @@ var paymentCheckout = null;
 function initPaymentezSDK() {
   if (typeof PaymentCheckout === 'undefined') return;
   paymentCheckout = new PaymentCheckout.modal({
-    env_mode: 'stg',
+    env_mode: 'prod',
+    conf: {
+      style_version: '2',
+      theme: {
+        logo: 'https://cdn.paymentez.com/img/nv/nuvei_logo.png',
+        primary_color: '#C800A1'
+      }
+    },
     onOpen: function() {},
     onClose: function() {},
     onResponse: function(response) {
       var tx = response.transaction;
-      if (tx && tx.status === 'success' && tx.status_detail === 3) {
+      if (tx && tx.status === 'success' && (tx.status_detail === 3 || tx.status_detail === '3')) {
+        completarPedidoPagado(tx);
+      } else if (tx && tx.status === 'success') {
         completarPedidoPagado(tx);
       } else {
         alert('El pago no fue aprobado. Por favor intenta nuevamente.');
@@ -2147,9 +2122,6 @@ function openCheckout() {
 function closeCheckout() { document.getElementById('checkoutModal').classList.remove('open'); document.getElementById('checkoutBody').style.display='block'; document.getElementById('successScreen').classList.remove('show'); document.body.classList.remove('cart-open'); }
 function closeAll() { closeCheckout(); cart={}; updateCartUI(); }
 
-function handleFile(input) {
-  if (input.files && input.files[0]) { fileName = input.files[0].name; document.getElementById('filePreview').textContent = 'OK: ' + fileName; }
-}
 
 function initPaymentezCheckout() {
   var nombre = document.getElementById('fNombre').value.trim();
@@ -2185,7 +2157,16 @@ function initPaymentezCheckout() {
   .then(function(data) {
     btn.textContent = '💳 Pagar con tarjeta'; btn.disabled = false;
     if (data.reference && paymentCheckout) {
-      paymentCheckout.open({ reference: data.reference });
+      paymentCheckout.open({
+        reference: data.reference,
+        conf: {
+          style_version: '2',
+          theme: {
+            logo: 'https://cdn.paymentez.com/img/nv/nuvei_logo.png',
+            primary_color: '#C800A1'
+          }
+        }
+      });
     } else {
       alert('Error al iniciar el pago. Intenta nuevamente.');
     }
@@ -2411,8 +2392,8 @@ function getBotResponse(text) {
     return "Si! Tenemos 5% de descuento automatico en compras de 3 o mas docenas. Se aplica directamente en el carrito.";
   if (q.indexOf('minimo')>-1||q.indexOf('cuantas')>-1||q.indexOf('menos')>-1)
     return "El pedido minimo es 1 docena (12 unidades). Puedes mezclar disenos. Los pedidos se hacen bajo reserva.";
-  if (q.indexOf('pago')>-1||q.indexOf('transferencia')>-1||q.indexOf('banco')>-1)
-    return "Aceptamos transferencia bancaria al Banco Pichincha, cuenta ahorros 2209632506 a nombre de Zaida Bucheli.";
+  if (q.indexOf('pago')>-1||q.indexOf('tarjeta')>-1||q.indexOf('banco')>-1)
+    return "Aceptamos pago con tarjeta de crédito y débito de forma segura a través de Nuvei. ¡Rápido y sin complicaciones!";
   if (q.indexOf('personaliz')>-1||q.indexOf('nombre')>-1||q.indexOf('color')>-1)
     return "Si! Todos los disenos son personalizables. Podemos agregar el nombre, colores y detalles especiales.";
   if (q.indexOf('baby')>-1||q.indexOf('shower')>-1)
@@ -2424,7 +2405,7 @@ function getBotResponse(text) {
   if (q.indexOf('madre')>-1)
     return "Para el Dia de la Madre tenemos velas individuales desde $5 la unidad. Disenos preciosos para regalar!";
   if (q.indexOf('como')>-1||q.indexOf('pedido')>-1||q.indexOf('comprar')>-1)
-    return "Es muy facil! Agrega al carrito aqui en la pagina y paga por transferencia. O escribenos al WhatsApp 0995448686 y te atendemos personalmente.";
+    return "Es muy facil! Agrega al carrito aqui en la pagina y paga con tu tarjeta de forma segura. O escribenos al WhatsApp y te atendemos personalmente.";
   if (q.indexOf('hola')>-1||q.indexOf('buenos')>-1||q.indexOf('buenas')>-1)
     return "Hola! Como puedo ayudarte hoy? Puedo decirte sobre disenos, precios, envios y como hacer tu pedido.";
   if (q.indexOf('gracias')>-1||q.indexOf('perfecto')>-1)
@@ -3104,7 +3085,7 @@ window.addEventListener('popstate', function(e) {
 
   // ── CONFIRMACIÓN AL CLIENTE: EmailJS ──
   function enviarEmailCliente(data) {
-    emailjs.send('service_p0006g9', 'fncnzug', {
+    emailjs.send('service_p0006g9', 'template_oimzdpp', {
       to_name:        data.nombre,
       to_email:       data.email,
       productos:      data.productos,
@@ -3113,7 +3094,7 @@ window.addEventListener('popstate', function(e) {
       transaction_id: data.transactionId,
       auth_code:      data.authCode,
       fecha:          new Date().toLocaleDateString('es-EC', {weekday:'long', year:'numeric', month:'long', day:'numeric'})
-    }).catch(function(err) { console.error('EmailJS cliente error:', err); });
+    }).catch(function(err) { console.error('EmailJS error:', err); });
   }
 
   // ── NOTIFICACIÓN: EmailJS ──
