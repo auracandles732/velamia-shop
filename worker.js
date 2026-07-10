@@ -1,4 +1,4 @@
-// Credenciales Paymentez (ambiente de pruebas)
+// Credenciales Nuvei (PRODUCCIÓN)
 const APP_CODE   = 'VELAMIAEC-EC-SERVER';
 const APP_KEY    = 'Hl5y0z5yOs19EQvfjb7WctYtELxXc1';
 const PAY_URL    = 'https://ccapi.paymentez.com/v2/transaction/init_reference/';
