@@ -14,6 +14,22 @@ async function generateAuthToken() {
   return btoa(`${APP_CODE};${timestamp};${hashHex}`);
 }
 
+function getFraudReason(statusDetail) {
+  const reasons = {
+    1:  'Rechazado - No autorizado por el banco',
+    2:  'Rechazado - Fondos insuficientes',
+    4:  'Rechazado - Tarjeta inválida',
+    5:  'Rechazado - Tarjeta vencida',
+    6:  'Rechazado - Límite de retiro excedido',
+    7:  'Cancelado / Reversado',
+    8:  'Fraude detectado por Nuvei',
+    9:  'Rechazado por motor de riesgo',
+    10: 'Rechazado - Tarjeta robada o perdida',
+    11: 'Rechazado - Tarjeta bloqueada',
+  };
+  return reasons[statusDetail] || ('Rechazado - Código ' + statusDetail);
+}
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -100,12 +116,32 @@ export default {
       try {
         const body = await request.json();
         const tx = body.transaction;
+        const user = body.user || {};
 
         if (tx && tx.status === 'success' && tx.status_detail === 3) {
-          // Pago APROBADO — registrar en log
+          // Pago APROBADO
           console.log('PAGO APROBADO | ID:', tx.id, '| Auth:', tx.authorization_code, '| Ref:', tx.dev_reference, '| Monto:', tx.amount);
         } else {
-          console.log('PAGO NO APROBADO | status:', tx && tx.status, '| detail:', tx && tx.status_detail);
+          // Pago RECHAZADO o FRAUDULENTO — guardar en bitácora
+          const motivo = getFraudReason(tx ? tx.status_detail : null);
+          console.log('PAGO NO APROBADO | status:', tx && tx.status, '| detail:', tx && tx.status_detail, '| motivo:', motivo);
+
+          const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyU-N7ktYUe6l1jQFXFuwEHE6Cld2-krdGMtDI-5iFkfMOIMU_lvicQU97YTskfc23hPw/exec';
+          const fecha = new Date().toLocaleDateString('es-EC', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+          const fraudUrl = SHEETS_URL +
+            '?sheet=fraudes' +
+            '&fecha='       + encodeURIComponent(fecha) +
+            '&transaccion=' + encodeURIComponent(tx ? tx.id : '-') +
+            '&referencia='  + encodeURIComponent(tx ? tx.dev_reference : '-') +
+            '&monto='       + encodeURIComponent(tx ? tx.amount : '-') +
+            '&email='       + encodeURIComponent(user.email || '-') +
+            '&telefono='    + encodeURIComponent(user.id || '-') +
+            '&motivo='      + encodeURIComponent(motivo) +
+            '&status='      + encodeURIComponent(tx ? tx.status : '-') +
+            '&detalle='     + encodeURIComponent(tx ? tx.status_detail : '-');
+
+          await fetch(fraudUrl, { method: 'GET' }).catch(() => {});
         }
 
         return new Response('OK', { status: 200 });
