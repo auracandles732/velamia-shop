@@ -1,8 +1,8 @@
 // Credenciales Nuvei (PRODUCCIÓN)
 const APP_CODE   = 'VELAMIAEC-EC-SERVER';
-const APP_KEY    = 'Hl5y0z5yOs19EQvfjb7WctYtELxXc1';
+const APP_KEY    = 'HlSy0zSyOs19EQvfjb7WctYtELxXc1';
 const PAY_URL    = 'https://ccapi.paymentez.com/v2/transaction/init_reference/';
-const REFUND_URL = 'https://noccapi.paymentez.com/order/refund/';
+const REFUND_URL = 'https://ccapi.paymentez.com/v2/transaction/refund/';
 
 // Genera el Auth-Token que pide Paymentez
 async function generateAuthToken() {
@@ -99,7 +99,7 @@ export default {
         }
 
         const authToken = await generateAuthToken();
-        const body = { transaction: { id: transactionId } };
+        const body = { transaction: { id: transactionId }, more_info: true };
         if (amount) body.order = { amount: parseFloat(amount) };
 
         const resp = await fetch(REFUND_URL, {
