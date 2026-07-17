@@ -2168,12 +2168,12 @@ function initPaymentezCheckout() {
         }
       });
     } else {
-      alert('Error Nuvei: ' + JSON.stringify(data));
+      alert('Error al iniciar el pago. Intenta nuevamente.');
     }
   })
-  .catch(function(err) {
+  .catch(function() {
     btn.textContent = '💳 Pagar con tarjeta'; btn.disabled = false;
-    alert('Error de conexión: ' + err);
+    alert('Error de conexión. Intenta nuevamente.');
   });
 }
 
