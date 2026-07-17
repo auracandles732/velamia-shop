@@ -1646,21 +1646,39 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="form-group"><label>Dirección completa *</label><input type="text" id="fDireccion" placeholder="Calle, número, edificio..."/></div>
         <div class="form-group"><label>Correo electrónico *</label><input type="email" id="fEmail" placeholder="tucorreo@gmail.com"/></div>
         <div class="form-group"><label>Referencias</label><textarea id="fReferencias" placeholder="Cerca de... color de casa... piso..."></textarea></div>
+        <div class="form-group" style="margin-top:2px;">
+          <label for="fEsRegalo" style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:0.84rem;color:var(--dark);background:#FBF3F6;border:1px solid #F0D5DF;border-radius:8px;padding:0.7rem 0.9rem;">
+            <input type="checkbox" id="fEsRegalo" onchange="toggleRegalo()" style="width:18px;height:18px;flex-shrink:0;cursor:pointer;accent-color:#D4537E;">
+            <span>🎁 Este pedido es un <b>regalo</b> <span style="color:#8B7355;font-weight:400;">— podemos incluir una tarjeta con tu mensaje</span></span>
+          </label>
+          <div id="regaloMsgWrap" style="display:none;margin-top:9px;">
+            <textarea id="fRegaloMsg" placeholder="Escribe el mensaje para la tarjeta de regalo (opcional)" maxlength="200"></textarea>
+          </div>
+        </div>
       </div>
       <div class="politicas-checkbox">
         <input type="checkbox" id="aceptaPoliticas">
         <label for="aceptaPoliticas">He leído y acepto las <a href="#politicas" target="_blank">políticas</a> de Velamia.</label>
       </div>
+      <div style="text-align:center;font-size:12px;color:#C0392B;font-weight:600;margin:2px 0 10px;display:flex;align-items:center;justify-content:center;gap:6px;"><span>⏳</span> Pedidos bajo reserva · Asegura tu fecha con anticipación</div>
       <button class="btn-send" id="btnPagar" onclick="initPaymentezCheckout()">💳 Pagar con tarjeta</button>
-      <div style="margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:9px;">
-        <div style="display:flex;align-items:center;gap:6px;color:#5F5E5A;font-size:12px;font-weight:500;"><span style="font-size:13px;">🔒</span> Pago 100% seguro y cifrado</div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="background:#1A1F71;color:#fff;font-size:10px;font-weight:700;font-style:italic;padding:4px 8px;border-radius:4px;letter-spacing:0.02em;">VISA</span>
+
+      <!-- Bloque de confianza (estilo Temu/Amazon) -->
+      <div style="margin-top:14px;padding:14px 15px;background:#F1F8F4;border:1px solid #CDE9D6;border-radius:12px;">
+        <div style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:#1B7A43;margin-bottom:7px;"><span style="font-size:15px;">🛡️</span> Opciones de pago seguro</div>
+        <div style="font-size:11.5px;color:#4a4a4a;line-height:1.65;margin-bottom:11px;">Velamia protege tu información de pago. Usamos encriptado seguro bajo estándar <b>PCI DSS</b>, procesado por <b>Nuvei</b>. Tus datos de tarjeta <b>nunca</b> se almacenan en nuestra web.</div>
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+          <span style="background:#1A1F71;color:#fff;font-size:10px;font-weight:700;font-style:italic;padding:4px 8px;border-radius:4px;">VISA</span>
           <span style="display:inline-flex;align-items:center;padding:3px 7px;background:#fff;border:1px solid #e8e8e8;border-radius:4px;"><span style="width:14px;height:14px;border-radius:50%;background:#EB001B;display:inline-block;"></span><span style="width:14px;height:14px;border-radius:50%;background:#F79E1B;display:inline-block;margin-left:-6px;"></span></span>
           <span style="background:#00679F;color:#fff;font-size:9px;font-weight:700;padding:5px 7px;border-radius:4px;">DINERS</span>
           <span style="background:#016FD0;color:#fff;font-size:9px;font-weight:700;padding:5px 7px;border-radius:4px;">AMEX</span>
         </div>
-        <div style="text-align:center;font-size:10.5px;color:#8B7355;letter-spacing:0.02em;">Procesado por <b style="color:#2A2318;">Nuvei</b> · Tus datos de tarjeta nunca se comparten con Velamia</div>
+      </div>
+
+      <div style="margin-top:11px;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-start;gap:9px;font-size:12px;color:#333;line-height:1.4;"><span style="color:#1B7A43;font-size:15px;flex-shrink:0;">🔒</span> No se te cobrará hasta que confirmes el pago en la página segura de Nuvei.</div>
+        <div style="display:flex;align-items:flex-start;gap:9px;font-size:12px;color:#333;line-height:1.4;"><span style="color:#1B7A43;font-size:15px;flex-shrink:0;">🛡️</span> Compra protegida — si tu pedido llega mal, lo solucionamos.</div>
+        <div style="display:flex;align-items:flex-start;gap:9px;font-size:12px;color:#333;line-height:1.4;"><span style="color:#1B7A43;font-size:15px;flex-shrink:0;">🚚</span> Entrega garantizada a todo el Ecuador con seguimiento.</div>
       </div>
     </div>
     <div class="success-screen" id="successScreen">
@@ -2172,6 +2190,12 @@ function closeCheckout() { document.getElementById('checkoutModal').classList.re
 function closeAll() { closeCheckout(); cart={}; updateCartUI(); }
 
 
+function toggleRegalo() {
+  var chk = document.getElementById('fEsRegalo');
+  var wrap = document.getElementById('regaloMsgWrap');
+  if (wrap) wrap.style.display = (chk && chk.checked) ? 'block' : 'none';
+}
+
 function initPaymentezCheckout() {
   var nombre = document.getElementById('fNombre').value.trim();
   var apellido = document.getElementById('fApellido').value.trim();
@@ -2188,10 +2212,13 @@ function initPaymentezCheckout() {
   var total = subtotal - discount + shipping;
   var orderNum = 'VEL-2026-' + String(Math.floor(Math.random()*900)+100);
   var description = items.map(function(i){ return i.name+' x'+i.qty; }).join(', ').substring(0, 250);
+  var esRegalo = document.getElementById('fEsRegalo') && document.getElementById('fEsRegalo').checked;
+  var regaloMsg = document.getElementById('fRegaloMsg') ? document.getElementById('fRegaloMsg').value.trim() : '';
   window._pendingOrder = {
     nombre: nombre, apellido: apellido, tel: tel, dir: dir, email: email,
     ciudad: document.getElementById('fCiudad').value.trim(),
     ref: document.getElementById('fReferencias').value.trim(),
+    esRegalo: esRegalo, regaloMsg: regaloMsg,
     items: items, subtotal: subtotal, discount: discount, shipping: shipping,
     total: total, orderNum: orderNum
   };
@@ -2240,6 +2267,7 @@ function completarPedidoPagado(tx) {
   msg += '\n\nCLIENTE:\n- '+o.nombre+' '+o.apellido+'\n- Tel: '+o.tel+'\n- Email: '+o.email+'\n- Dir: '+o.dir;
   if (o.ciudad) msg += '\n- Sector: '+o.ciudad;
   if (o.ref) msg += '\n- Ref: '+o.ref;
+  if (o.esRegalo) { msg += '\n\n🎁 ES UN REGALO'; if (o.regaloMsg) msg += '\nMensaje tarjeta: '+o.regaloMsg; }
   msg += '\n\n💳 Pago con tarjeta — APROBADO';
   msg += '\nTransaction ID: '+tx.id;
   msg += '\nAutorización: '+(tx.authorization_code||'-');
