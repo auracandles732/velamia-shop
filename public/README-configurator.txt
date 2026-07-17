@@ -1,1 +1,0 @@
-Configurator files are stored here so Cloudflare can publish them.

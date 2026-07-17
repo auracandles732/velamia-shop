@@ -1,1 +1,0 @@
-(function(){var s=document.createElement('script');s.src='/product-configurator.js?v=20260714-1805';s.defer=true;document.head.appendChild(s);})();

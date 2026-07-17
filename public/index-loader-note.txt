@@ -1,1 +1,0 @@
-The main public/index.html still needs the product configurator script tag.
