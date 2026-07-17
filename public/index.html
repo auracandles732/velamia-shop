@@ -1058,7 +1058,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span style="display:inline-flex;align-items:center;"><span style="width:13px;height:13px;border-radius:50%;background:#EB001B;display:inline-block;"></span><span style="width:13px;height:13px;border-radius:50%;background:#F79E1B;display:inline-block;margin-left:-5px;"></span></span>
         <span style="background:#00679F;color:#fff;font-size:8px;font-weight:700;padding:3px 5px;border-radius:3px;">DINERS</span>
         <span style="background:#016FD0;color:#fff;font-size:8px;font-weight:700;padding:3px 5px;border-radius:3px;">AMEX</span>
-        <span style="font-size:10px;color:#1B7A43;font-weight:600;">🔒 Pago seguro</span>
+        <span style="font-size:10.5px;color:#fff;background:#1B7A43;padding:3px 8px;border-radius:50px;font-weight:700;">🎉 10% dcto pagando en línea</span>
       </div>
     </div>
   </div>
@@ -1624,6 +1624,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <hr class="cart-divider">
       <div class="cart-total-final"><span>Total a pagar</span><span id="cartTotal">$0.00</span></div>
     </div>
+    <div style="margin-top:0.7rem;background:#EAF7EE;border:1px solid #BFE6CC;border-radius:9px;padding:0.65rem 0.8rem;display:flex;align-items:center;gap:8px;font-size:0.76rem;color:#1B7A43;font-weight:600;line-height:1.4;">
+      <span style="font-size:16px;">💳</span> ¡Paga en línea con tarjeta y obtén <b>10% de descuento</b> automático!
+    </div>
     <button class="btn-checkout" onclick="openCheckout()">Ir a pagar →</button>
   </div>
 </div>
@@ -1636,6 +1639,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <button class="modal-close" onclick="closeCheckout()">✕</button>
     </div>
     <div class="modal-body" id="checkoutBody">
+      <div style="background:#1B7A43;color:#fff;border-radius:10px;padding:0.7rem 1rem;margin-bottom:1rem;text-align:center;font-size:0.82rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <span style="font-size:16px;">🎉</span> ¡10% de descuento aplicado por pagar en línea!
+      </div>
       <div class="modal-section">
         <h3>Resumen del pedido</h3>
         <div id="orderSummary"></div>
@@ -1928,6 +1934,12 @@ function getDiscount(subtotal) {
   return 0; // Automatic volume discount removed
 }
 
+// Descuento por pagar en linea con tarjeta (checkout Nuvei)
+var ONLINE_PAY_DISCOUNT = 0.10; // 10%
+function getOnlineDiscount(subtotal) {
+  return Math.round(subtotal * ONLINE_PAY_DISCOUNT * 100) / 100;
+}
+
 function getShippingCost() {
   var zone = document.getElementById('shippingZone') ? document.getElementById('shippingZone').value : 'guayaquil';
   var qty = Object.values(cart).reduce(function(s,i){ return s+i.qty; }, 0);
@@ -2179,8 +2191,9 @@ function openCheckout() {
   var items = Object.values(cart);
   var subtotal = items.reduce(function(s,i){ return s+i.price*i.qty; }, 0);
   var discount = getDiscount(subtotal);
+  var onlineDiscount = getOnlineDiscount(subtotal);
   var shipping = getShippingCost();
-  var total = subtotal - discount + shipping;
+  var total = subtotal - discount - onlineDiscount + shipping;
   var zone = document.getElementById('shippingZone').value;
   var html = '';
   items.forEach(function(i) {
@@ -2188,6 +2201,7 @@ function openCheckout() {
   });
   html += '<div class="order-summary-item"><span>Subtotal</span><span>$'+subtotal.toFixed(2)+'</span></div>';
   if (discount > 0) html += '<div class="order-summary-item"><span style="color:#2ecc71">Descuento 5%</span><span style="color:#2ecc71">-$'+discount.toFixed(2)+'</span></div>';
+  html += '<div class="order-summary-item"><span style="color:#1B7A43;font-weight:600">💳 Descuento 10% pago en línea</span><span style="color:#1B7A43;font-weight:600">-$'+onlineDiscount.toFixed(2)+'</span></div>';
   html += '<div class="order-summary-item"><span>Envio ('+( zone==='guayaquil'?'Guayaquil':'Provincia')+')</span><span style="color:'+(shipping===0?'#2ecc71':'#E63946')+'">'+(shipping===0?'Gratis!':'$'+shipping.toFixed(2))+'</span></div>';
   document.getElementById('orderSummary').innerHTML = html;
   document.getElementById('orderTotal').textContent = '$'+total.toFixed(2);
@@ -2216,8 +2230,9 @@ function initPaymentezCheckout() {
   var items = Object.values(cart);
   var subtotal = items.reduce(function(s,i){ return s+i.price*i.qty; }, 0);
   var discount = getDiscount(subtotal);
+  var onlineDiscount = getOnlineDiscount(subtotal);
   var shipping = getShippingCost();
-  var total = subtotal - discount + shipping;
+  var total = subtotal - discount - onlineDiscount + shipping;
   var orderNum = 'VEL-2026-' + String(Math.floor(Math.random()*900)+100);
   var description = items.map(function(i){ return i.name+' x'+i.qty; }).join(', ').substring(0, 250);
   var esRegalo = document.getElementById('fEsRegalo') && document.getElementById('fEsRegalo').checked;
@@ -2227,7 +2242,7 @@ function initPaymentezCheckout() {
     ciudad: document.getElementById('fCiudad').value.trim(),
     ref: document.getElementById('fReferencias').value.trim(),
     esRegalo: esRegalo, regaloMsg: regaloMsg,
-    items: items, subtotal: subtotal, discount: discount, shipping: shipping,
+    items: items, subtotal: subtotal, discount: discount, onlineDiscount: onlineDiscount, shipping: shipping,
     total: total, orderNum: orderNum
   };
   var btn = document.getElementById('btnPagar');
@@ -2270,6 +2285,7 @@ function completarPedidoPagado(tx) {
   o.items.forEach(function(i){ msg += '- '+i.name+' x '+i.qty+' = $'+(i.price*i.qty).toFixed(2)+'\n'; });
   msg += '\nSubtotal: $'+o.subtotal.toFixed(2);
   if (o.discount>0) msg += '\nDescuento: -$'+o.discount.toFixed(2);
+  if (o.onlineDiscount>0) msg += '\nDescuento 10% pago en linea: -$'+o.onlineDiscount.toFixed(2);
   msg += '\nEnvío: '+(o.shipping===0?'GRATIS':'$'+o.shipping.toFixed(2));
   msg += '\nTOTAL: $'+o.total.toFixed(2);
   msg += '\n\nCLIENTE:\n- '+o.nombre+' '+o.apellido+'\n- Tel: '+o.tel+'\n- Email: '+o.email+'\n- Dir: '+o.dir;
