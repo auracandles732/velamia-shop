@@ -57,7 +57,7 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
 <title>Velamia – Velas Artesanales para Eventos</title>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>emailjs.init('SCTpDpns2B6VHRyfi');</script>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
   :root{--cream:#F5F0E8;--warm:#FAF7F2;--sand:#E8DFD0;--taupe:#C4B5A0;--brown:#8B7355;--dark:#2A2318;--gold:#C9A84C;--gold-light:#E8D5A0;}
@@ -144,13 +144,14 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .lf-icon{width:52px;height:52px;border-radius:50%;background:#fff;border:1px solid var(--sand);display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
   .lf-text{font-size:0.78rem;font-weight:600;color:var(--dark);line-height:1.4;}
   @media(max-width:640px){ .landing-features{gap:0.8rem 0.5rem;padding:1.6rem 1rem;} .lf-item{min-width:44%;flex:0 0 44%;} .lf-icon{width:44px;height:44px;font-size:1.2rem;} .lf-text{font-size:0.72rem;} }
-  /* PASO 2 - tarjetas de evento */
-  .event-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;max-width:900px;margin:0 auto 2rem;}
-  .event-card{background:#fff;border:1px solid var(--sand);border-radius:14px;overflow:hidden;cursor:pointer;padding:0;transition:transform 0.25s,box-shadow 0.25s;display:flex;flex-direction:column;font-family:'Montserrat',sans-serif;}
-  .event-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(42,35,24,0.12);}
-  .ec-img{width:100%;height:140px;background-size:cover;background-position:center;background-color:var(--cream);}
-  .ec-name{padding:0.85rem 0.5rem;font-size:0.85rem;font-weight:600;color:var(--dark);text-align:center;}
-  @media(max-width:700px){ .event-cards{grid-template-columns:repeat(2,1fr);gap:0.7rem;} .ec-img{height:120px;} .ec-name{font-size:0.78rem;padding:0.65rem 0.4rem;} }
+  /* PASO 2 - tarjetas de evento (texto elegante, sin imagen) */
+  .event-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;max-width:880px;margin:0 auto 2rem;}
+  .event-card{background:#fff;border:1px solid var(--sand);border-radius:14px;cursor:pointer;padding:1.7rem 0.9rem;transition:transform 0.25s,box-shadow 0.25s,border-color 0.25s,color 0.25s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;min-height:110px;}
+  .event-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(42,35,24,0.1);border-color:var(--gye-celeste);}
+  .ec-name{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--dark);text-align:center;line-height:1.15;letter-spacing:0.01em;transition:color 0.25s;}
+  .event-card:hover .ec-name{color:var(--gye-celeste-dark);}
+  .ec-line{width:34px;height:2px;background:var(--gold);border-radius:2px;opacity:0.7;}
+  @media(max-width:700px){ .event-cards{grid-template-columns:repeat(2,1fr);gap:0.7rem;} .event-card{padding:1.2rem 0.6rem;min-height:88px;} .ec-name{font-size:1.15rem;} }
   .btn-primary{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.9rem 2rem;background:var(--gye-celeste);color:#fff;text-decoration:none;transition:all 0.3s;font-weight:600;border-radius:2px;border:none;cursor:pointer;}
   .btn-primary:hover{background:var(--gye-celeste-dark);}
   .btn-wa{font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.9rem 2rem;background:#25D366;color:#fff;text-decoration:none;transition:all 0.3s;font-weight:600;border-radius:2px;}
@@ -1146,14 +1147,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 
   <div class="event-cards" id="eventCards">
-    <button class="event-card" onclick="filterProducts('baby-shower')"><div class="ec-img" style="background-image:url('images/img1.webp')"></div><div class="ec-name">👶 Baby Shower</div></button>
-    <button class="event-card" onclick="filterProducts('revelacion')"><div class="ec-img" style="background-image:url('images/rev1.webp')"></div><div class="ec-name">🎀 Revelación de Sexo</div></button>
-    <button class="event-card" onclick="filterProducts('bautizo')"><div class="ec-img" style="background-image:url('images/bau1.webp')"></div><div class="ec-name">🙏 Bautizos</div></button>
-    <button class="event-card" onclick="filterProducts('xv-anos')"><div class="ec-img" style="background-image:url('images/xv1_2.webp')"></div><div class="ec-name">👑 XV Años</div></button>
-    <button class="event-card" onclick="filterProducts('matrimonio')"><div class="ec-img" style="background-image:url('images/mat1.webp')"></div><div class="ec-name">💍 Matrimonio</div></button>
-    <button class="event-card" onclick="filterProducts('cumpleanos')"><div class="ec-img" style="background-image:url('images/cumple1.webp')"></div><div class="ec-name">🎂 Cumpleaños</div></button>
-    <button class="event-card" onclick="filterProducts('personajes')"><div class="ec-img" style="background-image:url('images/anim1.webp')"></div><div class="ec-name">🎬 Personajes</div></button>
-    <button class="event-card" onclick="filterProducts('dia-madre')"><div class="ec-img" style="background-image:url('images/mom1.webp')"></div><div class="ec-name">💐 Día de la Madre</div></button>
+    <button class="event-card" onclick="filterProducts('baby-shower')"><div class="ec-name">Baby Shower</div><div class="ec-line"></div></button>
+    <button class="event-card" onclick="filterProducts('revelacion')"><div class="ec-name">Revelación de Sexo</div><div class="ec-line"></div></button>
+    <button class="event-card" onclick="filterProducts('bautizo')"><div class="ec-name">Bautizos</div><div class="ec-line"></div></button>
+    <button class="event-card" onclick="filterProducts('xv-anos')"><div class="ec-name">XV Años</div><div class="ec-line"></div></button>
+    <button class="event-card" onclick="filterProducts('matrimonio')"><div class="ec-name">Matrimonio</div><div class="ec-line"></div></button>
+    <button class="event-card" onclick="filterProducts('cumpleanos')"><div class="ec-name">Cumpleaños</div><div class="ec-line"></div></button>
+    <button class="event-card" onclick="filterProducts('personajes')"><div class="ec-name">Personajes Animados</div><div class="ec-line"></div></button>
+    <button class="event-card" onclick="filterProducts('dia-madre')"><div class="ec-name">Día de la Madre</div><div class="ec-line"></div></button>
   </div>
 
   <div class="search-wrap">
