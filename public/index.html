@@ -1061,7 +1061,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p class="hero-subtitle">Detalles que iluminan tus mejores recuerdos.</p>
       <div class="hero-actions">
         <a href="#productos" class="btn-primary">Ver diseños</a>
-        <a href="#" onclick="openFormModal();return false;" class="btn-secondary">Crear mi pedido</a>
+        <a href="#" onclick="crearMiPedido();return false;" class="btn-secondary">Crear mi pedido</a>
       </div>
       <div class="hero-pay-badge" style="margin-top:1.1rem;display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,0.96);padding:8px 14px;border-radius:50px;box-shadow:0 4px 14px rgba(0,0,0,0.2);flex-wrap:wrap;max-width:100%;">
         <span style="font-size:11px;font-weight:700;color:#2A2318;letter-spacing:0.02em;">💳 Aceptamos tarjetas</span>
@@ -1125,6 +1125,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="section-header reveal">
     <span class="section-label"><span style="color:var(--gye-celeste);">★</span> Nuestra colección <span style="color:var(--gye-celeste);">★</span></span>
     <h2 class="section-title">Diseños para cada <span>momento especial</span></h2>
+  </div>
+
+  <div id="crearPedidoPrompt" style="display:none;text-align:center;margin-bottom:1.2rem;">
+    <div style="font-size:1.05rem;font-weight:700;color:var(--dark);">👇 ¿Qué evento estás preparando?</div>
+    <div style="font-size:0.82rem;color:var(--brown);margin-top:0.35rem;">Elige una categoría para ver los modelos disponibles</div>
   </div>
 
   <div class="filter-wrap">
@@ -2155,7 +2160,27 @@ function closeCart() {
   document.body.classList.remove('cart-open');
 }
 
+// Modo guiado "Crear mi pedido": muestra primero solo las categorias
+function crearMiPedido() {
+  var grid = document.getElementById('productsGrid');
+  var sw = document.querySelector('.search-wrap');
+  var prompt = document.getElementById('crearPedidoPrompt');
+  if (grid) grid.style.display = 'none';
+  if (sw) sw.style.display = 'none';
+  if (prompt) prompt.style.display = 'block';
+  var target = document.querySelector('.filter-wrap') || document.getElementById('productos');
+  if (target) {
+    var navH = (document.querySelector('nav') ? document.querySelector('nav').offsetHeight : 70) + 20;
+    var top = document.getElementById('productos').getBoundingClientRect().top + window.pageYOffset - navH;
+    window.scrollTo({ top: top, behavior: 'smooth' });
+  }
+}
+
 function filterProducts(cat) {
+  // Salir del modo guiado: mostrar los modelos y ocultar el aviso
+  var grid = document.getElementById('productsGrid'); if (grid) grid.style.display = '';
+  var sw = document.querySelector('.search-wrap'); if (sw) sw.style.display = '';
+  var prompt = document.getElementById('crearPedidoPrompt'); if (prompt) prompt.style.display = 'none';
   document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
   // Find the right button (works for click or programmatic calls)
   var activeBtn = (typeof event !== 'undefined' && event && event.target) ? event.target : null;
