@@ -144,6 +144,13 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .lf-icon{width:52px;height:52px;border-radius:50%;background:#fff;border:1px solid var(--sand);display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
   .lf-text{font-size:0.78rem;font-weight:600;color:var(--dark);line-height:1.4;}
   @media(max-width:640px){ .landing-features{gap:0.8rem 0.5rem;padding:1.6rem 1rem;} .lf-item{min-width:44%;flex:0 0 44%;} .lf-icon{width:44px;height:44px;font-size:1.2rem;} .lf-text{font-size:0.72rem;} }
+  /* PASO 2 - tarjetas de evento */
+  .event-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;max-width:900px;margin:0 auto 2rem;}
+  .event-card{background:#fff;border:1px solid var(--sand);border-radius:14px;overflow:hidden;cursor:pointer;padding:0;transition:transform 0.25s,box-shadow 0.25s;display:flex;flex-direction:column;font-family:'Montserrat',sans-serif;}
+  .event-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(42,35,24,0.12);}
+  .ec-img{width:100%;height:140px;background-size:cover;background-position:center;background-color:var(--cream);}
+  .ec-name{padding:0.85rem 0.5rem;font-size:0.85rem;font-weight:600;color:var(--dark);text-align:center;}
+  @media(max-width:700px){ .event-cards{grid-template-columns:repeat(2,1fr);gap:0.7rem;} .ec-img{height:120px;} .ec-name{font-size:0.78rem;padding:0.65rem 0.4rem;} }
   .btn-primary{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.9rem 2rem;background:var(--gye-celeste);color:#fff;text-decoration:none;transition:all 0.3s;font-weight:600;border-radius:2px;border:none;cursor:pointer;}
   .btn-primary:hover{background:var(--gye-celeste-dark);}
   .btn-wa{font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.9rem 2rem;background:#25D366;color:#fff;text-decoration:none;transition:all 0.3s;font-weight:600;border-radius:2px;}
@@ -1129,7 +1136,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div id="crearPedidoPrompt" style="display:none;text-align:center;margin-bottom:1.2rem;">
     <div style="font-size:1.05rem;font-weight:700;color:var(--dark);">👇 ¿Qué evento estás preparando?</div>
-    <div style="font-size:0.82rem;color:var(--brown);margin-top:0.35rem;">Elige una categoría para ver los modelos disponibles</div>
+    <div style="font-size:0.82rem;color:var(--brown);margin-top:0.35rem;">Elige la opción que mejor se adapte a tu celebración</div>
+  </div>
+
+  <div class="event-cards" id="eventCards" style="display:none;">
+    <button class="event-card" onclick="filterProducts('baby-shower')"><div class="ec-img" style="background-image:url('images/img1.webp')"></div><div class="ec-name">👶 Baby Shower</div></button>
+    <button class="event-card" onclick="filterProducts('revelacion')"><div class="ec-img" style="background-image:url('images/rev1.webp')"></div><div class="ec-name">🎀 Revelación de Sexo</div></button>
+    <button class="event-card" onclick="filterProducts('bautizo')"><div class="ec-img" style="background-image:url('images/bau1.webp')"></div><div class="ec-name">🙏 Bautizos</div></button>
+    <button class="event-card" onclick="filterProducts('xv-anos')"><div class="ec-img" style="background-image:url('images/xv1_2.webp')"></div><div class="ec-name">👑 XV Años</div></button>
+    <button class="event-card" onclick="filterProducts('matrimonio')"><div class="ec-img" style="background-image:url('images/mat1.webp')"></div><div class="ec-name">💍 Matrimonio</div></button>
+    <button class="event-card" onclick="filterProducts('cumpleanos')"><div class="ec-img" style="background-image:url('images/cumple1.webp')"></div><div class="ec-name">🎂 Cumpleaños</div></button>
+    <button class="event-card" onclick="filterProducts('personajes')"><div class="ec-img" style="background-image:url('images/anim1.webp')"></div><div class="ec-name">🎬 Personajes</div></button>
+    <button class="event-card" onclick="filterProducts('dia-madre')"><div class="ec-img" style="background-image:url('images/mom1.webp')"></div><div class="ec-name">💐 Día de la Madre</div></button>
   </div>
 
   <div class="filter-wrap">
@@ -2165,9 +2183,13 @@ function crearMiPedido() {
   var grid = document.getElementById('productsGrid');
   var sw = document.querySelector('.search-wrap');
   var prompt = document.getElementById('crearPedidoPrompt');
+  var fw = document.querySelector('.filter-wrap');
+  var ec = document.getElementById('eventCards');
   if (grid) grid.style.display = 'none';
   if (sw) sw.style.display = 'none';
+  if (fw) fw.style.display = 'none';
   if (prompt) prompt.style.display = 'block';
+  if (ec) ec.style.display = 'grid';
   var target = document.querySelector('.filter-wrap') || document.getElementById('productos');
   if (target) {
     var navH = (document.querySelector('nav') ? document.querySelector('nav').offsetHeight : 70) + 20;
@@ -2177,10 +2199,12 @@ function crearMiPedido() {
 }
 
 function filterProducts(cat) {
-  // Salir del modo guiado: mostrar los modelos y ocultar el aviso
+  // Salir del modo guiado: mostrar los modelos y ocultar el aviso/tarjetas de evento
   var grid = document.getElementById('productsGrid'); if (grid) grid.style.display = '';
   var sw = document.querySelector('.search-wrap'); if (sw) sw.style.display = '';
+  var fw = document.querySelector('.filter-wrap'); if (fw) fw.style.display = '';
   var prompt = document.getElementById('crearPedidoPrompt'); if (prompt) prompt.style.display = 'none';
+  var ec = document.getElementById('eventCards'); if (ec) ec.style.display = 'none';
   document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
   // Find the right button (works for click or programmatic calls)
   var activeBtn = (typeof event !== 'undefined' && event && event.target) ? event.target : null;
