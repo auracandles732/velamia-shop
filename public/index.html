@@ -1657,9 +1657,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="form-group"><label>Teléfono *</label><input type="tel" id="fTelefono" placeholder="0999999999"/></div>
           <div class="form-group"><label>Sector / Ciudad</label><input type="text" id="fCiudad" placeholder="Ej: Norte de Guayaquil"/></div>
         </div>
-        <div class="form-group"><label>Dirección completa *</label><input type="text" id="fDireccion" placeholder="Calle, número, edificio..."/></div>
+        <div class="form-row">
+          <div class="form-group"><label>Manzana (Mz)</label><input type="text" id="fManzana" placeholder="Ej: Mz 15"/></div>
+          <div class="form-group"><label>Villa / N° casa</label><input type="text" id="fVilla" placeholder="Ej: Villa 8"/></div>
+        </div>
+        <div class="form-group"><label>Calles *</label><input type="text" id="fCalles" placeholder="Calle principal y calle secundaria"/></div>
         <div class="form-group"><label>Correo electrónico *</label><input type="email" id="fEmail" placeholder="tucorreo@gmail.com"/></div>
-        <div class="form-group"><label>Referencias</label><textarea id="fReferencias" placeholder="Cerca de... color de casa... piso..."></textarea></div>
+        <div class="form-group"><label>Referencia del domicilio</label><textarea id="fReferencias" placeholder="Color de casa, punto de referencia cercano, piso..."></textarea></div>
         <div class="form-group" style="margin-top:2px;">
           <label for="fEsRegalo" style="display:flex;align-items:center;gap:9px;cursor:pointer;font-size:0.84rem;color:var(--dark);background:#FBF3F6;border:1px solid #F0D5DF;border-radius:8px;padding:0.7rem 0.9rem;">
             <input type="checkbox" id="fEsRegalo" onchange="toggleRegalo()" style="width:18px;height:18px;flex-shrink:0;cursor:pointer;accent-color:#D4537E;">
@@ -2222,9 +2226,16 @@ function initPaymentezCheckout() {
   var nombre = document.getElementById('fNombre').value.trim();
   var apellido = document.getElementById('fApellido').value.trim();
   var tel = document.getElementById('fTelefono').value.trim();
-  var dir = document.getElementById('fDireccion').value.trim();
+  var manzana = document.getElementById('fManzana') ? document.getElementById('fManzana').value.trim() : '';
+  var villa = document.getElementById('fVilla') ? document.getElementById('fVilla').value.trim() : '';
+  var calles = document.getElementById('fCalles') ? document.getElementById('fCalles').value.trim() : '';
+  var dirParts = [];
+  if (manzana) dirParts.push('Mz: '+manzana);
+  if (villa) dirParts.push('Villa: '+villa);
+  if (calles) dirParts.push('Calles: '+calles);
+  var dir = dirParts.join(' | ');
   var email = document.getElementById('fEmail') ? document.getElementById('fEmail').value.trim() : '';
-  if (!nombre||!apellido||!tel||!dir||!email) { alert('Completa todos los campos obligatorios, incluyendo el correo electrónico.'); return; }
+  if (!nombre||!apellido||!tel||!calles||!email) { alert('Completa todos los campos obligatorios (nombres, apellidos, teléfono, calles y correo electrónico).'); return; }
   var aceptaPol = document.getElementById('aceptaPoliticas');
   if (aceptaPol && !aceptaPol.checked) { alert('Debes aceptar las políticas de pedido para continuar.'); return; }
   var items = Object.values(cart);
