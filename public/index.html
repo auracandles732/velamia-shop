@@ -1836,6 +1836,7 @@ const IMG_MAP = {
 const ADMIN_PIN = '1234';
 
 const PRODUCTS = [
+  {id:99, name:"PRUEBA - Pago de prueba", desc:"Producto de prueba para verificar el pago con tarjeta. Envio gratis. No es un producto real", price:1.00, tag:"Prueba", img:"img1", cat:"baby-shower", unit:"unidad", oculto:true, envioGratis:true},
   {id:62, name:"Promocion Especial Baby Shower", desc:"Oferta exclusiva solo por tiempo limitado. Velitas personalizadas para eventos desde 2 docenas, pedidos bajo reserva", price:24.99, tag:"Oferta Exclusiva", img:"baby_shower_promo_2_docenas", cat:"baby-shower", featured:true, nuevo:true, unit:"docena", unitLabel:"promo 2 docenas (24 unidades)", qtyLabel:"promos de 2 docenas", fixedSale:true, onSale:true, oferta:true, originalPrice:35.98, salePrice:24.99, saleDiscount:31, saleText:"Oferta exclusiva solo por tiempo limitado"},
   {id:63, name:"Osito en Canasta con Globos", desc:"Incluye empaque + nombre personalizado. Ideal para baby shower, bautizo y matrimonio", price:40, tag:"Baby Shower", img:"osito_canasta_globos", cat:"baby-shower", nuevo:true, unit:"docena"},
   {id:64, name:"Leoncito en Base Hexagonal", desc:"Incluye empaque + nombre personalizado. Ideal para baby shower, bautizo y matrimonio", price:35, tag:"Baby Shower", img:"leoncito_base_hexagonal", cat:"baby-shower", nuevo:true, unit:"docena"},
@@ -1979,6 +1980,12 @@ function getOnlineDiscount(subtotal) {
 }
 
 function getShippingCost() {
+  // Envio gratis si el carrito tiene un producto marcado con envioGratis (ej: producto de prueba)
+  var hayEnvioGratis = Object.values(cart).some(function(i){
+    var p = PRODUCTS.find(function(x){ return x.id === i.id; });
+    return p && p.envioGratis;
+  });
+  if (hayEnvioGratis) return 0;
   var zone = document.getElementById('shippingZone') ? document.getElementById('shippingZone').value : 'guayaquil';
   var qty = Object.values(cart).reduce(function(s,i){ return s+i.qty; }, 0);
   return zone === 'guayaquil' ? (qty >= 2 ? 0 : 3) : (qty >= 3 ? 0 : 5);
@@ -2860,7 +2867,7 @@ document.addEventListener('DOMContentLoaded', function() {
       saleSeed = (saleSeed * 1664525 + 1013904223) & 0xffffffff;
       return (saleSeed >>> 0) / 0xffffffff;
     }
-    var saleCandidates = PRODUCTS.filter(function(p){ return p.id !== 1 && p.id !== 3 && p.id !== 5; });
+    var saleCandidates = PRODUCTS.filter(function(p){ return p.id !== 1 && p.id !== 3 && p.id !== 5 && !p.oculto; });
     for (var k = saleCandidates.length - 1; k > 0; k--) {
       var ki = Math.floor(saleRandom() * (k + 1));
       var t = saleCandidates[k]; saleCandidates[k] = saleCandidates[ki]; saleCandidates[ki] = t;
@@ -2891,6 +2898,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var grid = document.getElementById('productsGrid');
   if (grid) {
     PRODUCTS.forEach(function(p) {
+      if (p.oculto) return; // productos de prueba: no se muestran en el catalogo
       var tc = (p.tag==='Premium'||p.tag==='Mas vendida') ? '#C9A84C' : '#8B7355';
       var card = document.createElement('div');
       card.className = 'product-card';
