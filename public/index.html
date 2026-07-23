@@ -193,6 +193,12 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .product-desc{font-size:0.75rem;color:var(--dark);font-weight:400;padding:0 1rem 0.4rem;line-height:1.6;}
   .product-price{font-size:1rem;color:var(--brown);font-weight:700;padding:0 1rem 0.2rem;}
   .product-unit{font-size:0.68rem;color:var(--taupe);padding:0 1rem 0.4rem;}
+  /* Precio con 10% por pago con tarjeta */
+  .price-card-box{margin:0 1rem 0.5rem;background:#EAF7EE;border:1px solid #BFE6CC;border-radius:8px;padding:0.45rem 0.6rem;}
+  .pcb-top{display:flex;align-items:baseline;gap:0.35rem;flex-wrap:wrap;}
+  .pcb-price{font-size:0.95rem;font-weight:700;color:#1B7A43;}
+  .pcb-label{font-size:0.66rem;font-weight:600;color:#1B7A43;}
+  .pcb-note{display:block;font-size:0.58rem;color:#5c7d68;line-height:1.3;margin-top:0.15rem;}
   .foto-ref{font-size:0.62rem;color:#aaa;font-style:italic;padding:0 1rem 0.8rem;margin:0;}
 
   /* Card quantity selector */
@@ -2937,6 +2943,12 @@ document.addEventListener('DOMContentLoaded', function() {
           '<p class="product-price">$'+p.price.toFixed(2)+'</p>'
         ) +
         '<p class="product-unit">'+unitLabel+'</p>' +
+        (!p.sinDescuento ?
+          '<div class="price-card-box">' +
+            '<div class="pcb-top"><span class="pcb-price">$'+(((p.onSale && isSaleActive() ? p.salePrice : p.price) * 0.9).toFixed(2))+'</span><span class="pcb-label">💳 pagando con tarjeta</span></div>' +
+            '<span class="pcb-note">10% de descuento · solo aplica a pagos con tarjeta en la web</span>' +
+          '</div>'
+          : '') +
         '<p class="foto-ref">*<em>Fotos referenciales</em></p>' +
         '<div style="flex:1;"></div>' +
         '<div class="card-qty-label">Cantidad ('+(p.unit==="unidad"?"unidades":"docenas")+')</div>' +
