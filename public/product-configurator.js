@@ -1,1 +1,577 @@
-(function(){'use strict';function boot(){if(typeof PRODUCTS==='undefined'||typeof IMG_MAP==='undefined')return;var page=document.getElementById('productPage');if(!page)return;var custom={1:true,3:true,5:true};var colors={crema:'#f1dfbd',rosado:'#efc8c9',celeste:'#cfe3ef',blanco:'#f8f8f5'};var state={id:null,qty:1,bear:'crema',cloud:'crema',heart:'rosado'};var originalOpen=window.openProductPage;window.openProductPage=function(id,fromHistory){if(typeof originalOpen==='function')originalOpen(id,fromHistory);setTimeout(function(){render(id);},0);};window.openProductModal=function(id){window.openProductPage(id);};function render(id){var p=PRODUCTS.find(function(x){return x.id===id;});if(!p)return;state.id=id;state.qty=1;state.bear='crema';state.cloud='crema';state.heart='rosado';page.classList.add('vc-live');if(!document.getElementById('vc-live-style')){var s=document.createElement('style');s.id='vc-live-style';s.textContent='#productPage.vc-live .pp-container{grid-template-columns:minmax(0,1.12fr) minmax(430px,.88fr);max-width:1380px;gap:3rem}#productPage.vc-live .pp-info-side{gap:.8rem}#vcCustomizerLive{margin-top:.5rem}.vc-head{display:flex;align-items:center;gap:1rem;margin:.2rem 0 .9rem}.vc-head b{font-size:.72rem;letter-spacing:.16em;font-weight:600}.vc-head:after{content:"";height:1px;background:#e8e1d8;flex:1}.vc-grid{display:grid;grid-template-columns:1fr 150px;gap:1.1rem;align-items:start}.vc-opts{display:flex;flex-direction:column;gap:.85rem}.vc-row{display:grid;grid-template-columns:130px repeat(4,31px);gap:.7rem;align-items:center}.vc-label{font-size:.76rem;color:#625c55;font-weight:500}.vc-swatch{width:30px;height:30px;border-radius:50%;border:1px solid rgba(0,0,0,.15);background:var(--c);cursor:pointer;position:relative}.vc-swatch.sel{box-shadow:0 0 0 2px #fff,0 0 0 3px #6f655b}.vc-swatch.sel:after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;color:#5e554d}.vc-card{border:1px solid #e5ded5;border-radius:10px;background:#fdfbf8;padding:.55rem;text-align:center}.vc-card small{display:block;font-size:.56rem;letter-spacing:.12em;font-weight:600}.vc-preview{width:130px;height:155px;display:block;margin:auto}.vc-note{font-size:.58rem;color:#928a82}.pp-price{margin-top:.9rem}@media(max-width:900px){.vc-grid{grid-template-columns:1fr}.vc-card{width:170px}.vc-row{grid-template-columns:1fr repeat(4,30px)}.vc-label{grid-column:1/-1}#productPage.vc-live .pp-container{grid-template-columns:1fr}}';document.head.appendChild(s);}var old=document.getElementById('vcCustomizerLive');if(old)old.remove();if(custom[id]){var box=document.createElement('div');box.id='vcCustomizerLive';box.innerHTML='<div class="vc-head"><b>PERSONALIZA TU VELA</b></div><div class="vc-grid"><div class="vc-opts">'+row('Color del osito','bear')+row('Color de la nube','cloud')+row('Color del corazón','heart')+'</div><div class="vc-card"><small>VISTA PREVIA</small><svg class="vc-preview" viewBox="0 0 160 185" aria-label="Vista previa"><path id="vcCloud" d="M25 133c-12 0-21-9-21-20s9-20 21-20c3-17 18-29 36-27 10-18 37-19 49 0 20-3 38 12 39 31 10 3 17 12 17 23 0 13-11 24-24 24H29c-11 0-20-5-24-14z" fill="#f1dfbd"/><circle id="vcBearHead" cx="83" cy="60" r="28" fill="#f1dfbd"/><circle id="vcEar1" cx="60" cy="39" r="12" fill="#f1dfbd"/><circle id="vcEar2" cx="106" cy="39" r="12" fill="#f1dfbd"/><ellipse id="vcBearBody" cx="83" cy="101" rx="29" ry="36" fill="#f1dfbd"/><circle cx="74" cy="57" r="2.5"/><circle cx="92" cy="57" r="2.5"/><ellipse cx="83" cy="68" rx="8" ry="6" fill="#d4b38b"/><path d="M80 68q3 5 6 0" fill="none" stroke="#665548" stroke-width="1.5"/><path id="vcHeart" d="M123 85c-10-12-28 1-14 15l14 14 14-14c14-14-4-27-14-15z" fill="#efc8c9"/></svg><span class="vc-note">Así quedará tu vela</span></div></div>';var desc=document.getElementById('ppDesc');if(desc)desc.insertAdjacentElement('afterend',box);box.querySelectorAll('.vc-swatch').forEach(function(btn){btn.addEventListener('click',function(){state[btn.dataset.part]=btn.dataset.color;update();});});update();}var wa=document.getElementById('ppWaBtn');if(wa){wa.addEventListener('click',function(){wa.href=waLink(p);});wa.href=waLink(p);}}function row(label,part){return '<div class="vc-row"><span class="vc-label">'+label+'</span>'+Object.keys(colors).map(function(c){return '<button type="button" class="vc-swatch" data-part="'+part+'" data-color="'+c+'" style="--c:'+colors[c]+'" aria-label="'+c+'"></button>';}).join('')+'</div>';}function update(){[['vcBearHead','bear'],['vcEar1','bear'],['vcEar2','bear'],['vcBearBody','bear'],['vcCloud','cloud'],['vcHeart','heart']].forEach(function(x){var el=document.getElementById(x[0]);if(el)el.setAttribute('fill',colors[state[x[1]]]);});document.querySelectorAll('.vc-swatch').forEach(function(b){b.classList.toggle('sel',state[b.dataset.part]===b.dataset.color);});var p=PRODUCTS.find(function(x){return x.id===state.id;});var wa=document.getElementById('ppWaBtn');if(p&&wa)wa.href=waLink(p);}function waLink(p){var labels={crema:'Crema',rosado:'Rosado',celeste:'Celeste',blanco:'Blanco'};var q=document.getElementById('ppQty');var qty=q?q.textContent:'1';var m='Hola Velamia! Estoy viendo '+p.name+' ($'+p.price.toFixed(2)+' por docena). Quiero '+qty+' docena(s). Colores: osito '+labels[state.bear]+', nube '+labels[state.cloud]+', corazón '+labels[state.heart]+'. ¿Me ayudan con la personalización?';return 'https://wa.me/593995448686?text='+encodeURIComponent(m);}var match=location.hash.match(/^#producto-(\d+)$/);if(match)setTimeout(function(){render(parseInt(match[1],10));},150);}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();})();
+(function () {
+  'use strict';
+
+  // ── Paletas por pieza ──────────────────────────────────────────────
+  // Los hex son el TINTE que se multiplica sobre la base fotografica.
+  // El multiply oscurece ~20%, por eso los tonos van claros.
+  var PALETTE = {
+    osito: [
+      { k: 'beige',   n: 'Beige',          v: '#eed6b8' },
+      { k: 'cafe',    n: 'Café',           v: '#c69a72' },
+      { k: 'rosado',  n: 'Rosado pastel',  v: '#f8d5d8' },
+      { k: 'celeste', n: 'Celeste pastel', v: '#d6e6f4' }
+    ],
+    nube: [
+      { k: 'beige',  n: 'Beige',  v: '#ecdcc4' },
+      { k: 'blanco', n: 'Blanco', v: '#fbfaf7' },
+      { k: 'crema',  n: 'Crema',  v: '#f7ebd4' }
+    ],
+    clasica: [
+      { k: 'crema',   n: 'Crema',   v: '#f1dfbd' },
+      { k: 'rosado',  n: 'Rosado',  v: '#efc8c9' },
+      { k: 'celeste', n: 'Celeste', v: '#cfe3ef' },
+      { k: 'blanco',  n: 'Blanco',  v: '#f8f8f5' }
+    ]
+  };
+
+  // ── Configuracion por producto ─────────────────────────────────────
+  // Para dar vista previa fotografica a otro producto basta con agregar
+  // su entrada aqui con la base y las mascaras correspondientes.
+  var CONFIG = {
+    1: {
+      parts: [
+        { id: 'bear',  short: 'osito', label: 'Color del osito',  palette: 'osito', def: 'beige'  },
+        { id: 'cloud', short: 'nube',  label: 'Color de la nube', palette: 'nube',  def: 'blanco' }
+      ],
+      preview: {
+        base:  'images/osito_base.png',
+        ratio: '720 / 875',
+        masks: { bear: 'images/osito_mask_bear.png', cloud: 'images/osito_mask_cloud.png' }
+      }
+    },
+    3: {
+      parts: [
+        { id: 'bear',  short: 'osito',   label: 'Color del osito',    palette: 'clasica', def: 'crema'  },
+        { id: 'cloud', short: 'nube',    label: 'Color de la nube',   palette: 'clasica', def: 'crema'  },
+        { id: 'heart', short: 'corazón', label: 'Color del corazón',  palette: 'clasica', def: 'rosado' }
+      ],
+      preview: null
+    },
+    5: {
+      parts: [
+        { id: 'bear',  short: 'osito',   label: 'Color del osito',   palette: 'clasica', def: 'crema'  },
+        { id: 'cloud', short: 'nube',    label: 'Color de la nube',  palette: 'clasica', def: 'crema'  },
+        { id: 'heart', short: 'corazón', label: 'Color del corazón', palette: 'clasica', def: 'rosado' }
+      ],
+      preview: null
+    }
+  };
+
+  var state = {
+    id: null,
+    qty: 1,
+    name: '',
+    date: '',
+    images: [],
+    imageIndex: 0,
+    colors: {}
+  };
+
+  function cfg(id) { return CONFIG[id] || null; }
+  function optionsFor(part) { return PALETTE[part.palette] || PALETTE.clasica; }
+  function colorOf(part, key) {
+    var list = optionsFor(part);
+    for (var i = 0; i < list.length; i++) if (list[i].k === key) return list[i];
+    return list[0];
+  }
+
+  function ready(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+
+  ready(function initConfigurator() {
+    if (typeof PRODUCTS === 'undefined' || typeof IMG_MAP === 'undefined') return;
+    var page = document.getElementById('productPage');
+    if (!page) return;
+
+    installStyles();
+    buildPage(page);
+
+    var originalClose = window.closeProductPage;
+    window.closeProductPage = function (fromHistory) {
+      if (typeof originalClose === 'function') return originalClose(fromHistory);
+      page.style.display = 'none';
+      if (typeof showMainContent === 'function') showMainContent();
+    };
+
+    window.changePpQty = changeQty;
+    window.openProductModal = function (id) { window.openProductPage(id); };
+    window.openProductPage = function (id, fromHistory) {
+      var product = PRODUCTS.find(function (item) { return item.id === id; });
+      if (!product) return;
+
+      state.id = id;
+      state.qty = 1;
+      state.name = '';
+      state.date = '';
+      state.imageIndex = 0;
+      state.colors = {};
+      var conf = cfg(id);
+      if (conf) conf.parts.forEach(function (p) { state.colors[p.id] = p.def; });
+
+      if (!fromHistory) {
+        history.pushState({ page: 'product', id: id }, '', '#producto-' + id);
+      }
+
+      trackView(product);
+      renderProduct(product);
+
+      if (typeof hideMainContent === 'function') hideMainContent();
+      page.style.display = 'block';
+      window.scrollTo(0, 0);
+    };
+
+    var match = window.location.hash.match(/^#producto-(\d+)$/);
+    if (match) window.openProductPage(parseInt(match[1], 10), true);
+  });
+
+  function installStyles() {
+    if (document.getElementById('velamia-configurator-v3-styles')) return;
+    var style = document.createElement('style');
+    style.id = 'velamia-configurator-v3-styles';
+    style.textContent = `
+      #productPage.vc-page{
+        --vc-ink:#4a423a;--vc-soft:#8c8279;--vc-line:#ece2d6;--vc-cream:#f9f3ea;
+        --vc-blush:#f4dcdc;--vc-blush-deep:#d9a9ab;--vc-sand:#e9dccb;--vc-gold:#c3a175;
+        padding:92px 5vw 60px;background:linear-gradient(180deg,#fffdfb 0%,#fdf8f2 100%);
+        min-height:100vh;font-family:'Montserrat',sans-serif;color:var(--vc-ink)
+      }
+      #productPage.vc-page *,#productPage.vc-page *::before,#productPage.vc-page *::after{box-sizing:border-box}
+      .vc-shell{width:min(1280px,100%);margin:0 auto;display:grid;
+        grid-template-columns:minmax(0,1fr) minmax(400px,460px);gap:3rem;align-items:start}
+
+      /* ── Galeria ── */
+      .vc-gallery{min-width:0}
+      .vc-main-frame{position:relative;aspect-ratio:1/1;max-height:600px;
+        background:linear-gradient(150deg,#fdf9f4,#f8f0e6);border:1px solid var(--vc-line);border-radius:24px;
+        box-shadow:0 18px 46px -24px rgba(120,95,70,.30);display:flex;align-items:center;justify-content:center;overflow:hidden}
+      .vc-main-image{width:100%;height:100%;object-fit:contain;padding:1.4rem;transition:opacity .28s ease}
+      .vc-main-image.is-swapping{opacity:0}
+      .vc-nav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;
+        border:1px solid var(--vc-line);background:rgba(255,255,255,.88);color:var(--vc-ink);
+        font-size:1.3rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
+        box-shadow:0 6px 18px -8px rgba(120,95,70,.45);transition:all .22s ease;opacity:0;pointer-events:none}
+      .vc-main-frame:hover .vc-nav,.vc-nav:focus-visible{opacity:1;pointer-events:auto}
+      .vc-nav:hover{background:#fff;border-color:var(--vc-blush-deep)}
+      .vc-nav-prev{left:12px} .vc-nav-next{right:12px}
+      .vc-counter{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+        background:rgba(255,255,255,.9);border:1px solid var(--vc-line);border-radius:50px;
+        padding:.26rem .78rem;font-size:.65rem;letter-spacing:.08em;color:var(--vc-soft)}
+      .vc-thumbs{display:flex;gap:.65rem;margin-top:.9rem;flex-wrap:wrap}
+      .vc-thumb{width:74px;height:74px;object-fit:cover;background:var(--vc-cream);border:1px solid var(--vc-line);
+        border-radius:14px;cursor:pointer;opacity:.72;transition:all .25s ease;padding:4px}
+      .vc-thumb:hover{opacity:1;transform:translateY(-2px)}
+      .vc-thumb.is-active{opacity:1;border-color:var(--vc-blush-deep);
+        box-shadow:0 0 0 2px rgba(217,169,171,.32)}
+      .vc-benefits{margin-top:1.3rem;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;
+        background:linear-gradient(135deg,#fffaf5,#fdf1ea);border:1px solid var(--vc-line);
+        border-radius:18px;padding:1.05rem 1.15rem}
+      .vc-benefit{display:flex;align-items:center;gap:.55rem;font-size:.73rem;line-height:1.4;color:#6d645b}
+      .vc-benefit-icon{flex:0 0 32px;width:32px;height:32px;border-radius:50%;background:#fff;
+        display:flex;align-items:center;justify-content:center;font-size:.92rem;
+        box-shadow:0 3px 10px -4px rgba(120,95,70,.35)}
+
+      /* ── Panel derecho: UNA sola tarjeta, sin anidar ── */
+      .vc-details{min-width:0}
+      .vc-card{background:rgba(255,255,255,.78);border:1px solid var(--vc-line);border-radius:24px;
+        padding:1.9rem 1.75rem;box-shadow:0 20px 52px -32px rgba(120,95,70,.40)}
+      .vc-eyebrow{font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--vc-gold);
+        margin:0 0 .5rem;font-weight:600}
+      .vc-title{font-family:Georgia,'Times New Roman',serif;font-size:clamp(1.6rem,2.4vw,2.15rem);
+        font-weight:400;line-height:1.15;margin:0;color:#3f3830}
+      .vc-subtitle{font-size:.79rem;color:var(--vc-soft);margin:.45rem 0 0;font-style:italic}
+      .vc-rule{height:1px;background:linear-gradient(90deg,var(--vc-sand),rgba(233,220,203,0));margin:1.2rem 0}
+      .vc-price-row{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap}
+      .vc-price{font-family:Georgia,serif;font-size:1.8rem;color:#3f3830}
+      .vc-price-unit{font-size:.77rem;color:var(--vc-soft)}
+      .vc-price-note{display:inline-flex;align-items:center;gap:.4rem;margin:.65rem 0 0;background:var(--vc-blush);
+        border-radius:50px;padding:.38rem .82rem;font-size:.67rem;color:#7d5d5e;font-weight:500}
+      .vc-description{font-size:.81rem;line-height:1.78;color:#6d645b}
+      .vc-description p{margin:0 0 .65rem}
+      .vc-description p:last-child{margin-bottom:0}
+      .vc-heading{display:flex;align-items:center;gap:.85rem;margin:0 0 1.1rem}
+      .vc-heading span{font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+        white-space:nowrap;color:#7a7067}
+      .vc-heading:after{content:'';height:1px;background:var(--vc-line);flex:1}
+
+      /* ── Vista previa: centrada y proporcionada ── */
+      .vc-preview{text-align:center;margin:0 auto 1.5rem;max-width:300px}
+      .vc-preview-title{display:block;font-size:.56rem;letter-spacing:.18em;font-weight:700;
+        text-transform:uppercase;color:var(--vc-gold);margin-bottom:.5rem}
+      .vc-render{position:relative;isolation:isolate;width:100%;margin:0 auto;
+        aspect-ratio:var(--ratio,720/875);filter:drop-shadow(0 14px 12px rgba(120,95,70,.20))}
+      .vc-lay{position:absolute;inset:0;width:100%;height:100%}
+      .vc-base{object-fit:contain}
+      .vc-tint{mix-blend-mode:multiply}
+      @supports not ((-webkit-mask-image:none) or (mask-image:none)){ .vc-tint{display:none} }
+      .vc-preview-note{display:block;font-size:.62rem;color:var(--vc-soft);margin-top:.5rem;font-style:italic}
+
+      /* ── Selector de colores ── */
+      .vc-group{margin-bottom:1.35rem}
+      .vc-group:last-child{margin-bottom:0}
+      .vc-group-label{display:block;font-size:.73rem;font-weight:600;color:#6d645b;margin-bottom:.7rem}
+      .vc-swatches{display:flex;gap:1.05rem;flex-wrap:wrap}
+      .vc-opt{background:none;border:0;padding:0;cursor:pointer;text-align:center;width:58px;font:inherit}
+      .vc-dot{display:block;width:40px;height:40px;border-radius:50%;margin:0 auto;border:2px solid #fff;
+        background:var(--c);position:relative;transition:transform .2s ease,box-shadow .2s ease;
+        box-shadow:0 0 0 1px #e5dbcd,0 4px 11px -5px rgba(120,95,70,.55)}
+      .vc-opt:hover .vc-dot{transform:translateY(-3px) scale(1.07)}
+      .vc-opt.is-on .vc-dot{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--vc-blush-deep),0 6px 15px -6px rgba(120,95,70,.55)}
+      .vc-opt.is-on .vc-dot:after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;
+        justify-content:center;font-size:.88rem;font-weight:700;color:#6b5f55}
+      .vc-optname{display:block;font-size:.6rem;color:var(--vc-soft);margin-top:.42rem;line-height:1.25}
+      .vc-opt.is-on .vc-optname{color:var(--vc-ink);font-weight:600}
+      .vc-note{padding:.95rem 1.1rem;background:linear-gradient(135deg,#fffaf5,#fdf2ec);border:1px solid var(--vc-line);
+        border-radius:16px;font-size:.75rem;line-height:1.65;color:#6d645b}
+
+      /* ── Campos ── */
+      .vc-fields{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+      .vc-field{display:flex;flex-direction:column;gap:.38rem}
+      .vc-field--full{grid-column:1/-1}
+      .vc-field label{font-size:.67rem;font-weight:600;letter-spacing:.05em;color:#6d645b}
+      .vc-field input{width:100%;padding:.75rem .88rem;border:1px solid var(--vc-line);border-radius:13px;
+        background:#fffdfb;font-family:'Montserrat',sans-serif;font-size:.79rem;color:var(--vc-ink);
+        outline:none;transition:all .22s ease}
+      .vc-field input::placeholder{color:#bdb4aa}
+      .vc-field input:focus{border-color:var(--vc-blush-deep);box-shadow:0 0 0 3px rgba(244,220,220,.55);background:#fff}
+      .vc-stepper{display:flex;align-items:center;justify-content:space-between;gap:.3rem;
+        border:1px solid var(--vc-line);border-radius:13px;background:#fffdfb;padding:.28rem .32rem}
+      .vc-qty-btn{border:0;background:var(--vc-cream);border-radius:9px;width:33px;height:33px;
+        font:inherit;font-size:1.05rem;line-height:1;color:#6d645b;cursor:pointer;transition:all .2s ease}
+      .vc-qty-btn:hover{background:var(--vc-blush);color:#7d5d5e}
+      .vc-qty-value{font-size:.86rem;font-weight:600;min-width:26px;text-align:center}
+
+      /* ── Resumen y acciones ── */
+      .vc-summary{margin-top:1.3rem;border:1px solid var(--vc-line);border-radius:18px;
+        background:linear-gradient(140deg,#fffaf5,#fdf2ec);padding:1.05rem 1.15rem}
+      .vc-sum-row{display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:#6d645b;padding:.26rem 0}
+      .vc-sum-row.is-total{margin-top:.45rem;padding-top:.65rem;border-top:1px dashed var(--vc-sand);
+        font-size:.93rem;font-weight:700;color:#3f3830}
+      .vc-sum-row.is-total .vc-sum-val{font-family:Georgia,serif;font-size:1.22rem;font-weight:400}
+      .vc-actions{display:flex;flex-direction:column;gap:.65rem;margin-top:1.25rem}
+      .vc-add-btn{width:100%;padding:1.02rem 1.2rem;border:0;border-radius:50px;cursor:pointer;
+        background:linear-gradient(135deg,#6d6055,#544a41);color:#fff;font:inherit;font-size:.71rem;
+        font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+        box-shadow:0 12px 26px -14px rgba(84,74,65,.85);transition:all .25s ease}
+      .vc-add-btn:hover{transform:translateY(-2px)}
+      .vc-add-btn.is-added{background:linear-gradient(135deg,#59b98a,#3f9d70)}
+      .vc-wa-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;
+        padding:1rem 1.2rem;border:1.5px solid #cfe6d5;border-radius:50px;background:#fff;color:#3d7c5a;
+        text-decoration:none;font-size:.71rem;font-weight:600;letter-spacing:.05em;transition:all .25s ease}
+      .vc-wa-btn:hover{background:#f2fbf5;border-color:#a9d8bb;transform:translateY(-2px)}
+      .vc-back{display:inline-block;margin-top:1.3rem;color:var(--vc-soft);text-decoration:none;font-size:.69rem}
+      .vc-back:hover{color:var(--vc-gold)}
+
+      /* ── Responsive ── */
+      @media(max-width:1040px){
+        .vc-shell{grid-template-columns:minmax(0,1fr) 390px;gap:2rem}
+        .vc-card{padding:1.6rem 1.35rem}
+      }
+      @media(max-width:880px){
+        #productPage.vc-page{padding:78px 1.1rem 40px}
+        .vc-shell{grid-template-columns:minmax(0,1fr);gap:1.5rem}
+        .vc-main-frame{border-radius:20px;max-height:none}
+        .vc-nav{opacity:1;pointer-events:auto}
+        .vc-card{padding:1.5rem 1.2rem;border-radius:20px}
+      }
+      @media(max-width:560px){
+        .vc-benefits{grid-template-columns:1fr;padding:.95rem}
+        .vc-fields{grid-template-columns:1fr}
+        .vc-thumb{width:62px;height:62px;border-radius:12px}
+        .vc-swatches{gap:.7rem;justify-content:flex-start}
+        .vc-opt{width:52px}
+        .vc-dot{width:36px;height:36px}
+        .vc-preview{max-width:230px}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  var BENEFITS = [
+    { icon: '🎁', text: 'Incluye empaque y nombre personalizado' },
+    { icon: '🕯️', text: 'Cera de alta calidad' },
+    { icon: '🤍', text: 'Hechas a mano con amor' },
+    { icon: '🚚', text: 'Envíos a todo el país' }
+  ];
+
+  function buildPage(page) {
+    page.className = 'product-page vc-page';
+    page.innerHTML = `
+      <div class="vc-shell">
+        <div class="vc-gallery">
+          <div class="vc-main-frame">
+            <button class="vc-nav vc-nav-prev" type="button" id="vcPrev" aria-label="Imagen anterior">‹</button>
+            <img class="vc-main-image" id="vcMainImage" src="" alt="">
+            <button class="vc-nav vc-nav-next" type="button" id="vcNext" aria-label="Imagen siguiente">›</button>
+            <span class="vc-counter" id="vcCounter">1 / 1</span>
+          </div>
+          <div class="vc-thumbs" id="vcThumbs"></div>
+          <div class="vc-benefits">
+            ${BENEFITS.map(function (b) {
+              return '<div class="vc-benefit"><span class="vc-benefit-icon">' + b.icon + '</span><span>' + b.text + '</span></div>';
+            }).join('')}
+          </div>
+        </div>
+
+        <div class="vc-details">
+          <div class="vc-card">
+            <p class="vc-eyebrow">Velamia · Hecho a mano</p>
+            <h1 class="vc-title" id="vcTitle"></h1>
+            <p class="vc-subtitle">Personaliza tu vela</p>
+
+            <div class="vc-rule"></div>
+            <div class="vc-price-row">
+              <span class="vc-price" id="vcPrice"></span>
+              <span class="vc-price-unit" id="vcPriceUnit"></span>
+            </div>
+            <p class="vc-price-note">🎀 Incluye empaque y nombre personalizado</p>
+
+            <div class="vc-rule"></div>
+            <div class="vc-description" id="vcDescription"></div>
+
+            <div class="vc-rule"></div>
+            <div id="vcCustomizer"></div>
+
+            <div class="vc-rule"></div>
+            <div class="vc-heading"><span>Detalles de tu pedido</span></div>
+            <div class="vc-fields">
+              <div class="vc-field vc-field--full">
+                <label for="vcName">Nombre para el empaque</label>
+                <input type="text" id="vcName" maxlength="40" placeholder="Ej. Emilia · Bautizo de Martín" autocomplete="off">
+              </div>
+              <div class="vc-field">
+                <label for="vcDate">Fecha del evento</label>
+                <input type="date" id="vcDate">
+              </div>
+              <div class="vc-field">
+                <label for="vcQtyValue" id="vcQtyLabel">Cantidad</label>
+                <div class="vc-stepper">
+                  <button class="vc-qty-btn" type="button" id="vcQtyMinus" aria-label="Disminuir">−</button>
+                  <span class="vc-qty-value" id="vcQtyValue">1</span>
+                  <button class="vc-qty-btn" type="button" id="vcQtyPlus" aria-label="Aumentar">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="vc-summary">
+              <div class="vc-sum-row"><span>Cantidad</span><span class="vc-sum-val" id="vcSumQty">1 docena</span></div>
+              <div class="vc-sum-row"><span>Precio</span><span class="vc-sum-val" id="vcSumPrice">$0.00</span></div>
+              <div class="vc-sum-row is-total"><span>Total</span><span class="vc-sum-val" id="vcSumTotal">$0.00</span></div>
+            </div>
+
+            <div class="vc-actions">
+              <button class="vc-add-btn" type="button" id="vcAddButton">Añadir al carrito</button>
+              <a class="vc-wa-btn" id="vcWhatsapp" href="#" target="_blank" rel="noopener">💬 Personalizar / Consultar por WhatsApp</a>
+            </div>
+
+            <a class="vc-back" href="#" id="vcBack">← Volver a la tienda</a>
+          </div>
+        </div>
+      </div>`;
+
+    document.getElementById('vcQtyMinus').addEventListener('click', function () { changeQty(-1); });
+    document.getElementById('vcQtyPlus').addEventListener('click', function () { changeQty(1); });
+    document.getElementById('vcAddButton').addEventListener('click', addCurrentToCart);
+    document.getElementById('vcPrev').addEventListener('click', function () { stepImage(-1); });
+    document.getElementById('vcNext').addEventListener('click', function () { stepImage(1); });
+    document.getElementById('vcName').addEventListener('input', function (e) { state.name = e.target.value; refreshWhatsapp(); });
+    document.getElementById('vcDate').addEventListener('change', function (e) { state.date = e.target.value; refreshWhatsapp(); });
+    document.getElementById('vcBack').addEventListener('click', function (e) {
+      e.preventDefault();
+      if (typeof window.closeProductPage === 'function') window.closeProductPage();
+    });
+  }
+
+  function renderProduct(product) {
+    document.getElementById('vcTitle').textContent = product.name;
+    document.getElementById('vcDescription').innerHTML =
+      '<p>' + product.desc + '.</p>' +
+      '<p>Vela artesanal hecha a mano con cera de alta calidad. Cada pieza es única e ideal para hacer de tu evento un momento especial.</p>' +
+      '<p>Incluye empaque elegante y nombre personalizado sin costo adicional. Pedidos bajo reserva.</p>';
+
+    document.getElementById('vcPrice').textContent = '$' + Number(product.price).toFixed(2);
+    document.getElementById('vcPriceUnit').textContent = product.unit === 'unidad' ? 'por unidad' : 'por docena';
+    document.getElementById('vcQtyLabel').textContent = product.unit === 'unidad' ? 'Cantidad (unidades)' : 'Cantidad (docenas)';
+    document.getElementById('vcQtyValue').textContent = '1';
+    document.getElementById('vcName').value = '';
+    document.getElementById('vcDate').value = '';
+
+    state.images = product.imgs && product.imgs.length ? product.imgs : [product.img];
+    state.imageIndex = 0;
+    renderGallery(product);
+    renderCustomizer(product);
+
+    var button = document.getElementById('vcAddButton');
+    button.classList.remove('is-added');
+    button.textContent = 'Añadir al carrito';
+
+    updateSummary(product);
+    updateWhatsapp(product);
+  }
+
+  function renderGallery(product) {
+    var thumbs = document.getElementById('vcThumbs');
+    thumbs.innerHTML = state.images.map(function (key, index) {
+      return '<img class="vc-thumb' + (index === 0 ? ' is-active' : '') + '" src="' + IMG_MAP[key] +
+             '" alt="Vista ' + (index + 1) + '" data-index="' + index + '">';
+    }).join('');
+    thumbs.querySelectorAll('.vc-thumb').forEach(function (t) {
+      t.addEventListener('click', function () { showImage(parseInt(t.getAttribute('data-index'), 10)); });
+    });
+
+    var many = state.images.length > 1;
+    document.getElementById('vcPrev').style.display = many ? '' : 'none';
+    document.getElementById('vcNext').style.display = many ? '' : 'none';
+    document.getElementById('vcCounter').style.display = many ? '' : 'none';
+    showImage(0, product);
+  }
+
+  function showImage(index, product) {
+    if (!state.images.length) return;
+    var total = state.images.length;
+    state.imageIndex = ((index % total) + total) % total;
+
+    var main = document.getElementById('vcMainImage');
+    main.classList.add('is-swapping');
+    setTimeout(function () {
+      main.src = IMG_MAP[state.images[state.imageIndex]];
+      main.alt = (product && product.name) || main.alt;
+      main.classList.remove('is-swapping');
+    }, 130);
+
+    document.getElementById('vcCounter').textContent = (state.imageIndex + 1) + ' / ' + total;
+    document.querySelectorAll('.vc-thumb').forEach(function (item, i) {
+      item.classList.toggle('is-active', i === state.imageIndex);
+    });
+  }
+
+  function stepImage(delta) { showImage(state.imageIndex + delta); }
+
+  // ── Personalizador ─────────────────────────────────────────────────
+  function renderCustomizer(product) {
+    var host = document.getElementById('vcCustomizer');
+    var conf = cfg(product.id);
+
+    if (!conf) {
+      host.innerHTML = '<div class="vc-note">Este diseño se personaliza por WhatsApp con nombre, color y detalles del evento.</div>';
+      return;
+    }
+
+    var preview = conf.preview
+      ? '<div class="vc-preview">' +
+          '<span class="vc-preview-title">Vista previa</span>' +
+          '<div class="vc-render" id="vcRender" style="--ratio:' + conf.preview.ratio + '">' +
+            '<img class="vc-lay vc-base" src="' + conf.preview.base + '" alt="' + product.name + '">' +
+            conf.parts.map(function (p) {
+              var m = conf.preview.masks[p.id];
+              if (!m) return '';
+              return '<div class="vc-lay vc-tint" data-tint="' + p.id + '" style="' +
+                     '-webkit-mask:url(' + m + ') center/contain no-repeat;' +
+                     'mask:url(' + m + ') center/contain no-repeat"></div>';
+            }).join('') +
+          '</div>' +
+          '<span class="vc-preview-note">Así quedará tu vela</span>' +
+        '</div>'
+      : '';
+
+    var groups = conf.parts.map(function (part) {
+      var opts = optionsFor(part).map(function (c) {
+        var on = state.colors[part.id] === c.k ? ' is-on' : '';
+        return '<button type="button" class="vc-opt' + on + '" data-part="' + part.id + '" data-k="' + c.k + '" ' +
+               'aria-label="' + part.label + ': ' + c.n + '">' +
+               '<span class="vc-dot" style="--c:' + c.v + '"></span>' +
+               '<span class="vc-optname">' + c.n + '</span></button>';
+      }).join('');
+      return '<div class="vc-group"><span class="vc-group-label">' + part.label + '</span>' +
+             '<div class="vc-swatches">' + opts + '</div></div>';
+    }).join('');
+
+    host.innerHTML =
+      '<div class="vc-heading"><span>Personaliza tu vela</span></div>' + preview + groups;
+
+    host.querySelectorAll('.vc-opt').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var partId = btn.getAttribute('data-part');
+        state.colors[partId] = btn.getAttribute('data-k');
+        host.querySelectorAll('.vc-opt[data-part="' + partId + '"]').forEach(function (o) { o.classList.remove('is-on'); });
+        btn.classList.add('is-on');
+        applyTints(product);
+        refreshWhatsapp();
+      });
+    });
+
+    applyTints(product);
+  }
+
+  function applyTints(product) {
+    var conf = cfg(product.id);
+    if (!conf || !conf.preview) return;
+    conf.parts.forEach(function (part) {
+      var layer = document.querySelector('.vc-tint[data-tint="' + part.id + '"]');
+      if (layer) layer.style.background = colorOf(part, state.colors[part.id]).v;
+    });
+  }
+
+  function changeQty(delta) {
+    state.qty = Math.max(1, Math.min(50, state.qty + delta));
+    var el = document.getElementById('vcQtyValue');
+    if (el) el.textContent = String(state.qty);
+    var product = PRODUCTS.find(function (p) { return p.id === state.id; });
+    if (product) { updateSummary(product); updateWhatsapp(product); }
+  }
+
+  function unitLabel(product, qty) {
+    if (product.unit === 'unidad') return qty === 1 ? 'unidad' : 'unidades';
+    return qty === 1 ? 'docena' : 'docenas';
+  }
+
+  function updateSummary(product) {
+    var price = Number(product.price);
+    document.getElementById('vcSumQty').textContent = state.qty + ' ' + unitLabel(product, state.qty);
+    document.getElementById('vcSumPrice').textContent = '$' + price.toFixed(2) + ' / ' + unitLabel(product, 1);
+    document.getElementById('vcSumTotal').textContent = '$' + (price * state.qty).toFixed(2);
+  }
+
+  function addCurrentToCart() {
+    var product = PRODUCTS.find(function (p) { return p.id === state.id; });
+    if (!product) return;
+    if (typeof addToCartFromPage === 'function') addToCartFromPage(product.id, state.qty);
+
+    var button = document.getElementById('vcAddButton');
+    button.textContent = '✓ Añadido al carrito';
+    button.classList.add('is-added');
+    setTimeout(function () {
+      button.textContent = 'Añadir al carrito';
+      button.classList.remove('is-added');
+    }, 1400);
+  }
+
+  function refreshWhatsapp() {
+    var product = PRODUCTS.find(function (p) { return p.id === state.id; });
+    if (product) updateWhatsapp(product);
+  }
+
+  function updateWhatsapp(product) {
+    var conf = cfg(product.id);
+    var details = '';
+    if (conf) {
+      details = ' Colores: ' + conf.parts.map(function (part) {
+        return part.short + ' ' + colorOf(part, state.colors[part.id]).n;
+      }).join(', ') + '.';
+    }
+    var extra = '';
+    if (state.name) extra += ' Nombre para el empaque: ' + state.name + '.';
+    if (state.date) extra += ' Fecha del evento: ' + state.date + '.';
+
+    var message = 'Hola Velamia 👋 Estoy viendo ' + product.name + ' ($' + Number(product.price).toFixed(2) +
+      '). Quiero ' + state.qty + ' ' + unitLabel(product, state.qty) + '.' + details + extra +
+      ' Quisiera confirmar personalización y fecha de entrega.';
+    document.getElementById('vcWhatsapp').href = 'https://wa.me/593995448686?text=' + encodeURIComponent(message);
+  }
+
+  function trackView(product) {
+    if (typeof fbq !== 'undefined') fbq('track', 'ViewContent', { content_name: product.name, content_category: product.cat, value: product.price, currency: 'USD' });
+    if (typeof gtag !== 'undefined') gtag('event', 'view_item', { currency: 'USD', value: product.price, items: [{ item_id: String(product.id), item_name: product.name, item_category: product.cat, price: product.price, quantity: 1 }] });
+  }
+})();
