@@ -87,6 +87,7 @@
 
     installStyles();
     buildPage(page);
+    hookCart();
 
     var originalClose = window.closeProductPage;
     window.closeProductPage = function (fromHistory) {
@@ -533,10 +534,70 @@
     document.getElementById('vcSumTotal').textContent = '$' + (price * state.qty).toFixed(2);
   }
 
+  // ── Carrito con datos de personalizacion ───────────────────────────
+  // No se toca el checkout: sigue leyendo Object.values(cart) igual que antes
+  // y el total sigue siendo precio x cantidad.
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function buildCustom(product) {
+    var conf = cfg(product.id);
+    var colores = [];
+    if (conf) conf.parts.forEach(function (p) {
+      colores.push({ label: p.label, valor: colorOf(p, state.colors[p.id]).n });
+    });
+    return { colores: colores, nombre: state.name || '', fecha: state.date || '' };
+  }
+
+  // Clave de variante. Empieza por "v" a proposito: si fuera numerica, JS la
+  // reordenaria antes que las demas y se desincronizaria con el render.
+  function variantKey(product, custom) {
+    var parts = ['v' + product.id];
+    custom.colores.forEach(function (c) { parts.push(c.label + '=' + c.valor); });
+    if (custom.nombre) parts.push('n=' + custom.nombre);
+    if (custom.fecha) parts.push('f=' + custom.fecha);
+    return parts.join('|');
+  }
+
+  function fechaLegible(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    return m ? m[3] + '/' + m[2] + '/' + m[1] : iso;
+  }
+
   function addCurrentToCart() {
     var product = PRODUCTS.find(function (p) { return p.id === state.id; });
     if (!product) return;
-    if (typeof addToCartFromPage === 'function') addToCartFromPage(product.id, state.qty);
+
+    var custom = buildCustom(product);
+    var key = variantKey(product, custom);
+    var price = product.price;
+
+    if (!window.cart[key]) {
+      window.cart[key] = {
+        id: product.id, name: product.name, desc: product.desc, price: price,
+        tag: product.tag, img: product.img, unit: product.unit, qty: state.qty,
+        custom: custom
+      };
+    } else {
+      window.cart[key].qty += state.qty;
+    }
+
+    // Mismos eventos que addToCartFromPage del sitio
+    if (typeof fbq !== 'undefined') {
+      fbq('track', 'AddToCart', { content_name: product.name, content_category: product.cat, value: price * state.qty, currency: 'USD' });
+    }
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'add_to_cart', {
+        currency: 'USD', value: price * state.qty,
+        items: [{ item_id: String(product.id), item_name: product.name, item_category: product.cat, price: price, quantity: state.qty }]
+      });
+    }
+
+    if (typeof updateCartUI === 'function') updateCartUI();
+    if (typeof openCart === 'function') openCart();
 
     var button = document.getElementById('vcAddButton');
     button.textContent = '✓ Añadido al carrito';
@@ -545,6 +606,80 @@
       button.textContent = 'Añadir al carrito';
       button.classList.remove('is-added');
     }, 1400);
+  }
+
+  // Envuelve updateCartUI: reescribe los manejadores para que usen la clave de
+  // variante (los originales pasan i.id) y pinta los datos de personalizacion.
+  function hookCart() {
+    if (typeof window.updateCartUI !== 'function' || window.__vcCartHooked) return;
+    window.__vcCartHooked = true;
+
+    var style = document.createElement('style');
+    style.textContent = `
+      .vc-cart-custom{margin:.4rem 0 .1rem;padding:.45rem .6rem;background:#fbf6ef;
+        border:1px solid #ece2d6;border-radius:9px;font-size:.66rem;line-height:1.5;color:#6d645b}
+      .vc-cart-custom b{font-weight:600;color:#4a423a}
+      .vc-cart-custom span{display:block}
+    `;
+    document.head.appendChild(style);
+
+    var original = window.updateCartUI;
+    window.updateCartUI = function () {
+      var result = original.apply(this, arguments);
+      try { decorateCart(); } catch (e) { /* nunca romper el carrito */ }
+      return result;
+    };
+  }
+
+  function decorateCart() {
+    var host = document.getElementById('cartItems');
+    if (!host) return;
+    var keys = Object.keys(window.cart);
+    var rows = host.querySelectorAll('.cart-item');
+    if (rows.length !== keys.length) return;   // orden no fiable: no tocar
+
+    rows.forEach(function (row, i) {
+      var key = keys[i];
+      var item = window.cart[key];
+      if (!item) return;
+
+      // Reemplazar onclick inline por listeners con la clave correcta.
+      // Evita problemas de comillas con nombres escritos por el cliente.
+      var qtyBtns = row.querySelectorAll('.qty-btn');
+      if (qtyBtns.length === 2) {
+        [-1, 1].forEach(function (delta, n) {
+          var b = qtyBtns[n];
+          b.removeAttribute('onclick');
+          var clone = b.cloneNode(true);
+          b.parentNode.replaceChild(clone, b);
+          clone.addEventListener('click', function () { window.changeQty(key, delta); });
+        });
+      }
+      var rm = row.querySelector('.cart-item-remove');
+      if (rm) {
+        rm.removeAttribute('onclick');
+        var rmClone = rm.cloneNode(true);
+        rm.parentNode.replaceChild(rmClone, rm);
+        rmClone.addEventListener('click', function () { window.removeItem(key); });
+      }
+
+      // Pintar personalizacion
+      if (!item.custom) return;
+      if (row.querySelector('.vc-cart-custom')) return;
+      var c = item.custom;
+      var lines = c.colores.map(function (x) {
+        return '<span><b>' + esc(x.label) + ':</b> ' + esc(x.valor) + '</span>';
+      });
+      if (c.nombre) lines.push('<span><b>Nombre:</b> ' + esc(c.nombre) + '</span>');
+      if (c.fecha)  lines.push('<span><b>Fecha del evento:</b> ' + esc(fechaLegible(c.fecha)) + '</span>');
+      if (!lines.length) return;
+
+      var box = document.createElement('div');
+      box.className = 'vc-cart-custom';
+      box.innerHTML = lines.join('');
+      var anchor = row.querySelector('.cart-item-price') || row.querySelector('.cart-item-sub');
+      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(box, anchor.nextSibling);
+    });
   }
 
   function refreshWhatsapp() {
