@@ -1,19 +1,79 @@
 (function () {
   'use strict';
 
-  var CUSTOMIZABLE = {1: true, 3: true, 5: true};
-  var COLORS = {
-    crema:  { label: 'Crema',  value: '#f1dfbd' },
-    rosado: { label: 'Rosado', value: '#efc8c9' },
-    celeste:{ label: 'Celeste', value: '#cfe3ef' },
-    blanco: { label: 'Blanco', value: '#f8f8f5' }
+  // ── Paletas por pieza ──────────────────────────────────────────────
+  // Los hex son el TINTE que se multiplica sobre la base fotografica.
+  // El multiply oscurece ~20%, por eso los tonos van claros.
+  var PALETTE = {
+    osito: [
+      { k: 'beige',   n: 'Beige',          v: '#eed6b8' },
+      { k: 'cafe',    n: 'Café',           v: '#c69a72' },
+      { k: 'rosado',  n: 'Rosado pastel',  v: '#f8d5d8' },
+      { k: 'celeste', n: 'Celeste pastel', v: '#d6e6f4' }
+    ],
+    nube: [
+      { k: 'beige',  n: 'Beige',  v: '#ecdcc4' },
+      { k: 'blanco', n: 'Blanco', v: '#fbfaf7' },
+      { k: 'crema',  n: 'Crema',  v: '#f7ebd4' }
+    ],
+    clasica: [
+      { k: 'crema',   n: 'Crema',   v: '#f1dfbd' },
+      { k: 'rosado',  n: 'Rosado',  v: '#efc8c9' },
+      { k: 'celeste', n: 'Celeste', v: '#cfe3ef' },
+      { k: 'blanco',  n: 'Blanco',  v: '#f8f8f5' }
+    ]
+  };
+
+  // ── Configuracion por producto ─────────────────────────────────────
+  // Para dar vista previa fotografica a otro producto basta con agregar
+  // su entrada aqui con la base y las mascaras correspondientes.
+  var CONFIG = {
+    1: {
+      parts: [
+        { id: 'bear',  short: 'osito', label: 'Color del osito',  palette: 'osito', def: 'beige'  },
+        { id: 'cloud', short: 'nube',  label: 'Color de la nube', palette: 'nube',  def: 'blanco' }
+      ],
+      preview: {
+        base:  'images/osito_base.png',
+        ratio: '720 / 875',
+        masks: { bear: 'images/osito_mask_bear.png', cloud: 'images/osito_mask_cloud.png' }
+      }
+    },
+    3: {
+      parts: [
+        { id: 'bear',  short: 'osito',   label: 'Color del osito',    palette: 'clasica', def: 'crema'  },
+        { id: 'cloud', short: 'nube',    label: 'Color de la nube',   palette: 'clasica', def: 'crema'  },
+        { id: 'heart', short: 'corazón', label: 'Color del corazón',  palette: 'clasica', def: 'rosado' }
+      ],
+      preview: null
+    },
+    5: {
+      parts: [
+        { id: 'bear',  short: 'osito',   label: 'Color del osito',   palette: 'clasica', def: 'crema'  },
+        { id: 'cloud', short: 'nube',    label: 'Color de la nube',  palette: 'clasica', def: 'crema'  },
+        { id: 'heart', short: 'corazón', label: 'Color del corazón', palette: 'clasica', def: 'rosado' }
+      ],
+      preview: null
+    }
   };
 
   var state = {
     id: null,
     qty: 1,
-    colors: { bear: 'crema', cloud: 'crema', heart: 'rosado' }
+    name: '',
+    date: '',
+    images: [],
+    imageIndex: 0,
+    colors: {}
   };
+
+  function cfg(id) { return CONFIG[id] || null; }
+  function optionsFor(part) { return PALETTE[part.palette] || PALETTE.clasica; }
+  function colorOf(part, key) {
+    var list = optionsFor(part);
+    for (var i = 0; i < list.length; i++) if (list[i].k === key) return list[i];
+    return list[0];
+  }
 
   function ready(fn) {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
@@ -43,7 +103,12 @@
 
       state.id = id;
       state.qty = 1;
-      state.colors = { bear: 'crema', cloud: 'crema', heart: 'rosado' };
+      state.name = '';
+      state.date = '';
+      state.imageIndex = 0;
+      state.colors = {};
+      var conf = cfg(id);
+      if (conf) conf.parts.forEach(function (p) { state.colors[p.id] = p.def; });
 
       if (!fromHistory) {
         history.pushState({ page: 'product', id: id }, '', '#producto-' + id);
@@ -58,92 +123,262 @@
     };
 
     var match = window.location.hash.match(/^#producto-(\d+)$/);
-    if (match) {
-      window.openProductPage(parseInt(match[1], 10), true);
-    }
+    if (match) window.openProductPage(parseInt(match[1], 10), true);
   });
 
   function installStyles() {
-    if (document.getElementById('velamia-configurator-v2-styles')) return;
+    if (document.getElementById('velamia-configurator-v3-styles')) return;
     var style = document.createElement('style');
-    style.id = 'velamia-configurator-v2-styles';
+    style.id = 'velamia-configurator-v3-styles';
     style.textContent = `
-      #productPage.vc-page{padding:92px 5vw 42px;background:#fff;min-height:100vh;font-family:'Montserrat',sans-serif;color:#29251f}
-      .vc-shell{width:min(1400px,100%);margin:0 auto;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(410px,.85fr);gap:3.1rem;align-items:start}
+      #productPage.vc-page{
+        --vc-ink:#4a423a;--vc-soft:#8c8279;--vc-line:#ece2d6;--vc-cream:#f9f3ea;
+        --vc-blush:#f4dcdc;--vc-blush-deep:#d9a9ab;--vc-sand:#e9dccb;--vc-gold:#c3a175;
+        padding:92px 5vw 60px;background:linear-gradient(180deg,#fffdfb 0%,#fdf8f2 100%);
+        min-height:100vh;font-family:'Montserrat',sans-serif;color:var(--vc-ink)
+      }
+      #productPage.vc-page *,#productPage.vc-page *::before,#productPage.vc-page *::after{box-sizing:border-box}
+      .vc-shell{width:min(1280px,100%);margin:0 auto;display:grid;
+        grid-template-columns:minmax(0,1fr) minmax(400px,460px);gap:3rem;align-items:start}
+
+      /* ── Galeria ── */
       .vc-gallery{min-width:0}
-      .vc-main-frame{height:min(650px,calc(100vh - 130px));min-height:520px;background:#fbf8f3;border:1px solid #eee8df;display:flex;align-items:center;justify-content:center;overflow:hidden}
-      .vc-main-image{width:100%;height:100%;object-fit:contain;display:block}
-      .vc-thumbs{display:flex;gap:.65rem;margin-top:.7rem;min-height:76px}
-      .vc-thumb{width:76px;height:76px;object-fit:cover;background:#f6f1eb;border:1px solid #e4ddd3;cursor:pointer;opacity:.8}
-      .vc-thumb.is-active{opacity:1;border-color:#8f7d68;box-shadow:0 0 0 1px #8f7d68 inset}
-      .vc-details{position:sticky;top:84px;padding:.55rem 0 0}
-      .vc-title{font-size:clamp(1.35rem,2vw,1.78rem);font-weight:400;line-height:1.25;letter-spacing:.02em;text-transform:uppercase;margin:0 0 1rem;color:#292622}
-      .vc-description{font-size:.87rem;line-height:1.75;color:#68615a;font-weight:400}
-      .vc-description p{margin:0 0 .75rem}
-      .vc-price{font-size:.95rem;color:#26221e;margin:1rem 0}
-      .vc-personalizer{margin-top:1.15rem}
-      .vc-section-heading{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
-      .vc-section-heading span{font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
-      .vc-section-heading:after{content:'';height:1px;background:#e8e0d6;flex:1}
-      .vc-custom-grid{display:grid;grid-template-columns:minmax(0,1fr) 160px;gap:1.25rem;align-items:start}
-      .vc-options{display:flex;flex-direction:column;gap:.9rem;padding-top:.2rem}
-      .vc-option-row{display:grid;grid-template-columns:132px repeat(4,32px);align-items:center;gap:.75rem}
-      .vc-option-label{font-size:.78rem;color:#615b54;font-weight:500}
-      .vc-color{width:31px;height:31px;border-radius:50%;border:1px solid rgba(55,48,42,.18);padding:0;cursor:pointer;background:var(--swatch);position:relative}
-      .vc-color.is-selected{box-shadow:0 0 0 2px #fff,0 0 0 3px #6d6258}
-      .vc-color.is-selected:after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;color:#5d554d}
-      .vc-preview-card{border:1px solid #e4ddd4;border-radius:10px;background:#fdfbf8;padding:.65rem .55rem .55rem;text-align:center;min-height:218px}
-      .vc-preview-title{display:block;font-size:.58rem;letter-spacing:.13em;font-weight:600;text-transform:uppercase;color:#605b55;margin-bottom:.3rem}
-      .vc-preview{display:block;width:135px;height:160px;margin:0 auto;filter:drop-shadow(0 7px 6px rgba(75,55,36,.12))}
-      .vc-preview-note{display:block;font-size:.59rem;color:#918a82;margin-top:0}
-      .vc-qty-row{display:flex;align-items:center;gap:1.15rem;margin:1.15rem 0 1rem}
-      .vc-qty-label{font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;min-width:92px}
-      .vc-qty-btn{border:0;background:transparent;font:inherit;font-size:1.2rem;line-height:1;padding:.2rem .35rem;cursor:pointer}
-      .vc-qty-value{font-size:.9rem;min-width:18px;text-align:center}
-      .vc-add-btn{display:block;width:276px;max-width:100%;padding:.94rem 1.2rem;background:#fff;border:1px solid #37322d;color:#39342f;font:inherit;font-size:.7rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer}
-      .vc-add-btn:hover{background:#2b2723;color:#fff}
-      .vc-add-btn.is-added{background:#25b861;border-color:#25b861;color:#fff}
-      .vc-wa-btn{margin-top:1rem;display:flex;align-items:center;justify-content:center;gap:.6rem;width:352px;max-width:100%;padding:.94rem 1.25rem;background:#23cf66;color:#fff;text-decoration:none;border-radius:5px;font-size:.73rem;font-weight:600}
-      .vc-wa-btn:hover{background:#1ebb5b}
-      .vc-back{display:inline-block;margin-top:1.65rem;color:#8b837b;text-decoration:none;font-size:.7rem}
-      .vc-basic-note{margin-top:1rem;padding:.9rem 1rem;background:#faf7f2;border:1px solid #ece5dc;font-size:.78rem;line-height:1.6;color:#625b54}
-      @media(max-width:1000px){.vc-shell{grid-template-columns:1fr 390px;gap:2rem}.vc-main-frame{min-height:460px;height:560px}.vc-option-row{grid-template-columns:116px repeat(4,30px);gap:.58rem}}
-      @media(max-width:820px){#productPage.vc-page{padding:80px 1rem 30px}.vc-shell{grid-template-columns:1fr;gap:1.5rem}.vc-main-frame{height:auto;min-height:0;aspect-ratio:1/1}.vc-details{position:static;padding-top:0}.vc-custom-grid{grid-template-columns:1fr 145px;gap:.9rem}.vc-option-row{grid-template-columns:108px repeat(4,29px);gap:.46rem}.vc-add-btn,.vc-wa-btn{width:100%}}
-      @media(max-width:520px){.vc-custom-grid{grid-template-columns:1fr}.vc-preview-card{width:170px;justify-self:center}.vc-option-row{grid-template-columns:1fr repeat(4,31px);gap:.62rem}.vc-option-label{grid-column:1/-1;margin-bottom:-.25rem}.vc-main-frame{aspect-ratio:4/5}}
+      .vc-main-frame{position:relative;aspect-ratio:1/1;max-height:600px;
+        background:linear-gradient(150deg,#fdf9f4,#f8f0e6);border:1px solid var(--vc-line);border-radius:24px;
+        box-shadow:0 18px 46px -24px rgba(120,95,70,.30);display:flex;align-items:center;justify-content:center;overflow:hidden}
+      .vc-main-image{width:100%;height:100%;object-fit:contain;padding:1.4rem;transition:opacity .28s ease}
+      .vc-main-image.is-swapping{opacity:0}
+      .vc-nav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;
+        border:1px solid var(--vc-line);background:rgba(255,255,255,.88);color:var(--vc-ink);
+        font-size:1.3rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
+        box-shadow:0 6px 18px -8px rgba(120,95,70,.45);transition:all .22s ease;opacity:0;pointer-events:none}
+      .vc-main-frame:hover .vc-nav,.vc-nav:focus-visible{opacity:1;pointer-events:auto}
+      .vc-nav:hover{background:#fff;border-color:var(--vc-blush-deep)}
+      .vc-nav-prev{left:12px} .vc-nav-next{right:12px}
+      .vc-counter{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+        background:rgba(255,255,255,.9);border:1px solid var(--vc-line);border-radius:50px;
+        padding:.26rem .78rem;font-size:.65rem;letter-spacing:.08em;color:var(--vc-soft)}
+      .vc-thumbs{display:flex;gap:.65rem;margin-top:.9rem;flex-wrap:wrap}
+      .vc-thumb{width:74px;height:74px;object-fit:cover;background:var(--vc-cream);border:1px solid var(--vc-line);
+        border-radius:14px;cursor:pointer;opacity:.72;transition:all .25s ease;padding:4px}
+      .vc-thumb:hover{opacity:1;transform:translateY(-2px)}
+      .vc-thumb.is-active{opacity:1;border-color:var(--vc-blush-deep);
+        box-shadow:0 0 0 2px rgba(217,169,171,.32)}
+      .vc-benefits{margin-top:1.3rem;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;
+        background:linear-gradient(135deg,#fffaf5,#fdf1ea);border:1px solid var(--vc-line);
+        border-radius:18px;padding:1.05rem 1.15rem}
+      .vc-benefit{display:flex;align-items:center;gap:.55rem;font-size:.73rem;line-height:1.4;color:#6d645b}
+      .vc-benefit-icon{flex:0 0 32px;width:32px;height:32px;border-radius:50%;background:#fff;
+        display:flex;align-items:center;justify-content:center;font-size:.92rem;
+        box-shadow:0 3px 10px -4px rgba(120,95,70,.35)}
+
+      /* ── Panel derecho: UNA sola tarjeta, sin anidar ── */
+      .vc-details{min-width:0}
+      .vc-card{background:rgba(255,255,255,.78);border:1px solid var(--vc-line);border-radius:24px;
+        padding:1.9rem 1.75rem;box-shadow:0 20px 52px -32px rgba(120,95,70,.40)}
+      .vc-eyebrow{font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--vc-gold);
+        margin:0 0 .5rem;font-weight:600}
+      .vc-title{font-family:Georgia,'Times New Roman',serif;font-size:clamp(1.6rem,2.4vw,2.15rem);
+        font-weight:400;line-height:1.15;margin:0;color:#3f3830}
+      .vc-subtitle{font-size:.79rem;color:var(--vc-soft);margin:.45rem 0 0;font-style:italic}
+      .vc-rule{height:1px;background:linear-gradient(90deg,var(--vc-sand),rgba(233,220,203,0));margin:1.2rem 0}
+      .vc-price-row{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap}
+      .vc-price{font-family:Georgia,serif;font-size:1.8rem;color:#3f3830}
+      .vc-price-unit{font-size:.77rem;color:var(--vc-soft)}
+      .vc-price-note{display:inline-flex;align-items:center;gap:.4rem;margin:.65rem 0 0;background:var(--vc-blush);
+        border-radius:50px;padding:.38rem .82rem;font-size:.67rem;color:#7d5d5e;font-weight:500}
+      .vc-description{font-size:.81rem;line-height:1.78;color:#6d645b}
+      .vc-description p{margin:0 0 .65rem}
+      .vc-description p:last-child{margin-bottom:0}
+      .vc-heading{display:flex;align-items:center;gap:.85rem;margin:0 0 1.1rem}
+      .vc-heading span{font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+        white-space:nowrap;color:#7a7067}
+      .vc-heading:after{content:'';height:1px;background:var(--vc-line);flex:1}
+
+      /* ── Vista previa: centrada y proporcionada ── */
+      .vc-preview{text-align:center;margin:0 auto 1.5rem;max-width:300px}
+      .vc-preview-title{display:block;font-size:.56rem;letter-spacing:.18em;font-weight:700;
+        text-transform:uppercase;color:var(--vc-gold);margin-bottom:.5rem}
+      .vc-render{position:relative;isolation:isolate;width:100%;margin:0 auto;
+        aspect-ratio:var(--ratio,720/875);filter:drop-shadow(0 14px 12px rgba(120,95,70,.20))}
+      .vc-lay{position:absolute;inset:0;width:100%;height:100%}
+      .vc-base{object-fit:contain}
+      .vc-tint{mix-blend-mode:multiply}
+      @supports not ((-webkit-mask-image:none) or (mask-image:none)){ .vc-tint{display:none} }
+      .vc-preview-note{display:block;font-size:.62rem;color:var(--vc-soft);margin-top:.5rem;font-style:italic}
+
+      /* ── Selector de colores ── */
+      .vc-group{margin-bottom:1.35rem}
+      .vc-group:last-child{margin-bottom:0}
+      .vc-group-label{display:block;font-size:.73rem;font-weight:600;color:#6d645b;margin-bottom:.7rem}
+      .vc-swatches{display:flex;gap:1.05rem;flex-wrap:wrap}
+      .vc-opt{background:none;border:0;padding:0;cursor:pointer;text-align:center;width:58px;font:inherit}
+      .vc-dot{display:block;width:40px;height:40px;border-radius:50%;margin:0 auto;border:2px solid #fff;
+        background:var(--c);position:relative;transition:transform .2s ease,box-shadow .2s ease;
+        box-shadow:0 0 0 1px #e5dbcd,0 4px 11px -5px rgba(120,95,70,.55)}
+      .vc-opt:hover .vc-dot{transform:translateY(-3px) scale(1.07)}
+      .vc-opt.is-on .vc-dot{box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--vc-blush-deep),0 6px 15px -6px rgba(120,95,70,.55)}
+      .vc-opt.is-on .vc-dot:after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;
+        justify-content:center;font-size:.88rem;font-weight:700;color:#6b5f55}
+      .vc-optname{display:block;font-size:.6rem;color:var(--vc-soft);margin-top:.42rem;line-height:1.25}
+      .vc-opt.is-on .vc-optname{color:var(--vc-ink);font-weight:600}
+      .vc-note{padding:.95rem 1.1rem;background:linear-gradient(135deg,#fffaf5,#fdf2ec);border:1px solid var(--vc-line);
+        border-radius:16px;font-size:.75rem;line-height:1.65;color:#6d645b}
+
+      /* ── Campos ── */
+      .vc-fields{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+      .vc-field{display:flex;flex-direction:column;gap:.38rem}
+      .vc-field--full{grid-column:1/-1}
+      .vc-field label{font-size:.67rem;font-weight:600;letter-spacing:.05em;color:#6d645b}
+      .vc-field input{width:100%;padding:.75rem .88rem;border:1px solid var(--vc-line);border-radius:13px;
+        background:#fffdfb;font-family:'Montserrat',sans-serif;font-size:.79rem;color:var(--vc-ink);
+        outline:none;transition:all .22s ease}
+      .vc-field input::placeholder{color:#bdb4aa}
+      .vc-field input:focus{border-color:var(--vc-blush-deep);box-shadow:0 0 0 3px rgba(244,220,220,.55);background:#fff}
+      .vc-stepper{display:flex;align-items:center;justify-content:space-between;gap:.3rem;
+        border:1px solid var(--vc-line);border-radius:13px;background:#fffdfb;padding:.28rem .32rem}
+      .vc-qty-btn{border:0;background:var(--vc-cream);border-radius:9px;width:33px;height:33px;
+        font:inherit;font-size:1.05rem;line-height:1;color:#6d645b;cursor:pointer;transition:all .2s ease}
+      .vc-qty-btn:hover{background:var(--vc-blush);color:#7d5d5e}
+      .vc-qty-value{font-size:.86rem;font-weight:600;min-width:26px;text-align:center}
+
+      /* ── Resumen y acciones ── */
+      .vc-summary{margin-top:1.3rem;border:1px solid var(--vc-line);border-radius:18px;
+        background:linear-gradient(140deg,#fffaf5,#fdf2ec);padding:1.05rem 1.15rem}
+      .vc-sum-row{display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:#6d645b;padding:.26rem 0}
+      .vc-sum-row.is-total{margin-top:.45rem;padding-top:.65rem;border-top:1px dashed var(--vc-sand);
+        font-size:.93rem;font-weight:700;color:#3f3830}
+      .vc-sum-row.is-total .vc-sum-val{font-family:Georgia,serif;font-size:1.22rem;font-weight:400}
+      .vc-actions{display:flex;flex-direction:column;gap:.65rem;margin-top:1.25rem}
+      .vc-add-btn{width:100%;padding:1.02rem 1.2rem;border:0;border-radius:50px;cursor:pointer;
+        background:linear-gradient(135deg,#6d6055,#544a41);color:#fff;font:inherit;font-size:.71rem;
+        font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+        box-shadow:0 12px 26px -14px rgba(84,74,65,.85);transition:all .25s ease}
+      .vc-add-btn:hover{transform:translateY(-2px)}
+      .vc-add-btn.is-added{background:linear-gradient(135deg,#59b98a,#3f9d70)}
+      .vc-wa-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;
+        padding:1rem 1.2rem;border:1.5px solid #cfe6d5;border-radius:50px;background:#fff;color:#3d7c5a;
+        text-decoration:none;font-size:.71rem;font-weight:600;letter-spacing:.05em;transition:all .25s ease}
+      .vc-wa-btn:hover{background:#f2fbf5;border-color:#a9d8bb;transform:translateY(-2px)}
+      .vc-back{display:inline-block;margin-top:1.3rem;color:var(--vc-soft);text-decoration:none;font-size:.69rem}
+      .vc-back:hover{color:var(--vc-gold)}
+
+      /* ── Responsive ── */
+      @media(max-width:1040px){
+        .vc-shell{grid-template-columns:minmax(0,1fr) 390px;gap:2rem}
+        .vc-card{padding:1.6rem 1.35rem}
+      }
+      @media(max-width:880px){
+        #productPage.vc-page{padding:78px 1.1rem 40px}
+        .vc-shell{grid-template-columns:minmax(0,1fr);gap:1.5rem}
+        .vc-main-frame{border-radius:20px;max-height:none}
+        .vc-nav{opacity:1;pointer-events:auto}
+        .vc-card{padding:1.5rem 1.2rem;border-radius:20px}
+      }
+      @media(max-width:560px){
+        .vc-benefits{grid-template-columns:1fr;padding:.95rem}
+        .vc-fields{grid-template-columns:1fr}
+        .vc-thumb{width:62px;height:62px;border-radius:12px}
+        .vc-swatches{gap:.7rem;justify-content:flex-start}
+        .vc-opt{width:52px}
+        .vc-dot{width:36px;height:36px}
+        .vc-preview{max-width:230px}
+      }
     `;
     document.head.appendChild(style);
   }
+
+  var BENEFITS = [
+    { icon: '🎁', text: 'Incluye empaque y nombre personalizado' },
+    { icon: '🕯️', text: 'Cera de alta calidad' },
+    { icon: '🤍', text: 'Hechas a mano con amor' },
+    { icon: '🚚', text: 'Envíos a todo el país' }
+  ];
 
   function buildPage(page) {
     page.className = 'product-page vc-page';
     page.innerHTML = `
       <div class="vc-shell">
         <div class="vc-gallery">
-          <div class="vc-main-frame"><img class="vc-main-image" id="vcMainImage" src="" alt=""></div>
-          <div class="vc-thumbs" id="vcThumbs"></div>
-        </div>
-        <div class="vc-details">
-          <h1 class="vc-title" id="vcTitle"></h1>
-          <div class="vc-description" id="vcDescription"></div>
-          <div class="vc-price" id="vcPrice"></div>
-          <div id="vcCustomizer"></div>
-          <div class="vc-qty-row">
-            <span class="vc-qty-label" id="vcQtyLabel">DOCENAS</span>
-            <button class="vc-qty-btn" type="button" id="vcQtyMinus">−</button>
-            <span class="vc-qty-value" id="vcQtyValue">1</span>
-            <button class="vc-qty-btn" type="button" id="vcQtyPlus">+</button>
+          <div class="vc-main-frame">
+            <button class="vc-nav vc-nav-prev" type="button" id="vcPrev" aria-label="Imagen anterior">‹</button>
+            <img class="vc-main-image" id="vcMainImage" src="" alt="">
+            <button class="vc-nav vc-nav-next" type="button" id="vcNext" aria-label="Imagen siguiente">›</button>
+            <span class="vc-counter" id="vcCounter">1 / 1</span>
           </div>
-          <button class="vc-add-btn" type="button" id="vcAddButton">AÑADIR AL CARRITO</button>
-          <a class="vc-wa-btn" id="vcWhatsapp" href="#" target="_blank" rel="noopener">💬 Personalizar / Consultar por WhatsApp</a>
-          <a class="vc-back" href="#" id="vcBack">← Volver a la tienda</a>
+          <div class="vc-thumbs" id="vcThumbs"></div>
+          <div class="vc-benefits">
+            ${BENEFITS.map(function (b) {
+              return '<div class="vc-benefit"><span class="vc-benefit-icon">' + b.icon + '</span><span>' + b.text + '</span></div>';
+            }).join('')}
+          </div>
+        </div>
+
+        <div class="vc-details">
+          <div class="vc-card">
+            <p class="vc-eyebrow">Velamia · Hecho a mano</p>
+            <h1 class="vc-title" id="vcTitle"></h1>
+            <p class="vc-subtitle">Personaliza tu vela</p>
+
+            <div class="vc-rule"></div>
+            <div class="vc-price-row">
+              <span class="vc-price" id="vcPrice"></span>
+              <span class="vc-price-unit" id="vcPriceUnit"></span>
+            </div>
+            <p class="vc-price-note">🎀 Incluye empaque y nombre personalizado</p>
+
+            <div class="vc-rule"></div>
+            <div class="vc-description" id="vcDescription"></div>
+
+            <div class="vc-rule"></div>
+            <div id="vcCustomizer"></div>
+
+            <div class="vc-rule"></div>
+            <div class="vc-heading"><span>Detalles de tu pedido</span></div>
+            <div class="vc-fields">
+              <div class="vc-field vc-field--full">
+                <label for="vcName">Nombre para el empaque</label>
+                <input type="text" id="vcName" maxlength="40" placeholder="Ej. Emilia · Bautizo de Martín" autocomplete="off">
+              </div>
+              <div class="vc-field">
+                <label for="vcDate">Fecha del evento</label>
+                <input type="date" id="vcDate">
+              </div>
+              <div class="vc-field">
+                <label for="vcQtyValue" id="vcQtyLabel">Cantidad</label>
+                <div class="vc-stepper">
+                  <button class="vc-qty-btn" type="button" id="vcQtyMinus" aria-label="Disminuir">−</button>
+                  <span class="vc-qty-value" id="vcQtyValue">1</span>
+                  <button class="vc-qty-btn" type="button" id="vcQtyPlus" aria-label="Aumentar">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="vc-summary">
+              <div class="vc-sum-row"><span>Cantidad</span><span class="vc-sum-val" id="vcSumQty">1 docena</span></div>
+              <div class="vc-sum-row"><span>Precio</span><span class="vc-sum-val" id="vcSumPrice">$0.00</span></div>
+              <div class="vc-sum-row is-total"><span>Total</span><span class="vc-sum-val" id="vcSumTotal">$0.00</span></div>
+            </div>
+
+            <div class="vc-actions">
+              <button class="vc-add-btn" type="button" id="vcAddButton">Añadir al carrito</button>
+              <a class="vc-wa-btn" id="vcWhatsapp" href="#" target="_blank" rel="noopener">💬 Personalizar / Consultar por WhatsApp</a>
+            </div>
+
+            <a class="vc-back" href="#" id="vcBack">← Volver a la tienda</a>
+          </div>
         </div>
       </div>`;
 
     document.getElementById('vcQtyMinus').addEventListener('click', function () { changeQty(-1); });
     document.getElementById('vcQtyPlus').addEventListener('click', function () { changeQty(1); });
     document.getElementById('vcAddButton').addEventListener('click', addCurrentToCart);
-    document.getElementById('vcBack').addEventListener('click', function (event) {
-      event.preventDefault();
+    document.getElementById('vcPrev').addEventListener('click', function () { stepImage(-1); });
+    document.getElementById('vcNext').addEventListener('click', function () { stepImage(1); });
+    document.getElementById('vcName').addEventListener('input', function (e) { state.name = e.target.value; refreshWhatsapp(); });
+    document.getElementById('vcDate').addEventListener('change', function (e) { state.date = e.target.value; refreshWhatsapp(); });
+    document.getElementById('vcBack').addEventListener('click', function (e) {
+      e.preventDefault();
       if (typeof window.closeProductPage === 'function') window.closeProductPage();
     });
   }
@@ -154,131 +389,184 @@
       '<p>' + product.desc + '.</p>' +
       '<p>Vela artesanal hecha a mano con cera de alta calidad. Cada pieza es única e ideal para hacer de tu evento un momento especial.</p>' +
       '<p>Incluye empaque elegante y nombre personalizado sin costo adicional. Pedidos bajo reserva.</p>';
+
     document.getElementById('vcPrice').textContent = '$' + Number(product.price).toFixed(2);
-    document.getElementById('vcQtyLabel').textContent = product.unit === 'unidad' ? 'UNIDADES' : 'DOCENAS';
+    document.getElementById('vcPriceUnit').textContent = product.unit === 'unidad' ? 'por unidad' : 'por docena';
+    document.getElementById('vcQtyLabel').textContent = product.unit === 'unidad' ? 'Cantidad (unidades)' : 'Cantidad (docenas)';
     document.getElementById('vcQtyValue').textContent = '1';
+    document.getElementById('vcName').value = '';
+    document.getElementById('vcDate').value = '';
 
-    var images = product.imgs && product.imgs.length ? product.imgs : [product.img];
-    var main = document.getElementById('vcMainImage');
-    main.src = IMG_MAP[images[0]];
-    main.alt = product.name;
+    state.images = product.imgs && product.imgs.length ? product.imgs : [product.img];
+    state.imageIndex = 0;
+    renderGallery(product);
+    renderCustomizer(product);
 
-    var thumbs = document.getElementById('vcThumbs');
-    thumbs.innerHTML = images.map(function (key, index) {
-      return '<img class="vc-thumb' + (index === 0 ? ' is-active' : '') + '" src="' + IMG_MAP[key] + '" alt="Vista ' + (index + 1) + '" data-key="' + key + '">';
-    }).join('');
-    thumbs.querySelectorAll('.vc-thumb').forEach(function (thumb) {
-      thumb.addEventListener('click', function () {
-        main.src = IMG_MAP[thumb.getAttribute('data-key')];
-        thumbs.querySelectorAll('.vc-thumb').forEach(function (item) { item.classList.remove('is-active'); });
-        thumb.classList.add('is-active');
-      });
-    });
+    var button = document.getElementById('vcAddButton');
+    button.classList.remove('is-added');
+    button.textContent = 'Añadir al carrito';
 
-    var customizer = document.getElementById('vcCustomizer');
-    customizer.innerHTML = CUSTOMIZABLE[product.id] ? customizerMarkup() : '<div class="vc-basic-note">Este diseño se personaliza por WhatsApp con nombre, color y detalles del evento.</div>';
-    if (CUSTOMIZABLE[product.id]) bindColorButtons();
-
-    document.getElementById('vcAddButton').classList.remove('is-added');
-    document.getElementById('vcAddButton').textContent = 'AÑADIR AL CARRITO';
+    updateSummary(product);
     updateWhatsapp(product);
   }
 
-  function customizerMarkup() {
-    return `
-      <div class="vc-personalizer">
-        <div class="vc-section-heading"><span>PERSONALIZA TU VELA</span></div>
-        <div class="vc-custom-grid">
-          <div class="vc-options">
-            ${optionRow('Color del osito', 'bear')}
-            ${optionRow('Color de la nube', 'cloud')}
-            ${optionRow('Color del corazón', 'heart')}
-          </div>
-          <div class="vc-preview-card">
-            <span class="vc-preview-title">VISTA PREVIA</span>
-            <svg class="vc-preview" id="vcPreview" viewBox="0 0 160 185" aria-label="Vista previa de la vela">
-              <path d="M77 5v18" stroke="#b7aa99" stroke-width="2" stroke-linecap="round"/>
-              <path d="M77 5c5 3 4 7 0 10-4-3-4-7 0-10" fill="#d7ad61" opacity=".8"/>
-              <g id="vcCloud" fill="#f1dfbd">
-                <ellipse cx="80" cy="145" rx="56" ry="24"/><circle cx="47" cy="135" r="24"/><circle cx="77" cy="124" r="31"/><circle cx="112" cy="136" r="25"/>
-              </g>
-              <g id="vcBear" fill="#f1dfbd">
-                <circle cx="60" cy="61" r="13"/><circle cx="99" cy="61" r="13"/><circle cx="80" cy="72" r="30"/>
-                <ellipse cx="80" cy="112" rx="30" ry="35"/><ellipse cx="55" cy="117" rx="12" ry="23" transform="rotate(25 55 117)"/><ellipse cx="105" cy="117" rx="12" ry="23" transform="rotate(-25 105 117)"/>
-                <ellipse cx="65" cy="137" rx="15" ry="11"/><ellipse cx="95" cy="137" rx="15" ry="11"/>
-              </g>
-              <ellipse cx="80" cy="78" rx="16" ry="12" fill="#ead4b9" opacity=".75"/>
-              <circle cx="70" cy="70" r="2.4" fill="#3b3027"/><circle cx="90" cy="70" r="2.4" fill="#3b3027"/><ellipse cx="80" cy="78" rx="3" ry="2.2" fill="#4a3b30"/>
-              <path d="M58 94c17 13 33 13 45 0" fill="none" stroke="#e3b4bd" stroke-width="8" stroke-linecap="round"/>
-              <path id="vcHeart" d="M122 105c-10-14-30-2-20 12l20 21 20-21c10-14-10-26-20-12z" fill="#efc8c9"/>
-            </svg>
-            <span class="vc-preview-note">Así quedará tu vela</span>
-          </div>
-        </div>
-      </div>`;
+  function renderGallery(product) {
+    var thumbs = document.getElementById('vcThumbs');
+    thumbs.innerHTML = state.images.map(function (key, index) {
+      return '<img class="vc-thumb' + (index === 0 ? ' is-active' : '') + '" src="' + IMG_MAP[key] +
+             '" alt="Vista ' + (index + 1) + '" data-index="' + index + '">';
+    }).join('');
+    thumbs.querySelectorAll('.vc-thumb').forEach(function (t) {
+      t.addEventListener('click', function () { showImage(parseInt(t.getAttribute('data-index'), 10)); });
+    });
+
+    var many = state.images.length > 1;
+    document.getElementById('vcPrev').style.display = many ? '' : 'none';
+    document.getElementById('vcNext').style.display = many ? '' : 'none';
+    document.getElementById('vcCounter').style.display = many ? '' : 'none';
+    showImage(0, product);
   }
 
-  function optionRow(label, part) {
-    return '<div class="vc-option-row"><span class="vc-option-label">' + label + '</span>' +
-      Object.keys(COLORS).map(function (key) {
-        var selected = state.colors[part] === key ? ' is-selected' : '';
-        return '<button type="button" class="vc-color' + selected + '" data-part="' + part + '" data-color="' + key + '" style="--swatch:' + COLORS[key].value + '" title="' + COLORS[key].label + '"></button>';
-      }).join('') + '</div>';
+  function showImage(index, product) {
+    if (!state.images.length) return;
+    var total = state.images.length;
+    state.imageIndex = ((index % total) + total) % total;
+
+    var main = document.getElementById('vcMainImage');
+    main.classList.add('is-swapping');
+    setTimeout(function () {
+      main.src = IMG_MAP[state.images[state.imageIndex]];
+      main.alt = (product && product.name) || main.alt;
+      main.classList.remove('is-swapping');
+    }, 130);
+
+    document.getElementById('vcCounter').textContent = (state.imageIndex + 1) + ' / ' + total;
+    document.querySelectorAll('.vc-thumb').forEach(function (item, i) {
+      item.classList.toggle('is-active', i === state.imageIndex);
+    });
   }
 
-  function bindColorButtons() {
-    document.querySelectorAll('.vc-color').forEach(function (button) {
-      button.addEventListener('click', function () {
-        var part = button.getAttribute('data-part');
-        var color = button.getAttribute('data-color');
-        state.colors[part] = color;
-        document.querySelectorAll('.vc-color[data-part="' + part + '"]').forEach(function (item) { item.classList.remove('is-selected'); });
-        button.classList.add('is-selected');
-        updatePreview();
-        var product = PRODUCTS.find(function (item) { return item.id === state.id; });
-        if (product) updateWhatsapp(product);
+  function stepImage(delta) { showImage(state.imageIndex + delta); }
+
+  // ── Personalizador ─────────────────────────────────────────────────
+  function renderCustomizer(product) {
+    var host = document.getElementById('vcCustomizer');
+    var conf = cfg(product.id);
+
+    if (!conf) {
+      host.innerHTML = '<div class="vc-note">Este diseño se personaliza por WhatsApp con nombre, color y detalles del evento.</div>';
+      return;
+    }
+
+    var preview = conf.preview
+      ? '<div class="vc-preview">' +
+          '<span class="vc-preview-title">Vista previa</span>' +
+          '<div class="vc-render" id="vcRender" style="--ratio:' + conf.preview.ratio + '">' +
+            '<img class="vc-lay vc-base" src="' + conf.preview.base + '" alt="' + product.name + '">' +
+            conf.parts.map(function (p) {
+              var m = conf.preview.masks[p.id];
+              if (!m) return '';
+              return '<div class="vc-lay vc-tint" data-tint="' + p.id + '" style="' +
+                     '-webkit-mask:url(' + m + ') center/contain no-repeat;' +
+                     'mask:url(' + m + ') center/contain no-repeat"></div>';
+            }).join('') +
+          '</div>' +
+          '<span class="vc-preview-note">Así quedará tu vela</span>' +
+        '</div>'
+      : '';
+
+    var groups = conf.parts.map(function (part) {
+      var opts = optionsFor(part).map(function (c) {
+        var on = state.colors[part.id] === c.k ? ' is-on' : '';
+        return '<button type="button" class="vc-opt' + on + '" data-part="' + part.id + '" data-k="' + c.k + '" ' +
+               'aria-label="' + part.label + ': ' + c.n + '">' +
+               '<span class="vc-dot" style="--c:' + c.v + '"></span>' +
+               '<span class="vc-optname">' + c.n + '</span></button>';
+      }).join('');
+      return '<div class="vc-group"><span class="vc-group-label">' + part.label + '</span>' +
+             '<div class="vc-swatches">' + opts + '</div></div>';
+    }).join('');
+
+    host.innerHTML =
+      '<div class="vc-heading"><span>Personaliza tu vela</span></div>' + preview + groups;
+
+    host.querySelectorAll('.vc-opt').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var partId = btn.getAttribute('data-part');
+        state.colors[partId] = btn.getAttribute('data-k');
+        host.querySelectorAll('.vc-opt[data-part="' + partId + '"]').forEach(function (o) { o.classList.remove('is-on'); });
+        btn.classList.add('is-on');
+        applyTints(product);
+        refreshWhatsapp();
       });
     });
-    updatePreview();
+
+    applyTints(product);
   }
 
-  function updatePreview() {
-    var bear = document.getElementById('vcBear');
-    var cloud = document.getElementById('vcCloud');
-    var heart = document.getElementById('vcHeart');
-    if (bear) bear.setAttribute('fill', COLORS[state.colors.bear].value);
-    if (cloud) cloud.setAttribute('fill', COLORS[state.colors.cloud].value);
-    if (heart) heart.setAttribute('fill', COLORS[state.colors.heart].value);
+  function applyTints(product) {
+    var conf = cfg(product.id);
+    if (!conf || !conf.preview) return;
+    conf.parts.forEach(function (part) {
+      var layer = document.querySelector('.vc-tint[data-tint="' + part.id + '"]');
+      if (layer) layer.style.background = colorOf(part, state.colors[part.id]).v;
+    });
   }
 
   function changeQty(delta) {
     state.qty = Math.max(1, Math.min(50, state.qty + delta));
-    var value = document.getElementById('vcQtyValue');
-    if (value) value.textContent = String(state.qty);
-    var product = PRODUCTS.find(function (item) { return item.id === state.id; });
-    if (product) updateWhatsapp(product);
+    var el = document.getElementById('vcQtyValue');
+    if (el) el.textContent = String(state.qty);
+    var product = PRODUCTS.find(function (p) { return p.id === state.id; });
+    if (product) { updateSummary(product); updateWhatsapp(product); }
+  }
+
+  function unitLabel(product, qty) {
+    if (product.unit === 'unidad') return qty === 1 ? 'unidad' : 'unidades';
+    return qty === 1 ? 'docena' : 'docenas';
+  }
+
+  function updateSummary(product) {
+    var price = Number(product.price);
+    document.getElementById('vcSumQty').textContent = state.qty + ' ' + unitLabel(product, state.qty);
+    document.getElementById('vcSumPrice').textContent = '$' + price.toFixed(2) + ' / ' + unitLabel(product, 1);
+    document.getElementById('vcSumTotal').textContent = '$' + (price * state.qty).toFixed(2);
   }
 
   function addCurrentToCart() {
-    var product = PRODUCTS.find(function (item) { return item.id === state.id; });
+    var product = PRODUCTS.find(function (p) { return p.id === state.id; });
     if (!product) return;
     if (typeof addToCartFromPage === 'function') addToCartFromPage(product.id, state.qty);
 
     var button = document.getElementById('vcAddButton');
-    button.textContent = '✓ AÑADIDO AL CARRITO';
+    button.textContent = '✓ Añadido al carrito';
     button.classList.add('is-added');
     setTimeout(function () {
-      button.textContent = 'AÑADIR AL CARRITO';
+      button.textContent = 'Añadir al carrito';
       button.classList.remove('is-added');
     }, 1400);
   }
 
+  function refreshWhatsapp() {
+    var product = PRODUCTS.find(function (p) { return p.id === state.id; });
+    if (product) updateWhatsapp(product);
+  }
+
   function updateWhatsapp(product) {
-    var details = CUSTOMIZABLE[product.id]
-      ? ' Colores: osito ' + COLORS[state.colors.bear].label + ', nube ' + COLORS[state.colors.cloud].label + ', corazón ' + COLORS[state.colors.heart].label + '.'
-      : '';
-    var unit = product.unit === 'unidad' ? 'unidades' : 'docenas';
-    var message = 'Hola Velamia 👋 Estoy viendo ' + product.name + ' ($' + Number(product.price).toFixed(2) + '). Quiero ' + state.qty + ' ' + unit + '.' + details + ' Quisiera confirmar personalización y fecha de entrega.';
+    var conf = cfg(product.id);
+    var details = '';
+    if (conf) {
+      details = ' Colores: ' + conf.parts.map(function (part) {
+        return part.short + ' ' + colorOf(part, state.colors[part.id]).n;
+      }).join(', ') + '.';
+    }
+    var extra = '';
+    if (state.name) extra += ' Nombre para el empaque: ' + state.name + '.';
+    if (state.date) extra += ' Fecha del evento: ' + state.date + '.';
+
+    var message = 'Hola Velamia 👋 Estoy viendo ' + product.name + ' ($' + Number(product.price).toFixed(2) +
+      '). Quiero ' + state.qty + ' ' + unitLabel(product, state.qty) + '.' + details + extra +
+      ' Quisiera confirmar personalización y fecha de entrega.';
     document.getElementById('vcWhatsapp').href = 'https://wa.me/593995448686?text=' + encodeURIComponent(message);
   }
 
