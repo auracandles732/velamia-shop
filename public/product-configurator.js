@@ -12,9 +12,10 @@
       { k: 'celeste', n: 'Celeste pastel', v: '#d6e6f4' }
     ],
     nube: [
-      { k: 'beige',  n: 'Beige',  v: '#ecdcc4' },
-      { k: 'blanco', n: 'Blanco', v: '#fbfaf7' },
-      { k: 'crema',  n: 'Crema',  v: '#f7ebd4' }
+      { k: 'beige',   n: 'Beige',   v: '#ecdcc4' },
+      { k: 'blanco',  n: 'Blanco',  v: '#fbfaf7' },
+      { k: 'crema',   n: 'Crema',   v: '#f7ebd4' },
+      { k: 'celeste', n: 'Celeste', v: '#d6e6f4' }
     ],
     clasica: [
       { k: 'crema',   n: 'Crema',   v: '#f1dfbd' },
