@@ -1,0 +1,6 @@
+# Fotografias fuente del modelado 3D (~30 MB).
+# El sitio no las sirve: el visor solo carga public/models/osito-nube.glb.
+public/images/osito-360/
+
+# Cache local de Wrangler
+.wrangler/

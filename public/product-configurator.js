@@ -33,11 +33,11 @@
         { id: 'bear',  short: 'osito', label: 'Color del osito',  palette: 'osito', def: 'beige'  },
         { id: 'cloud', short: 'nube',  label: 'Color de la nube', palette: 'nube',  def: 'blanco' }
       ],
-      preview: {
-        base:  'images/osito_base.png',
-        ratio: '720 / 875',
-        masks: { bear: 'images/osito_mask_bear.png', cloud: 'images/osito_mask_cloud.png' }
-      }
+      // Sin vista previa: el producto muestra solo los selectores de color.
+      // Para reactivar el modelo 3D basta con restaurar este bloque:
+      //   type: 'model3d', src: 'models/osito-nube.glb', ratio: '1 / 1',
+      //   materials: { bear: 'MatOsito', cloud: 'MatNube' }
+      preview: null
     },
     3: {
       parts: [
@@ -206,6 +206,27 @@
       .vc-base{object-fit:contain}
       .vc-tint{mix-blend-mode:multiply}
       @supports not ((-webkit-mask-image:none) or (mask-image:none)){ .vc-tint{display:none} }
+
+      /* ── Vista 3D giratoria ── */
+      .vc-preview--3d{max-width:340px}
+      .vc-render-3d{position:relative;width:100%;margin:0 auto;aspect-ratio:var(--ratio,1/1);
+        border:1px solid var(--vc-line);border-radius:20px;overflow:hidden;
+        background:radial-gradient(120% 100% at 50% 8%,#fffdfb 0%,#f7efe4 100%);
+        box-shadow:inset 0 -14px 26px -20px rgba(120,95,70,.45)}
+      .vc-mv{width:100%;height:100%;display:block;background:transparent;
+        --poster-color:transparent;--progress-bar-color:var(--vc-blush-deep);
+        --progress-mask:transparent;outline:none;touch-action:pan-y}
+      .vc-3d-hint{position:absolute;left:50%;bottom:9px;transform:translateX(-50%);
+        display:inline-flex;align-items:center;gap:.32rem;padding:.2rem .6rem;border-radius:50px;
+        background:rgba(255,255,255,.82);font-size:.58rem;letter-spacing:.04em;color:#8c8279;
+        pointer-events:none;transition:opacity .3s ease;white-space:nowrap}
+      .vc-render-3d.is-touched .vc-3d-hint{opacity:0}
+      .vc-3d-badge{position:absolute;top:9px;right:10px;padding:.16rem .5rem;border-radius:50px;
+        background:rgba(255,255,255,.85);font-size:.53rem;font-weight:700;letter-spacing:.1em;
+        color:var(--vc-gold);pointer-events:none}
+      .vc-3d-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+        padding:1rem;text-align:center;font-size:.68rem;line-height:1.55;color:#6d645b}
+
       .vc-preview-note{display:block;font-size:.62rem;color:var(--vc-soft);margin-top:.5rem;font-style:italic}
 
       /* ── Selector de colores ── */
@@ -459,8 +480,27 @@
       return;
     }
 
-    var preview = conf.preview
-      ? '<div class="vc-preview">' +
+    var preview = '';
+    if (conf.preview && conf.preview.type === 'model3d') {
+      preview =
+        '<div class="vc-preview vc-preview--3d">' +
+          '<span class="vc-preview-title">Vista previa 3D</span>' +
+          '<div class="vc-render-3d" id="vcRender3d" style="--ratio:' + conf.preview.ratio + '">' +
+            '<model-viewer class="vc-mv" id="vcModel" src="' + conf.preview.src + '" ' +
+              'alt="Modelo 3D de ' + product.name + '" camera-controls touch-action="pan-y" ' +
+              'loading="eager" reveal="auto" interaction-prompt="none" ' +
+              'shadow-intensity="1" shadow-softness="0.9" ' +
+              'exposure="1.05" environment-image="neutral" ' +
+              'camera-orbit="0deg 74deg 105%" min-camera-orbit="auto 25deg auto" ' +
+              'max-camera-orbit="auto 100deg auto" disable-zoom disable-pan></model-viewer>' +
+            '<span class="vc-3d-badge">360°</span>' +
+            '<span class="vc-3d-hint">Arrastra o desliza para girar</span>' +
+          '</div>' +
+          '<span class="vc-preview-note">Gíralo para verlo desde todos los ángulos</span>' +
+        '</div>';
+    } else if (conf.preview) {
+      preview =
+        '<div class="vc-preview">' +
           '<span class="vc-preview-title">Vista previa</span>' +
           '<div class="vc-render" id="vcRender" style="--ratio:' + conf.preview.ratio + '">' +
             '<img class="vc-lay vc-base" src="' + conf.preview.base + '" alt="' + product.name + '">' +
@@ -473,8 +513,8 @@
             }).join('') +
           '</div>' +
           '<span class="vc-preview-note">Así quedará tu vela</span>' +
-        '</div>'
-      : '';
+        '</div>';
+    }
 
     var groups = conf.parts.map(function (part) {
       var opts = optionsFor(part).map(function (c) {
@@ -502,12 +542,79 @@
       });
     });
 
+    if (conf.preview && conf.preview.type === 'model3d') setupModel(product, conf);
     applyTints(product);
+  }
+
+  // ── Vista 3D ───────────────────────────────────────────────────────
+  // model-viewer se sirve desde el propio dominio y se carga una sola vez,
+  // solo cuando se abre un producto que tiene modelo.
+  var mvState = null; // null = sin pedir, 'loading' | 'ready' | 'failed'
+
+  function loadModelViewer(onReady) {
+    if (mvState === 'ready')  { onReady(true);  return; }
+    if (mvState === 'failed') { onReady(false); return; }
+
+    var waiting = loadModelViewer._q || (loadModelViewer._q = []);
+    waiting.push(onReady);
+    if (mvState === 'loading') return;
+
+    mvState = 'loading';
+    var s = document.createElement('script');
+    s.type = 'module';
+    s.src = 'vendor/model-viewer.min.js';
+    s.onload = function () {
+      mvState = 'ready';
+      waiting.splice(0).forEach(function (cb) { cb(true); });
+    };
+    s.onerror = function () {
+      mvState = 'failed';
+      waiting.splice(0).forEach(function (cb) { cb(false); });
+    };
+    document.head.appendChild(s);
+  }
+
+  function setupModel(product, conf) {
+    var box = document.getElementById('vcRender3d');
+    var mv  = document.getElementById('vcModel');
+    if (!box || !mv) return;
+
+    // El hint se oculta en cuanto el cliente gira la pieza.
+    var hide = function () { box.classList.add('is-touched'); };
+    mv.addEventListener('pointerdown', hide, { once: true });
+    mv.addEventListener('touchstart', hide, { once: true, passive: true });
+
+    mv.addEventListener('load', function () { paintModel(product); });
+
+    loadModelViewer(function (ok) {
+      if (ok) return;
+      // Sin WebGL o sin la libreria: el pedido debe seguir siendo posible.
+      box.innerHTML = '<div class="vc-3d-fallback">No pudimos cargar la vista 3D en este ' +
+        'dispositivo. Los colores que elijas abajo se registran igual en tu pedido.</div>';
+    });
+  }
+
+  function paintModel(product) {
+    var conf = cfg(product.id);
+    var mv = document.getElementById('vcModel');
+    if (!conf || !mv || !mv.model || !conf.preview.materials) return;
+
+    conf.parts.forEach(function (part) {
+      var target = conf.preview.materials[part.id];
+      if (!target) return;
+      var mat = mv.model.materials.find(function (m) { return m.name === target; });
+      if (!mat) return;
+      // Se pasa el hex tal cual: model-viewer lo interpreta en sRGB.
+      mat.pbrMetallicRoughness.setBaseColorFactor(colorOf(part, state.colors[part.id]).v);
+    });
   }
 
   function applyTints(product) {
     var conf = cfg(product.id);
     if (!conf || !conf.preview) return;
+
+    if (conf.preview.type === 'model3d') { paintModel(product); return; }
+
     conf.parts.forEach(function (part) {
       var layer = document.querySelector('.vc-tint[data-tint="' + part.id + '"]');
       if (layer) layer.style.background = colorOf(part, state.colors[part.id]).v;
