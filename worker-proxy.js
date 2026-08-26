@@ -14,8 +14,8 @@ export default {
     let html = await response.text();
     // Normalize the catalog response in case an edge still serves an older asset.
     html = html.replace(
-      '((p.alwaysSale ? p.salePrice : ((p.onSale && isSaleActive() ? p.salePrice : p.price) * 0.9)).toFixed(2))',
-      'Number((p.alwaysSale ? p.salePrice : ((p.onSale && isSaleActive() ? p.salePrice : p.price) * 0.9))).toFixed(2)'
+      "$'+((p.alwaysSale ? p.salePrice : ((p.onSale && isSaleActive() ? p.salePrice : p.price) * 0.9)).toFixed(2))",
+      "$'+Number((p.alwaysSale ? p.salePrice : ((p.onSale && isSaleActive() ? p.salePrice : p.price) * 0.9))).toFixed(2)"
     );
     html = html.replace('return day === 15 || day === 30;', 'return true;');
     if (!html.includes('/product-configurator.js')) {
