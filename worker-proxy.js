@@ -1,5 +1,7 @@
 import originalWorker from './worker.js';
 
+// Keep the catalog render fix bundled with the active Worker deployment.
+
 export default {
   async fetch(request, env, ctx) {
     const response = await originalWorker.fetch(request, env, ctx);
