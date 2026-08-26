@@ -18,6 +18,10 @@ export default {
       "$'+Number((p.alwaysSale ? p.salePrice : ((p.onSale && isSaleActive() ? p.salePrice : p.price) * 0.9))).toFixed(2)"
     );
     html = html.replace('return day === 15 || day === 30;', 'return true;');
+    html = html.replace(
+      'p.alwaysSale ? p.salePrice',
+      'p.alwaysSale ? Number(p.salePrice || p.price)'
+    );
     if (!html.includes('/product-configurator.js')) {
       html = html.replace(
         '</body>',
