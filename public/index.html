@@ -2984,7 +2984,7 @@ document.addEventListener('DOMContentLoaded', function() {
         '</div>' +
         '<h3 class="product-name">'+p.name+'</h3>' +
         '<p class="product-desc">'+p.desc+'</p>' +
-        (p.onSale && (p.alwaysSale || isSaleActive()) ? 
+        ((p.id===1 || p.id===3 || (p.onSale && (p.alwaysSale || isSaleActive()))) ?
           '<p class="product-price-old">$'+p.originalPrice.toFixed(2)+'</p>' +
           '<p class="product-price sale-price">$'+p.salePrice.toFixed(2)+' <span class="sale-badge">-'+(p.saleDiscount||10)+'%</span></p>' +
           '<p class="sale-until">🔥 '+(p.fixedSale ? '¡15% de descuento!' : 'Oferta por tiempo limitado')+'</p>'
