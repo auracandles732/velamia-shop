@@ -2144,6 +2144,11 @@ function isSaleActive() {
   return day === 15 || day === 30;  // Ofertas activas solo el 15 y 30 de cada mes
 }
 
+function getCardPrice(p) {
+  var base = (p.onSale && (p.alwaysSale || isSaleActive())) ? p.salePrice : p.price;
+  return Number(p.alwaysSale ? base : base * 0.9).toFixed(2);
+}
+
 function changeCardQty(id, delta) {
   var el = document.getElementById('card-qty-' + id);
   if (!el) return;
@@ -2989,7 +2994,7 @@ document.addEventListener('DOMContentLoaded', function() {
         '<p class="product-buy-note"><span>✓</span><span><strong>Incluye empaque y nombre personalizado</strong></span></p>' +
         (!p.sinDescuento || p.alwaysSale ?
           '<div class="price-card-box">' +
-            '<div class="pcb-top"><span class="pcb-price">$'+((p.alwaysSale ? p.salePrice : ((p.onSale && isSaleActive() ? p.salePrice : p.price) * 0.9)).toFixed(2))+'</span><span class="pcb-label">💳 pagando con tarjeta</span></div>' +
+            '<div class="pcb-top"><span class="pcb-price">$'+getCardPrice(p)+'</span><span class="pcb-label">💳 pagando con tarjeta</span></div>' +
             '<span class="pcb-note">Precio promocional · aplica pagando con tarjeta en la web</span>' +
           '</div>'
           : '') +

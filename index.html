@@ -2000,6 +2000,11 @@ function isSaleActive() {
   return day === 15 || day === 30;  // Ofertas activas solo el 15 y 30 de cada mes
 }
 
+function getCardPrice(p) {
+  var base = (p.onSale && (p.alwaysSale || isSaleActive())) ? p.salePrice : p.price;
+  return Number(p.alwaysSale ? base : base * 0.9).toFixed(2);
+}
+
 function changeCardQty(id, delta) {
   var el = document.getElementById('card-qty-' + id);
   if (!el) return;
