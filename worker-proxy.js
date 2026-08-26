@@ -4,7 +4,11 @@ import originalWorker from './worker.js';
 
 export default {
   async fetch(request, env, ctx) {
-    const response = await originalWorker.fetch(request, env, ctx);
+    const requestUrl = new URL(request.url);
+    const assetRequest = requestUrl.pathname === '/'
+      ? new Request(new URL('/index.html?catalog-version=20260826', requestUrl), request)
+      : request;
+    const response = await originalWorker.fetch(assetRequest, env, ctx);
     const contentType = response.headers.get('content-type') || '';
 
     if (!contentType.includes('text/html')) {
