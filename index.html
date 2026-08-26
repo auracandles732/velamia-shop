@@ -157,7 +157,7 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .section-title{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;line-height:1.2;}
   .section-title span{color:var(--brown);font-weight:300;}
   .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;align-items:stretch;}
-  .product-card{background:#fff;border:0.5px solid var(--sand);transition:transform 0.3s,box-shadow 0.3s;display:flex;flex-direction:column;}
+  .product-card{background:#fff;border:0.5px solid var(--sand);border-radius:8px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s;display:flex;flex-direction:column;}
   .product-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(42,35,24,0.1);}
   .product-img{position:relative;height:260px;overflow:hidden;background:var(--cream);}
   .product-img img{width:100%;height:100%;object-fit:contain;background:#faf7f2;transition:transform 0.5s;}
@@ -172,10 +172,12 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .badge-popular{position:absolute;top:0.7rem;right:0.7rem;background:linear-gradient(135deg,#E63946 0%,#C92533 100%);color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.3rem 0.7rem;border-radius:50px;box-shadow:0 3px 10px rgba(230,57,70,0.35);z-index:2;}
   .badge-mas-vendido{position:absolute;top:0.8rem;right:0.8rem;background:linear-gradient(135deg,var(--gold),#b8912a);color:var(--dark);font-size:0.55rem;font-weight:700;padding:0.25rem 0.5rem;border-radius:50px;letter-spacing:0.05em;}
   .product-tag{position:absolute;top:0.8rem;left:0.8rem;color:#fff;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.3rem 0.7rem;font-weight:600;border-radius:1px;}
-  .product-name{font-size:1rem;font-weight:600;padding:1rem 1rem 0.2rem;}
-  .product-desc{font-size:0.75rem;color:var(--dark);font-weight:400;padding:0 1rem 0.4rem;line-height:1.6;}
-  .product-price{font-size:1rem;color:var(--brown);font-weight:700;padding:0 1rem 0.2rem;}
-  .product-unit{font-size:0.68rem;color:var(--taupe);padding:0 1rem 0.4rem;}
+  .product-name{font-size:1rem;font-weight:600;padding:1rem 1rem 0.35rem;line-height:1.35;}
+  .product-desc{font-size:0.75rem;color:var(--dark);font-weight:400;padding:0 1rem 0.55rem;line-height:1.6;}
+  .product-price{font-size:1.15rem;color:var(--brown);font-weight:700;padding:0 1rem 0.15rem;}
+  .product-unit{font-size:0.68rem;color:var(--taupe);padding:0 1rem 0.55rem;}
+  .product-buy-note{display:flex;align-items:center;gap:0.35rem;margin:0 1rem 0.6rem;padding:0.45rem 0.55rem;background:var(--cream);border-radius:4px;color:var(--brown);font-size:0.64rem;line-height:1.35;}
+  .product-buy-note strong{color:var(--dark);font-weight:700;}
   .foto-ref{font-size:0.62rem;color:#aaa;font-style:italic;padding:0 1rem 0.8rem;margin:0;}
 
   /* Card quantity selector */
@@ -186,7 +188,7 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
   .card-qty-btn:hover{background:var(--brown);}
   .card-qty-val{min-width:40px;height:34px;display:flex;align-items:center;justify-content:center;font-size:0.92rem;font-weight:700;background:#fff;border-top:1.5px solid var(--sand);border-bottom:1.5px solid var(--sand);color:var(--dark);}
   .card-qty-label{font-size:0.6rem;color:var(--taupe);text-align:center;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.1rem;}
-  .card-cta{display:block;text-align:center;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.75rem;background:var(--dark);color:#fff;font-weight:600;transition:all 0.3s;border:none;cursor:pointer;width:100%;}
+  .card-cta{display:block;text-align:center;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.78rem;background:var(--dark);color:#fff;font-weight:600;transition:all 0.3s;border:none;cursor:pointer;width:100%;}
   .card-cta:hover{background:var(--brown);}
   .card-cta.added{background:var(--gold);color:var(--dark);}
 
@@ -1082,6 +1084,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="section-header reveal">
     <span class="section-label">Nuestra colección</span>
     <h2 class="section-title">Diseños para cada <span>momento especial</span></h2>
+    <p style="max-width:620px;margin:0.8rem auto 0;color:var(--brown);font-size:0.8rem;line-height:1.7;">Elige un diseño, revisa el precio por cantidad y personalízalo con tu nombre, colores y detalles del evento.</p>
   </div>
 
   <div class="filter-wrap">
@@ -2757,6 +2760,7 @@ document.addEventListener('DOMContentLoaded', function() {
           '<p class="product-price">$'+p.price.toFixed(2)+'</p>'
         ) +
         '<p class="product-unit">'+unitLabel+'</p>' +
+        '<p class="product-buy-note"><span>✓</span><span><strong>Incluye empaque y nombre personalizado</strong></span></p>' +
         '<p class="foto-ref">*<em>Fotos referenciales</em></p>' +
         '<div style="flex:1;"></div>' +
         '<div class="card-qty-label">Cantidad ('+(p.unit==="unidad"?"unidades":"docenas")+')</div>' +
@@ -2765,7 +2769,7 @@ document.addEventListener('DOMContentLoaded', function() {
           '<div class="card-qty-val" id="card-qty-'+p.id+'">1</div>' +
           '<button class="card-qty-btn" onclick="event.stopPropagation();changeCardQty('+p.id+',1)">+</button>' +
         '</div>' +
-        '<button class="card-cta" id="btn-'+p.id+'" onclick="addToCartQty('+p.id+')">Anadir al carrito</button>' +
+        '<button class="card-cta" id="btn-'+p.id+'" aria-label="Añadir '+p.name+' al carrito" onclick="addToCartQty('+p.id+')">Añadir al carrito</button>' +
         '<a class="card-wa-btn" href="#" onclick="event.preventDefault(); event.stopPropagation(); openProductFormModal('+p.id+')"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.737-.961zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg> Consultar / Personalizar</a>';
       grid.appendChild(card);
     });
