@@ -26,6 +26,7 @@ export default {
       'p.alwaysSale ? p.salePrice',
       'p.alwaysSale ? Number(p.salePrice || p.price)'
     );
+    html = html.replace(/p\.salePrice/g, 'Number(p.salePrice || p.price)');
     if (!html.includes('/product-configurator.js')) {
       html = html.replace(
         '</body>',
