@@ -69,6 +69,11 @@
   };
 
   function cfg(id) { return CONFIG[id] || null; }
+  // Precio que se cobra: el de oferta cuando está activa (misma regla que las tarjetas del catálogo).
+  function precioVenta(p) {
+    var activa = p.onSale && (p.alwaysSale || (typeof isSaleActive === 'function' && isSaleActive()));
+    return Number(activa ? (p.salePrice || p.price) : p.price);
+  }
   function optionsFor(part) { return PALETTE[part.palette] || PALETTE.clasica; }
   function colorOf(part, key) {
     var list = optionsFor(part);
@@ -413,7 +418,10 @@
       '<p>Vela artesanal hecha a mano con cera de alta calidad. Cada pieza es única e ideal para hacer de tu evento un momento especial.</p>' +
       '<p>Incluye empaque elegante y nombre personalizado sin costo adicional. Pedidos bajo reserva.</p>';
 
-    document.getElementById('vcPrice').textContent = '$' + Number(product.price).toFixed(2);
+    var venta = precioVenta(product);
+    var antes = Number(product.originalPrice || product.price);
+    document.getElementById('vcPrice').innerHTML = '$' + venta.toFixed(2) +
+      (venta < antes ? ' <s style="font-size:1rem;color:#9a8f82;margin-left:.35rem">$' + antes.toFixed(2) + '</s>' : '');
     document.getElementById('vcPriceUnit').textContent = product.unit === 'unidad' ? 'por unidad' : 'por docena';
     document.getElementById('vcQtyLabel').textContent = product.unit === 'unidad' ? 'Cantidad (unidades)' : 'Cantidad (docenas)';
     document.getElementById('vcQtyValue').textContent = '1';
@@ -636,7 +644,7 @@
   }
 
   function updateSummary(product) {
-    var price = Number(product.price);
+    var price = precioVenta(product);
     document.getElementById('vcSumQty').textContent = state.qty + ' ' + unitLabel(product, state.qty);
     document.getElementById('vcSumPrice').textContent = '$' + price.toFixed(2) + ' / ' + unitLabel(product, 1);
     document.getElementById('vcSumTotal').textContent = '$' + (price * state.qty).toFixed(2);
@@ -681,12 +689,13 @@
 
     var custom = buildCustom(product);
     var key = variantKey(product, custom);
-    var price = product.price;
+    var price = precioVenta(product);
 
     if (!window.cart[key]) {
       window.cart[key] = {
         id: product.id, name: product.name, desc: product.desc, price: price,
         tag: product.tag, img: product.img, unit: product.unit, qty: state.qty,
+        onSale: !!(product.onSale && typeof isSaleActive === 'function' && isSaleActive()),
         custom: custom
       };
     } else {
@@ -807,14 +816,14 @@
     if (state.name) extra += ' Nombre para el empaque: ' + state.name + '.';
     if (state.date) extra += ' Fecha del evento: ' + state.date + '.';
 
-    var message = 'Hola Velamia 👋 Estoy viendo ' + product.name + ' ($' + Number(product.price).toFixed(2) +
+    var message = 'Hola Velamia 👋 Estoy viendo ' + product.name + ' ($' + precioVenta(product).toFixed(2) +
       '). Quiero ' + state.qty + ' ' + unitLabel(product, state.qty) + '.' + details + extra +
       ' Quisiera confirmar personalización y fecha de entrega.';
-    document.getElementById('vcWhatsapp').href = 'https://wa.me/593995448686?text=' + encodeURIComponent(message);
+    document.getElementById('vcWhatsapp').href = 'https://wa.me/' + (window.VELAMIA_WA || '593995448686') + '?text=' + encodeURIComponent(message);
   }
 
   function trackView(product) {
-    if (typeof fbq !== 'undefined') fbq('track', 'ViewContent', { content_name: product.name, content_category: product.cat, value: product.price, currency: 'USD' });
-    if (typeof gtag !== 'undefined') gtag('event', 'view_item', { currency: 'USD', value: product.price, items: [{ item_id: String(product.id), item_name: product.name, item_category: product.cat, price: product.price, quantity: 1 }] });
+    if (typeof fbq !== 'undefined') fbq('track', 'ViewContent', { content_name: product.name, content_category: product.cat, value: precioVenta(product), currency: 'USD' });
+    if (typeof gtag !== 'undefined') gtag('event', 'view_item', { currency: 'USD', value: precioVenta(product), items: [{ item_id: String(product.id), item_name: product.name, item_category: product.cat, price: precioVenta(product), quantity: 1 }] });
   }
 })();

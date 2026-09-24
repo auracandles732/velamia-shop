@@ -55,6 +55,8 @@ src="https://www.facebook.com/tr?id=1462926855313741&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>html.cms-espera body{visibility:hidden}</style>
+<script src="/velamia-cms.js?v=20260923"></script>
 <title>Velamia – Velas Artesanales para Eventos</title>
 <style id="velamia-contrast-theme">
   body{background:#FCFAF6;color:#1C1815;}
@@ -2771,7 +2773,8 @@ function openProductPage(id, fromHistory) {
   }
   document.getElementById('ppName').textContent = p.name;
   document.getElementById('ppBreadcrumbName').textContent = p.name;
-  document.getElementById('ppPrice').textContent = '$' + p.price.toFixed(2);
+  var ppVenta = (p.onSale && (p.alwaysSale || isSaleActive())) ? Number(p.salePrice || p.price) : p.price;
+  document.getElementById('ppPrice').textContent = '$' + ppVenta.toFixed(2);
   document.getElementById('ppUnitLabel').textContent = unitLabel;
   document.getElementById('ppQty').textContent = '1';
   var descHTML = '<p>' + p.desc + '.</p>' +
@@ -2779,8 +2782,8 @@ function openProductPage(id, fromHistory) {
     '<p>Incluye empaque elegante y nombre personalizado sin costo adicional. Pedidos bajo reserva.</p>';
   document.getElementById('ppDesc').innerHTML = descHTML;
   // WhatsApp support link with product context
-  var waMsg = 'Hola Velamia! 👋 Estoy viendo: ' + p.name + ' ($' + p.price.toFixed(2) + (p.unit==='unidad'?' por unidad':' por docena') + '). Quisiera consultar sobre personalización (cantidad exacta, diseño, fecha de entrega). ¿Me pueden ayudar?';
-  document.getElementById('ppWaBtn').href = 'https://wa.me/593995448686?text=' + encodeURIComponent(waMsg);
+  var waMsg = 'Hola Velamia! 👋 Estoy viendo: ' + p.name + ' ($' + ppVenta.toFixed(2) + (p.unit==='unidad'?' por unidad':' por docena') + '). Quisiera consultar sobre personalización (cantidad exacta, diseño, fecha de entrega). ¿Me pueden ayudar?';
+  document.getElementById('ppWaBtn').href = 'https://wa.me/' + (window.VELAMIA_WA || '593995448686') + '?text=' + encodeURIComponent(waMsg);
   var addBtn = document.getElementById('ppAddBtn');
   addBtn.textContent = 'AÑADIR AL CARRITO';
   addBtn.classList.remove('added');
@@ -2846,8 +2849,8 @@ function closeProductModal() { closeProductPage(); }
 function addToCartFromPage(id, qty) {
   var p = PRODUCTS.find(function(x){ return x.id===id; });
   if (!p) return;
-  var price = p.price;
-  if (!cart[id]) cart[id] = {id:p.id, name:p.name, desc:p.desc, price:price, tag:p.tag, img:p.img, unit:p.unit, qty:qty};
+  var price = (p.onSale && (p.alwaysSale || isSaleActive())) ? Number(p.salePrice || p.price) : p.price;
+  if (!cart[id]) cart[id] = {id:p.id, name:p.name, desc:p.desc, price:price, tag:p.tag, img:p.img, unit:p.unit, qty:qty, onSale:(p.onSale&&isSaleActive())};
   else cart[id].qty += qty;
   if (typeof fbq !== 'undefined') {
     fbq('track', 'AddToCart', {content_name:p.name, content_category:p.cat, value:price*qty, currency:'USD'});
@@ -2904,7 +2907,7 @@ function applyCoupon() {
 // ═══════════════════════════════════════
 // INIT - Runs after DOM is ready
 // ═══════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() { (window.velamiaCMS ? window.velamiaCMS.listo : Promise.resolve()).then(function() {
   // Safety: ensure product page is hidden and main content is visible on load
   var pp = document.getElementById('productPage');
   if (pp) pp.style.display = 'none';
@@ -2985,7 +2988,7 @@ document.addEventListener('DOMContentLoaded', function() {
         '</div>' +
         '<h3 class="product-name">'+p.name+'</h3>' +
         '<p class="product-desc">'+p.desc+'</p>' +
-        ((p.id===1 || p.id===3 || (p.onSale && (p.alwaysSale || isSaleActive()))) ?
+        ((p.onSale && (p.alwaysSale || isSaleActive())) ?
           '<p class="product-price-old">$'+Number(p.originalPrice || p.price).toFixed(2)+'</p>' +
           '<p class="product-price sale-price">$'+Number(p.salePrice || p.price).toFixed(2)+' <span class="sale-badge">-'+(p.saleDiscount||10)+'%</span></p>' +
           '<p class="sale-until">🔥 '+(p.fixedSale ? '¡15% de descuento!' : 'Oferta por tiempo limitado')+'</p>'
@@ -3056,7 +3059,7 @@ document.addEventListener('DOMContentLoaded', function() {
     btn.addEventListener('click', function(){ sendMessage(this.textContent); });
   });
 
-}); // end DOMContentLoaded
+}); }); // end DOMContentLoaded
 </script>
 
 <!-- POPUP BIENVENIDA -->
@@ -3392,7 +3395,7 @@ window.addEventListener('popstate', function(e) {
     if (detalles)    mensaje += "✨ Detalles: " + detalles + "\n";
     mensaje += "\nQuisiera consultar sobre personalización y disponibilidad de fechas.";
 
-    window.open("https://wa.me/593995448686?text=" + encodeURIComponent(mensaje), '_blank');
+    window.open("https://wa.me/" + (window.VELAMIA_WA || "593995448686") + "?text=" + encodeURIComponent(mensaje), '_blank');
 
     closeFormModal();
     document.getElementById('pedidoForm').reset();
@@ -3551,7 +3554,7 @@ window.addEventListener('popstate', function(e) {
 
     mensaje += "\n¿Está disponible para esa fecha?";
 
-    var wa_url = "https://wa.me/593995448686?text=" + encodeURIComponent(mensaje);
+    var wa_url = "https://wa.me/" + (window.VELAMIA_WA || "593995448686") + "?text=" + encodeURIComponent(mensaje);
     window.open(wa_url, '_blank');
 
     closeProductFormModal();
