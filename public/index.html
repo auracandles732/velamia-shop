@@ -2820,7 +2820,7 @@ function closeProductPage(fromHistory) {
 function hideMainContent() {
   // Hide everything between nav and footer except productPage
   var elements = ['heroCarousel', 'productsGrid'];
-  var sections = document.querySelectorAll('section, .strip, .hero-carousel, .filter-wrap, .search-wrap, #productsGrid, .reveal, .cta-section, .email-capture, .politica-section');
+  var sections = document.querySelectorAll('section, .strip, .hero-carousel, .landing-features, .features, .filter-wrap, .search-wrap, #productsGrid, .reveal, .cta-section, .email-capture, .politica-section');
   sections.forEach(function(el){
     if (el.id !== 'productPage' && !el.closest('#productPage')) {
       el.dataset._hidden = el.style.display;
@@ -2830,7 +2830,7 @@ function hideMainContent() {
 }
 
 function showMainContent() {
-  var sections = document.querySelectorAll('section, .strip, .hero-carousel, .filter-wrap, .search-wrap, #productsGrid, .reveal, .cta-section, .email-capture, .politica-section');
+  var sections = document.querySelectorAll('section, .strip, .hero-carousel, .landing-features, .features, .filter-wrap, .search-wrap, #productsGrid, .reveal, .cta-section, .email-capture, .politica-section');
   sections.forEach(function(el){
     if (el.id !== 'productPage' && !el.closest('#productPage')) {
       // Restore: use saved value or remove inline style entirely
