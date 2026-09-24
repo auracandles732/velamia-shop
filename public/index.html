@@ -2382,34 +2382,47 @@ function initPaymentezCheckout() {
     total: total, orderNum: orderNum
   };
   var btn = document.getElementById('btnPagar');
-  btn.textContent = 'Procesando...'; btn.disabled = true;
-  fetch('/api/create-payment', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ amount: total, description: description, devReference: orderNum, userId: tel, userEmail: email })
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(data) {
-    btn.textContent = '💳 Pagar con tarjeta'; btn.disabled = false;
-    if (data.reference && paymentCheckout) {
-      paymentCheckout.open({
-        reference: data.reference,
-        conf: {
-          style_version: '2',
-          theme: {
-            logo: 'https://cdn.paymentez.com/img/nv/nuvei_logo.png',
-            primary_color: '#C800A1'
+  // El servidor recalcula el total con estos productos; si no coincide, avisa el total correcto.
+  var itemsPago = items.map(function(i){ return { id: i.id, qty: i.qty }; });
+  var zonaEnvio = document.getElementById('shippingZone') ? document.getElementById('shippingZone').value : 'guayaquil';
+  function solicitarPago(monto) {
+    btn.textContent = 'Procesando...'; btn.disabled = true;
+    fetch('/api/create-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: monto, description: description, devReference: orderNum, userId: tel, userEmail: email, items: itemsPago, zona: zonaEnvio })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      btn.textContent = '💳 Pagar con tarjeta'; btn.disabled = false;
+      if (data.reference && paymentCheckout) {
+        paymentCheckout.open({
+          reference: data.reference,
+          conf: {
+            style_version: '2',
+            theme: {
+              logo: 'https://cdn.paymentez.com/img/nv/nuvei_logo.png',
+              primary_color: '#C800A1'
+            }
           }
+        });
+      } else if (data.code === 'precio_cambiado' && data.total) {
+        if (confirm('El total de tu pedido se actualizó a $' + Number(data.total).toFixed(2) + ' (antes $' + Number(monto).toFixed(2) + ').\n\n¿Deseas continuar al pago?')) {
+          window._pendingOrder.total = data.total;
+          solicitarPago(data.total);
         }
-      });
-    } else {
-      alert('Error Nuvei: ' + JSON.stringify(data));
-    }
-  })
-  .catch(function(err) {
-    btn.textContent = '💳 Pagar con tarjeta'; btn.disabled = false;
-    alert('Error de conexión: ' + err);
-  });
+      } else if (data.error) {
+        alert(data.error);
+      } else {
+        alert('Error Nuvei: ' + JSON.stringify(data));
+      }
+    })
+    .catch(function(err) {
+      btn.textContent = '💳 Pagar con tarjeta'; btn.disabled = false;
+      alert('Error de conexión: ' + err);
+    });
+  }
+  solicitarPago(total);
 }
 
 function completarPedidoPagado(tx) {

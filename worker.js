@@ -1,3 +1,5 @@
+import { calcularPedido, cargarSitio } from './precios.js';
+
 // Credenciales Nuvei (PRODUCCIÓN)
 const APP_CODE   = 'VELAMIAEC-EC-SERVER';
 const APP_KEY    = 'HlSy0zSyOs19EQvfjb7WctYtELxXc1';
@@ -47,7 +49,30 @@ export default {
     // ── RUTA 1: Crear referencia de pago ─────────────────────────────
     if (url.pathname === '/api/create-payment' && request.method === 'POST') {
       try {
-        const { amount, description, devReference, userId, userEmail } = await request.json();
+        const { amount, devReference, userId, userEmail, items, zona } = await request.json();
+
+        // El total se recalcula aquí con los precios publicados; nunca se usa el monto que envía el navegador.
+        let pedido;
+        try {
+          pedido = calcularPedido(await cargarSitio(), items, zona);
+        } catch (e) {
+          console.log('PEDIDO NO VERIFICADO | ref:', devReference, '| motivo:', e.message);
+          return new Response(JSON.stringify({ code: 'verificacion', error: 'No pudimos verificar tu pedido. Recarga la página e inténtalo de nuevo, o escríbenos por WhatsApp.' }), {
+            status: 409, headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+        if (!(Math.abs(pedido.total - Number(amount)) < 0.01)) {
+          console.log('MONTO DISTINTO | ref:', devReference, '| navegador:', amount, '| servidor:', pedido.total);
+          return new Response(JSON.stringify({ code: 'precio_cambiado', total: pedido.total, error: 'El total de tu pedido se actualizó.' }), {
+            status: 409, headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+        if (pedido.total < 1) {
+          return new Response(JSON.stringify({ code: 'minimo', error: 'El pago mínimo con tarjeta es $1.00.' }), {
+            status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+
         const authToken = await generateAuthToken();
 
         const resp = await fetch(PAY_URL, {
@@ -56,8 +81,8 @@ export default {
           body: JSON.stringify({
             locale: 'es',
             order: {
-              amount: parseFloat(amount),
-              description: description,
+              amount: pedido.total,
+              description: pedido.descripcion,
               vat: 0,
               dev_reference: devReference,
               installments_type: 0,
