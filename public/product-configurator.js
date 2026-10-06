@@ -819,7 +819,7 @@
     var message = 'Hola Velamia 👋 Estoy viendo ' + product.name + ' ($' + precioVenta(product).toFixed(2) +
       '). Quiero ' + state.qty + ' ' + unitLabel(product, state.qty) + '.' + details + extra +
       ' Quisiera confirmar personalización y fecha de entrega.';
-    document.getElementById('vcWhatsapp').href = 'https://wa.me/' + (window.VELAMIA_WA || '593995448686') + '?text=' + encodeURIComponent(message);
+    document.getElementById('vcWhatsapp').href = 'https://wa.me/' + (window.VELAMIA_WA || '593997329187') + '?text=' + encodeURIComponent(message);
   }
 
   function trackView(product) {
