@@ -56,8 +56,10 @@
     var intentos = 0;
     function aplicarEnlace() {
       if (!document.querySelector('.product-card')) { if (++intentos < 40) setTimeout(aplicarEnlace, 250); return; }
-      var hay = typeof PRODUCTS !== 'undefined' && PRODUCTS.some(function (p) { return p.id === prod && !p.oculto; });
-      if (prod && hay && typeof openProductPage === 'function') return openProductPage(prod);
+      // El CRM enlaza con el número del panel (pid); los productos que vinieron de la web vieja tienen otro id de tienda.
+      var lista = typeof PRODUCTS !== 'undefined' ? PRODUCTS.filter(function (p) { return !p.oculto; }) : [];
+      var elegido = prod ? (lista.filter(function (p) { return p.pid === prod; })[0] || lista.filter(function (p) { return p.id === prod || p.id === 100000 + prod; })[0]) : null;
+      if (elegido && typeof openProductPage === 'function') return openProductPage(elegido.id);
       if (cat && typeof filterProducts === 'function') {
         filterProducts(cat);
         var grid = document.getElementById('productsGrid');
