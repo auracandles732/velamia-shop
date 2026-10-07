@@ -77,7 +77,7 @@
       ['beneficios', function () { beneficios(s.beneficios); }],
       ['cinta', function () { cinta(s.cinta); }],
       ['temporada', function () { temporada(s.temporada); }],
-      ['coleccion', function () { coleccion(s.coleccion); }],
+      ['coleccion', function () { coleccion(s.coleccion, d.productos); }],
       ['por_que', function () { porQue(s.por_que); }],
       ['resenas', function () { resenas(s.resenas); }],
       ['pagos', function () { pagos(s.pagos, s.envios); }],
@@ -205,7 +205,23 @@
     texto('.jul-sub', t.subtitulo, el);
   }
 
-  function coleccion(c) {
+  // Nombre de las categorías que llegan desde el Catálogo del CRM y todavía no tienen botón en el panel.
+  var NOMBRES_CATEGORIA = { halloween: 'Halloween', navidad: 'Navidad', animales: 'Animales', misa: 'Misa', comunion: 'Comunión', graduacion: 'Graduación' };
+
+  function eventosConCategorias(eventos, productos) {
+    var ya = {};
+    (eventos || []).forEach(function (e) { ya[e.categoria] = true; });
+    var extra = [];
+    (productos || []).forEach(function (it) {
+      var p = it && it.producto;
+      if (!p || p.oculto || !p.cat || ya[p.cat]) return;
+      ya[p.cat] = true;
+      extra.push({ nombre: NOMBRES_CATEGORIA[p.cat] || (p.cat.charAt(0).toUpperCase() + p.cat.slice(1).replace(/-/g, ' ')), categoria: p.cat });
+    });
+    return (eventos || []).concat(extra);
+  }
+
+  function coleccion(c, productos) {
     if (!c) return;
     var head = q('#productos > .section-header');
     if (head) {
@@ -216,7 +232,7 @@
     }
     var ev = document.getElementById('eventCards');
     if (ev && c.eventos && c.eventos.length) {
-      ev.innerHTML = c.eventos.map(function (e) {
+      ev.innerHTML = eventosConCategorias(c.eventos, productos).map(function (e) {
         return '<button class="event-card" onclick="filterProducts(\'' + esc(e.categoria) + '\')"><div class="ec-name">' + esc(e.nombre) + '</div><div class="ec-line"></div></button>';
       }).join('');
     }
