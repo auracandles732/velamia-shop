@@ -46,6 +46,27 @@
     domListo().then(terminar);
   });
 
+  // Enlaces de los anuncios: ?producto=<id> abre ese producto y ?categoria=<categoría> muestra esa categoría (los
+  // botones de categoría se arman con el contenido del panel, por eso se aplica cuando ya están los productos).
+  listo.then(function () {
+    var params = new URLSearchParams(location.search);
+    var prod = parseInt(params.get('producto') || '', 10);
+    var cat = String(params.get('categoria') || '').toLowerCase().replace(/[^a-z0-9-]/g, '');
+    if (!prod && !cat) return;
+    var intentos = 0;
+    function aplicarEnlace() {
+      if (!document.querySelector('.product-card')) { if (++intentos < 40) setTimeout(aplicarEnlace, 250); return; }
+      var hay = typeof PRODUCTS !== 'undefined' && PRODUCTS.some(function (p) { return p.id === prod && !p.oculto; });
+      if (prod && hay && typeof openProductPage === 'function') return openProductPage(prod);
+      if (cat && typeof filterProducts === 'function') {
+        filterProducts(cat);
+        var grid = document.getElementById('productsGrid');
+        if (grid) window.scrollTo({ top: grid.getBoundingClientRect().top + window.pageYOffset - 90, behavior: 'instant' });
+      }
+    }
+    setTimeout(aplicarEnlace, 400);
+  });
+
   // ==================== utilidades ====================
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
